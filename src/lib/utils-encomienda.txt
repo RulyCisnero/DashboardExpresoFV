@@ -1,0 +1,94 @@
+import { EstadoEncomienda } from "../types/encomienda"
+
+/**
+ * Genera un código único para la encomienda
+ */
+export function generateEncomiendaCode(id: number): string {
+  const prefix = "ENC"
+  const paddedId = id.toString().padStart(3, "0")
+  return `${prefix}-${paddedId}`
+}
+
+/**
+ * Formatea el precio para mostrar
+ */
+export function formatPrice(price: string): string {
+  // Remove any existing formatting
+  const numericPrice = price.replace(/[^\d]/g, "")
+
+  // Format as currency
+  const formatted = new Intl.NumberFormat("es-AR", {
+    style: "currency",
+    currency: "ARS",
+    minimumFractionDigits: 0,
+  }).format(Number.parseInt(numericPrice))
+
+  return formatted
+}
+
+/**
+ * Calcula la fecha de entrega estimada
+ */
+export function calculateDeliveryDate(fechaEnvio: string, dias = 3): string {
+  const envio = new Date(fechaEnvio)
+  envio.setDate(envio.getDate() + dias)
+  return envio.toISOString().split("T")[0]
+}
+
+/**
+ * Obtiene el color del badge según el estado
+ */
+export function getEstadoColor(estado: string): string {
+  switch (estado) {
+    case "Pendiente":
+      return "bg-yellow-100 text-yellow-800"
+    case "En tránsito":
+      return "bg-blue-100 text-blue-800"
+    case "Entregado":
+      return "bg-green-100 text-green-800"
+    case "Cancelado":
+      return "bg-red-100 text-red-800"
+    default:
+      return "bg-gray-100 text-gray-800"
+  }
+}
+
+
+
+/**
+ * Obtiene la variante del badge según el estado
+ * @param {EstadoEncomienda} estado - Estado de la encomienda
+ * @returns {string} Variante del badge
+ */
+export const getEstadoBadgeVariant = (EstadoEncomienda) => {
+  const variants = {
+    Pendiente: "secondary",
+    "En tránsito": "default",
+    Entregado: "default", // Will be styled as success
+    Cancelado: "destructive",
+  }
+  return variants[EstadoEncomienda] || "secondary"
+}
+
+/**
+ * Genera un código de encomienda
+ * @param {number} id - ID de la encomienda
+ * @returns {string} Código generado
+ */
+export const generateEncomiendaCode = (id) => {
+  return `ENC-${String(id).padStart(3, "0")}`
+}
+
+/**
+ * Obtiene estadísticas de las encomiendas
+ * @param {Array} encomiendas - Array de encomiendas
+ * @returns {Object} Objeto con estadísticas
+ */
+export const getEstadoStats = (encomiendas) => {
+  return {
+    total: encomiendas.length,
+    enTransito: encomiendas.filter((enc) => enc.estado === "En tránsito").length,
+    entregadas: encomiendas.filter((enc) => enc.estado === "Entregado").length,
+    pendientes: encomiendas.filter((enc) => enc.estado === "Pendiente").length,
+  }
+}

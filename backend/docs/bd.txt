@@ -1,0 +1,190 @@
+CREATE TABLE localidad (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+
+
+CREATE TABLE cliente (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    direccion_local VARCHAR(255) NOT NULL,
+    localidad	
+    telefono VARCHAR(20) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE chofer (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    apellido VARCHAR(100) NOT NULL,
+    destino VARCHAR(100)[] NOT NULL
+//comando para pasar varchar(100)[] a varchar(100)
+ALTER TABLE public.chofer
+ALTER COLUMN destino
+SET DATA TYPE character varying(100)
+USING destino[1];
+
+ALTER TABLE chofer
+RENAME COLUMN destino TO destino_id;
+
+ALTER TABLE chofer
+ALTER COLUMN destino_id TYPE INTEGER USING destino_id::INTEGER;
+ALTER TABLE chofer
+ADD CONSTRAINT fk_chofer_localidad
+FOREIGN KEY (destino_id) REFERENCES localidad(id);
+);
+
+CREATE TABLE repartidor_local (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE encomienda (
+    id SERIAL PRIMARY KEY,
+    tipo VARCHAR(10) CHECK (tipo IN ('SALIENTE', 'ENTRANTE')) NOT NULL,
+    origen VARCHAR(100) NOT NULL,
+    destino VARCHAR(100) NOT NULL,
+    direccion_destino VARCHAR(255) NOT NULL,
+    estado VARCHAR(20) CHECK (estado IN ('Pendiente', 'En tránsito', 'Lista para reparto', 'Entregada')) NOT NULL,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    descripcion TEXT,
+    cliente_id INT REFERENCES cliente(id) ON DELETE CASCADE,
+    chofer_id INT REFERENCES chofer(id) ON DELETE SET NULL
+
+
+ALTER TABLE encomienda
+DROP CONSTRAINT encomienda_estado_check;
+
+ALTER TABLE encomienda
+ADD CONSTRAINT encomienda_estado_check
+CHECK (estado IN ('Pendiente', 'Entregada'));
+
+);
+
+
+//---------------------Mejora optimizada--31/07/2015-------------
+CREATE TABLE localidad (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE cliente (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(150),
+    telefono VARCHAR(50),
+    localidad_id INT REFERENCES localidad(id)
+);
+
+CREATE TABLE chofer (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(50),
+    destino VARCHAR(100)  -- ahora solo un destino, no array
+);
+
+CREATE TABLE encomienda (
+    id SERIAL PRIMARY KEY,
+    descripcion TEXT NOT NULL,
+    fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    cliente_id INT REFERENCES cliente(id),
+    chofer_id INT REFERENCES chofer(id),
+    origen_id INT REFERENCES localidad(id),
+    destino_id INT REFERENCES localidad(id),
+    precio DECIMAL(10,2)
+);
+
+{
+  "localidades": [
+    { "id": 1, "nombre": "Coronel Dorrego" },
+    { "id": 2, "nombre": "Bahía Blanca" },
+    { "id": 3, "nombre": "Monte Hermoso" }
+  ],
+  "clientes": [
+    { "id": 1, "nombre": "Juan Pérez", "direccion": "Av. San Martín 123", "telefono": "291-1111111", "localidad_id": 1 },
+    { "id": 2, "nombre": "Ana García", "direccion": "Belgrano 456", "telefono": "291-2222222", "localidad_id": 2 }
+  ],
+  "choferes": [
+    { "id": 1, "nombre": "Carlos Gómez", "telefono": "291-3333333", "destino": "Bahía Blanca" },
+    { "id": 2, "nombre": "Luis Rodríguez", "telefono": "291-4444444", "destino": "Monte Hermoso" }
+  ],
+  "encomiendas": [
+    {
+      "id": 1,
+      "descripcion": "Caja con repuestos",
+      "fecha": "2025-07-31T10:00:00",
+      "cliente_id": 1,
+      "chofer_id": 1,
+      "origen_id": 1,
+      "destino_id": 2,
+      "precio": 3500.50
+    },
+    {
+      "id": 2,
+      "descripcion": "Documentos importantes",
+      "fecha": "2025-07-31T11:30:00",
+      "cliente_id": 2,
+      "chofer_id": 2,
+      "origen_id": 2,
+      "destino_id": 3,
+      "precio": 1800.00
+    }
+  ]
+}
+
+
+------- datos similados de resultado de encomienda-----
+{
+  "encomienda_id": 1,
+  "tipo": "Documentación",
+  "estado": "En camino",
+  "direccion_destino": "Calle Falsa 123",
+  "fecha_creacion": "2025-07-30T10:30:00",
+  "descripcion": "Papeles importantes para firma",
+  "precio": 3500.50,
+
+  "cliente_nombre": "Laura",
+  "cliente_apellido": "Gómez",
+  "localidad_cliente": "Coronel Dorrego",
+
+  "chofer_nombre": "José",
+  "chofer_apellido": "Martínez",
+
+  "localidad_origen": "Coronel Dorrego",
+  "localidad_destino": "Bahía Blanca"
+}
+
+query
+SELECT
+    e.id AS encomienda_id,
+    e.tipo,
+    e.estado,
+    e.direccion_destino,
+    e.fecha_creacion,
+    e.descripcion,
+    e.precio,
+
+    -- Datos del cliente
+    c.nombre AS cliente_nombre,
+    c.apellido AS cliente_apellido,
+    lc.nombre AS localidad_cliente,
+
+    -- Datos del chofer
+    ch.nombre AS chofer_nombre,
+    ch.apellido AS chofer_apellido,
+
+    -- Origen y destino (localidades)
+    lo.nombre AS localidad_origen,
+    ld.nombre AS localidad_destino
+
+FROM encomienda e
+LEFT JOIN cliente c ON e.cliente_id = c.id
+LEFT JOIN localidad lc ON c.localidad_id = lc.id
+LEFT JOIN chofer ch ON e.chofer_id = ch.id
+LEFT JOIN localidad lo ON e.origen_id = lo.id
+LEFT JOIN localidad ld ON e.destino_id = ld.id
+
+-- Filtrá por la encomienda que querés ver
+WHERE e.id = 1;  -- Cambiá el ID según lo que quieras consultar

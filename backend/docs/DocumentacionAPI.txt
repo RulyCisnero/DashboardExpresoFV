@@ -1,0 +1,103 @@
+✅ Programación Orientada a Objetos (POO)
+✅ Interfaces bien definidas
+✅ Separación clara de responsabilidades
+✅ Buenas prácticas de exportación/importación
+✅ Manejo robusto de tipos con TypeScript
+
+Usar una clase y exportar una instancia (export default new LocalidadController();)
+✅ Se alinea con POO.
+✅ Podés usar métodos privados, herencia, propiedades compartidas, dependencias inyectadas, etc.
+✅ Facilita el uso de Singletons si necesitás mantener una única instancia.
+✅ Más escalable si el proyecto crece.
+Ejemplo:
+class LocalidadController {
+  async create(req: Request, res: Response) { ... }
+  async getAll(req: Request, res: Response) { ... }
+  ...
+}
+export default new LocalidadController();
+
+usando TS + POO + buenas prácticas:
+-Crear una clase LocalidadController.
+-Aplicar POO: encapsulación, métodos privados si hace falta, incluso dependencias si luego hacés inyección de servicios.
+-Exportar una instancia con export default new LocalidadController(); si no necesitás múltiples instancias.
+
+Y para los models, el mismo enfoque aplica:
+-class LocalidadModel, con sus métodos findAll, create, delete, etc.
+-Exportás una instancia única con export default new LocalidadModel();
+
+src/
+│
+├── controllers/
+│   └── localidad.controller.ts     // Clase LocalidadController
+│
+├── models/
+│   └── localidad.model.ts          // Clase LocalidadModel
+│
+├── interfaces/
+│   └── localidad.interface.ts      // Interface Localidad
+│
+├── routes/
+│   └── localidad.routes.ts         // Define rutas y usa el controller
+│
+├── database/
+│   └── pool.ts                     // Pool de PostgreSQL
+│
+└── index.ts / server.ts            // Entry point
+
+
+🧠 ¿Qué es un Middleware?
+Un middleware es una función que se ejecuta entre que se recibe una solicitud (request) y se envía una respuesta (response).
+En Express, los middlewares interceptan y procesan las peticiones HTTP antes de que lleguen al controlador o después de que este responda.
+
+🎯 ¿Para qué sirve un middleware?
+Algunos ejemplos comunes de uso:
+Caso de uso  y Qué hace el middleware
+✅ Validación de datos : Verifica que los campos requeridos estén presentes y sean del tipo correcto        
+
+🔐 Autenticación y autorización : Comprueba si el usuario está autenticado y tiene permisos para hacer lo que pide    
+
+📊 Logging :  Muestra en consola o guarda información de cada request (método, ruta, IP, etc.)  
+
+🔄 Manejo de errores: Captura errores en un lugar centralizado y evita repetir `try/catch` en cada ruta   
+
+⚙️ Formateo de respuestas: Establece cabeceras, estructura la respuesta o transforma datos                     
+
+📁 Subida de archivos: Interpreta y guarda archivos que vienen en el cuerpo del request (`multipart/form`) 
+
+🛠️ ¿Cómo funciona un middleware?
+Todos los middlewares en Express tienen esta firma:
+(req, res, next) => {
+  // lógica
+  next(); // llama al siguiente middleware o controlador
+}
+El next() es clave: si no lo llamás, la request "se cuelga".
+
+🧪 Ejemplo de validación de campos en Localidad
+Supongamos que querés asegurarte de que cuando se cree una localidad, el campo nombre exista y no esté vacío:
+// middlewares/validateLocalidad.ts
+import { Request, Response, NextFunction } from 'express';
+export function validateLocalidad(req: Request, res: Response, next: NextFunction) {
+  const { nombre } = req.body;
+
+  if (!nombre || typeof nombre !== 'string' || nombre.trim() === '') {
+    return res.status(400).json({ error: 'El nombre de la localidad es obligatorio y debe ser un string válido' });
+  }
+
+  next(); // todo bien, sigue al controlador
+}
+
+Y en la ruta:
+import express from 'express';
+import localidadController from '../controllers/localidad.controller';
+import { validateLocalidad } from '../middlewares/validateLocalidad';
+
+const router = express.Router();
+
+router.post('/', validateLocalidad, localidadController.createLocalidad);
+
+✅ Ventajas de usar middleware
+-Reutilizables: podés usar el mismo validador en varias rutas.
+-Separan la lógica de negocio de la validación.
+-Mejoran la seguridad y legibilidad del código.
+-Escalables: cuando el proyecto crece, te salvás de tener código repetido en cada controlador.
