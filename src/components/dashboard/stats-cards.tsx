@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Package, Clock, CheckCircle } from "lucide-react"
-import type { Encomienda } from "../../types/encomienda"
+import type { Encomienda, EncomiendaTable } from "../../types/encomienda"
 
 interface StatsCardsProps {
-  encomiendas: Encomienda[]
+  encomiendas: /* Encomienda */EncomiendaTable[]
 }
 
 export function StatsCards({ encomiendas }: StatsCardsProps) {

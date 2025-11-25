@@ -1,23 +1,36 @@
-/* export interface Encomienda {
+export type EstadoEncomienda = "Pendiente" | "En tránsito" | "Entregada" | "Cancelado"
+export type TipoEncomienda = "ENTRANTE"|"SALIENTE"
+
+export interface Encomienda {
   id: number
-  codigo: string
-  remitente: string
-  destinatario: string
-  telefono: string
-  email: string
-  origen: string
-  destino: string
-  estado: EstadoEncomienda
-  fechaEnvio: string
-  fechaEntrega: string
-  peso: string
-  precio: string
-  descripcion?: string
-  chofer: string
-} */
+  tipo: TipoEncomienda //o string?
+  direccion_destino: string; 
+  estado: EstadoEncomienda; //o string?
+  fecha_creacion: Date
+  precio: number;
+  descripcion?: string;
+  cliente_id: number;
+  chofer_id: number;
+  origen_id: number;
+  destino_id: number;
+  cliente_destinatario_id: number;
+}
+export type EncomiendaInput = Omit<Encomienda, "id">
+
+export type EncomiendaUpdate = Omit<Encomienda, "id">
+
+export interface EncomiendaRich extends Omit<Encomienda, 
+  "cliente_id" | "cliente_destinatario_id" | "origen_id" | "destino_id" | "chofer_id"> 
+{
+  cliente: ClienteFormData
+  destinatario: ClienteFormData
+  origen: LocalidadFormData
+  destino: LocalidadFormData
+  chofer: ChoferFormData
+}
 
 
-export interface EncomiendaForInput {
+  export interface EncomiendaForInput {
   tipo:TipoEncomienda
   estado: EstadoEncomienda
   direccion_destino:string
@@ -31,20 +44,6 @@ export interface EncomiendaForInput {
   chofer_id:number
 }
 
-export interface Encomienda {
-  id: number;
-  tipo: string; //o TipoEncomienda 
-  direccion_destino: string; 
-  estado: string; //o EstadoEncomienda
-  fecha_creacion: Date
-  precio: number;
-  descripcion?: string | null;
-  cliente_id: number;
-  chofer_id: number;
-  origen_id: number;
-  destino_id: number;
-  cliente_destinatario_id: number;
-}
 
 
 
@@ -106,8 +105,6 @@ export interface LocalidadFormData {
   nombre: string
 }
 
-export type EstadoEncomienda = "Pendiente" | "En tránsito" | "Entregada" | "Cancelado"
-export type TipoEncomienda = "ENTRANTE"|"SALIENTE"
 
 
 export interface EncomiendaFormData {
@@ -131,12 +128,13 @@ export interface EncomiendaView {
   direccion_destino:string
   cliente: ClienteFormData
   destinatario: ClienteFormData
-  origen: LocalidadFormData
-  destino: LocalidadFormData
+  origen: Localidad//LocalidadFormData
+  destino: Localidad//LocalidadFormData
   fecha_creacion: Date
   peso?: string
-  precio: string
+  precio: number //string
   descripcion?: string
+  chofer:Chofer
 }
 
 

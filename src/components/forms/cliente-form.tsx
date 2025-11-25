@@ -1,20 +1,21 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useEffect } from "react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
-import type { ClienteFormData, ClienteFormInput, Localidad } from "../../types/encomienda"
+import type { ClienteFormInput, Localidad } from "../../types/encomienda"
 
 interface ClienteFormProps {
   onSubmit: (data: ClienteFormInput) => void
-  initialData?: Partial<ClienteFormInput>
   onCancel: () => void
+  localidades: Localidad[]
+  loadingLocalidades?: boolean
+  initialData?: Partial<ClienteFormInput>
 }
 
-export function ClienteForm({ onSubmit, onCancel, initialData }: ClienteFormProps) {
+export function ClienteForm({ onSubmit, onCancel, initialData, localidades,loadingLocalidades }: ClienteFormProps) {
 
   const [formData, setFormData] = useState<ClienteFormInput>({
     nombre: "",
@@ -40,7 +41,7 @@ export function ClienteForm({ onSubmit, onCancel, initialData }: ClienteFormProp
   }, [initialData]);
 
 
-  const [localidades, setLocalidades] = useState<Localidad[]>([])
+  /* const [localidades, setLocalidades] = useState<Localidad[]>([])
   // Cargo localidades para  montar el nombre de localidad en listbox
   useEffect(() => {
     async function fetchLocalidades() {
@@ -54,7 +55,7 @@ export function ClienteForm({ onSubmit, onCancel, initialData }: ClienteFormProp
     }
     fetchLocalidades();
   }, []);
-
+ */
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     onSubmit(formData)
@@ -127,10 +128,15 @@ export function ClienteForm({ onSubmit, onCancel, initialData }: ClienteFormProp
             id="localidad"
             className="w-full border rounded-md p-2"
             value={formData.id_localidad}
-            onChange={(e) => handleInputChange("id_localidad", /* Number */(e.target.value))}
+            //REVISAR NUMBER
+            onChange={(e) => handleInputChange("id_localidad",  Number(e.target.value))}
             required
+            disabled={loadingLocalidades}
           >
-            <option value="">Seleccione una localidad</option>
+            <option value="">
+              {loadingLocalidades ? "Cargando...": "Seleccione una localidad" }
+              {/* Seleccione una localidad */}
+              </option>
             {localidades.map((loc) => (
               <option key={loc.id} value={loc.id}>
                 {loc.nombre}

@@ -2,15 +2,18 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { ClienteForm } from "../forms/cliente-form"
-import type { ClienteFormInput } from "../../types/encomienda"
+import type { ClienteFormInput, Localidad } from "../../types/encomienda"
 
 interface AddClienteModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (data: ClienteFormInput) => void
+  localidades: Localidad[]
+  loadingLocalidades?: boolean
 }
 
-export function AddClienteModal({ open, onOpenChange, onSubmit }: AddClienteModalProps) {
+export function AddClienteModal({ open, onOpenChange, onSubmit, localidades, loadingLocalidades }: AddClienteModalProps) {
+  
   const handleSubmit = (data: ClienteFormInput) => {
     onSubmit(data)
     onOpenChange(false)
@@ -22,11 +25,14 @@ export function AddClienteModal({ open, onOpenChange, onSubmit }: AddClienteModa
         <DialogHeader>
           <DialogTitle>Nuevo Cliente</DialogTitle>
         </DialogHeader>
-        
-        <ClienteForm 
-        onSubmit={handleSubmit}
-        onCancel={() => onOpenChange(false)} />
-      
+        <ClienteForm
+          /* onSubmit={handleSubmit}
+          onCancel={() => onOpenChange(false)}  */
+          onSubmit={handleSubmit}
+          onCancel={() => onOpenChange(false)}
+          localidades={localidades}
+          loadingLocalidades={loadingLocalidades}
+        />
       </DialogContent>
     </Dialog>
   )

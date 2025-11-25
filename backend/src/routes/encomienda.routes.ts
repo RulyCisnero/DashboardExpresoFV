@@ -10,7 +10,7 @@ router.post('/',/* validarCrearEncomienda, */ encomiendaController.createEncomie
 router.get('/:id', encomiendaController.getEncomiendaById);
 router.get('/', encomiendaController.getAllEncomiendas);
 router.get('/cliente', encomiendaController.FilteredEncomiendas);
-router.put('/:id',validarCamposEncomiendaPut, encomiendaController.updateEncomienda);
+router.put('/:id',/* validarCamposEncomiendaPut , */encomiendaController.updateEncomienda);
 router.put('/:id/estado', encomiendaController.updateEstado);
 router.delete('/:id', encomiendaController.deleteEncomienda);
 

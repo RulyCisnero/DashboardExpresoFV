@@ -13,10 +13,6 @@ import type { Encomienda, EncomiendaFormData, EncomiendaTable } from "../../type
 //import { TableContent } from "../ui/table" // Import TableContent 
 
 interface EncomiendasTableProps {
-  //encomiendas: Encomienda[]
-  /*   onViewDetails: (encomienda: Encomienda) => void
-    onEdit: (encomienda: Encomienda) => void
-    onDelete: (id: number) => void */
   encomiendasData: EncomiendaTable[]
   onViewDetails: (encomienda: EncomiendaTable) => void
   onEdit: (encomienda: EncomiendaTable) => void

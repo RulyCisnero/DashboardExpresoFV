@@ -23,7 +23,7 @@ interface DeleteClienteModalProps {
 export function DeleteClienteModal({open, onOpenChange, cliente, onConfirm }:DeleteClienteModalProps) {
 
   if (!cliente) return null
-
+  
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
       <AlertDialogContent>

@@ -1,14 +1,10 @@
 "use client"
 
 import { useState, useMemo } from "react"
-//import { useEncomiendas } from "../hooks/use-encomiendas"
 import { useEncomienda } from "../services/hooks-services/use-encomienda"
 import { useLocalidades } from "../services/hooks-services/use-localidades"
 import { useChoferes } from "../services/hooks-services/use-choferes"
 import { useCliente } from "../services/hooks-services/use-cliente"
-
-/* import { addChofer } from "@/hooks/use-choferes"
-import { addDestino } from "@/hooks/use-destinos" */
 
 // Components
 import { DashboardHeader } from "../components/dashboard/dashboard-header"
@@ -18,34 +14,28 @@ import { EncomiendasTable } from "../components/dashboard/encomiendas-table"
 import { EncomiendaDetailModal } from "../components/modals/encomienda-detail-modal"
 import { AddEncomiendaModal } from "../components/modals/add-encomienda-modal"
 import { EditEncomiendaModal } from "../components/modals/edit-encomienda-modal"
-import { AddClienteModal } from "../components/modals/add-cliente-modal"
+//import { AddClienteModal } from "../components/modals/add-cliente-modal"
 import { AddChoferModal } from "../components/modals/add-chofer-modal"
-import { AddDestinoModal } from "../components/modals/add-destino-modal"
 import { SearchModal } from "../components/modals/search-modal"
 import { HistoryModal } from "../components/modals/history-modal"
-import { ViewClientesModal } from "../components/modals/view-clientes-modal"
+//import { ViewClientesModal } from "../components/modals/view-clientes-modal"
 import { ViewChoferesModal } from "../components/modals/view-choferes-modal"
-import { ViewDestinosModal } from "../components/modals/view-destinos-modal"
+import { PadreLocalidad } from "../components/PadreLocalidades/PadreLocalidad"
+import { PadreCliente } from "../components/padreCliente/padreCliente"
 
-import type { Encomienda, EncomiendaView, Localidad, EncomiendaTable } from "../types/encomienda"
-import type { LocalidadFormData } from "../types/encomienda"
+import type { Encomienda, EncomiendaTable, EncomiendaView, Localidad } from "../types/encomienda"
 
 
 /**
  * Componente principal del Dashboard
  */
 export default function Dashboard() {
-  //hook de encomiendas hardcodeado
-  //const { encomiendas, addEncomienda, updateEncomienda, deleteEncomienda } = useEncomiendas()
-
-  //hook verdadero de encomiendas
-  const { encomiendasApi, addNewEncomienda, deleteEncomienda, updateEncomienda } = useEncomienda()
+  //hook de encomiendas
+  const { encomiendasApi, addNewEncomienda, getEncomiendaById, deleteEncomienda, updateEncomienda } = useEncomienda()
 
   // 👉 Hook solo de localidades (destinos)
   const {
-    localidades,
-    loadingLocalidad,
-    addLocalidad
+    localidades
   } = useLocalidades()
 
   // 🔍 Hook solo de choferes
@@ -56,8 +46,7 @@ export default function Dashboard() {
 
   //hook para clientes
   const {
-    clientes,
-    addCliente
+    clientes
   } = useCliente()
 
   // Estados de filtros
@@ -65,9 +54,9 @@ export default function Dashboard() {
 
 
   // Modal states
-  const [selectedEncomienda, setSelectedEncomienda] = useState<Encomienda | null>(null)
+  //const [selectedEncomienda, setSelectedEncomienda] = useState<Encomienda | null>(null)
   const [selectedEncomiendaView, setSelectedEncomiendaView] = useState<EncomiendaView | null>(null)
-  const [editingEncomienda, setEditingEncomienda] = useState<Encomienda | null>(null)
+  const [editingEncomienda, setEditingEncomienda] = useState<EncomiendaView | null>(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [isAddEncomiendaOpen, setIsAddEncomiendaOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -81,19 +70,12 @@ export default function Dashboard() {
   const [isViewDestinosOpen, setIsViewDestinosOpen] = useState(false)
 
   // Filtrar encomiendas por localidad
-  /*   const filteredEncomiendas = useMemo(() => {
-      if (selectedLocalidad.nombre === "Todas") {
-        return encomiendasApi
-      }
-      return encomiendasApi.filter((enc) => enc.origen_id === selectedLocalidad.id || enc.destino_id === selectedLocalidad.id)
-    }, [encomiendasApi, selectedLocalidad])
-   */
   const filteredEncomiendas = useMemo(() => {
     if (selectedLocalidad === "Todas") return encomiendasApi
     return encomiendasApi.filter(
       (enc) =>
-        enc.origen_id === selectedLocalidad.id ||
-        enc.destino_id === selectedLocalidad.id
+        enc.origen.nombre === selectedLocalidad.nombre ||
+        enc.destino.nombre === selectedLocalidad.nombre
     )
   }, [encomiendasApi, selectedLocalidad])
 
@@ -103,10 +85,19 @@ export default function Dashboard() {
     setIsDetailOpen(true)
   }
 
-  const handleEditEncomienda = (encomienda: Encomienda) => {
+  /* const handleEditEncomienda = (encomienda: EncomiendaView) => {
+    console.log("id de la encomienda seleccionada: ",encomienda.id)
     setEditingEncomienda(encomienda)
     setIsEditOpen(true)
-  }
+  } */
+  const handleEditEncomienda = async (encomienda: EncomiendaTable) => {
+    const encomiendaCompleta = await getEncomiendaById(encomienda.id);
+    console.log('Fetch en : ', encomiendaCompleta)
+    if (encomiendaCompleta) {
+      setEditingEncomienda(encomiendaCompleta);
+      setIsEditOpen(true);
+    }
+  };
 
   const handleDeleteEncomienda = (encomienda: Encomienda) => {
     deleteEncomienda(encomienda)
@@ -117,16 +108,6 @@ export default function Dashboard() {
       updateEncomienda(editingEncomienda.id, data)
     }
   }
-
-  const handleAddDestino = async (localidad: LocalidadFormData) => {
-    try {
-      await addLocalidad(localidad)  // usa el hook y hace POST al backend
-    } catch (error) {
-      console.error("Error al agregar localidad:", error)
-    }
-  }
-
-
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -147,15 +128,15 @@ export default function Dashboard() {
       <div className="md:pl-64">
         {/* Header */}
         <DashboardHeader
-        /*    onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
-           onAddCliente={() => setIsAddClienteOpen(true)}
-           onAddChofer={() => setIsAddChoferOpen(true)}
-           onAddDestino={() => setIsAddDestinoOpen(true)}
-           onShowHistorial={() => setIsHistoryOpen(true)}
-           onShowBuscador={() => setIsSearchOpen(true)}
-           onViewClientes={() => setIsViewClientesOpen(true)}
-           onViewChoferes={() => setIsViewChoferesOpen(true)}
-           onViewDestinos={() => setIsViewDestinosOpen(true)}   */
+          /*    onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
+             onAddCliente={() => setIsAddClienteOpen(true)}
+             onAddChofer={() => setIsAddChoferOpen(true)}
+             onAddDestino={() => setIsAddDestinoOpen(true)}
+             onShowHistorial={() => setIsHistoryOpen(true)}
+             onShowBuscador={() => setIsSearchOpen(true)}
+             onViewClientes={() => setIsViewClientesOpen(true)}
+             onViewChoferes={() => setIsViewChoferesOpen(true)}
+             onViewDestinos={() => setIsViewDestinosOpen(true)}   */
           localidades={localidades}
           selectedLocalidad={selectedLocalidad}
           onLocalidadChange={setSelectedLocalidad}
@@ -163,7 +144,7 @@ export default function Dashboard() {
         />
 
         {/* Dashboard Content */}
-        <div className="container mx-auto p-6 space-y-8">
+        <div className="container mx-auto p-4 space-y-8">
           {/* Stats Cards */}
           <StatsCards encomiendas={filteredEncomiendas} />
 
@@ -199,26 +180,14 @@ export default function Dashboard() {
         onSubmit={handleUpdateEncomienda}
         encomienda={editingEncomienda}
         clientes={clientes}
-        destinos={localidades}
-      />
-
-      <AddClienteModal
-        open={isAddClienteOpen}
-        onOpenChange={setIsAddClienteOpen}
-        onSubmit={addCliente}
+        chofer={choferes}
+        localidades={localidades}
       />
 
       <AddChoferModal
         open={isAddChoferOpen}
         onOpenChange={setIsAddChoferOpen}
         onSubmit={addChofer} />
-
-      <AddDestinoModal
-        open={isAddDestinoOpen}
-        onOpenChange={setIsAddDestinoOpen}
-        /* onSubmit={addDestino} */
-        onSubmit={handleAddDestino}
-      />
 
       <SearchModal
         open={isSearchOpen}
@@ -233,10 +202,11 @@ export default function Dashboard() {
         encomiendas={encomiendasApi /* encomiendas} */}
       />
 
-      <ViewClientesModal
-        open={isViewClientesOpen}
-        onOpenChange={setIsViewClientesOpen}
-        clientes={clientes}
+      <PadreCliente
+        isAddOpen={isAddClienteOpen}
+        onAddClose={() => setIsAddClienteOpen(false)}
+        isViewOpen={isViewClientesOpen}
+        onViewClose={() => setIsViewClientesOpen(false)}
       />
 
       <ViewChoferesModal
@@ -245,14 +215,11 @@ export default function Dashboard() {
         choferes={choferes}
       />
 
-      <ViewDestinosModal
-        open={isViewDestinosOpen}
-        onOpenChange={setIsViewDestinosOpen}
-        //localidades={localidades}
-         {...localidades} 
-        /* onDeleteLocalidad={(id) =>
-          setLocalidades((prev) => prev.filter((loc) => loc.id !== id))
-        } */
+      <PadreLocalidad
+        isAddOpen={isAddDestinoOpen}
+        onAddClose={() => setIsAddDestinoOpen(false)}
+        isViewOpen={isViewDestinosOpen}
+        onViewClose={() => setIsViewDestinosOpen(false)}
       />
     </div>
   )

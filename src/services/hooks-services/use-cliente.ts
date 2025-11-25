@@ -5,12 +5,8 @@ import { toast } from "../../hooks/use-toast"
 
 export const useCliente = () => {
   const [clientes, setClientes] = useState<Cliente[]>([])
-  const [loadingClient, setLoadingClient] = useState(true)
+  const [loadingCliente, setLoadingClient] = useState(true)
   const [errorCliente, setErrorCliente] = useState<string | null>(null)
-
-  useEffect(() => {
-    loadClientes()
-  }, [])
 
   const loadClientes = async () => {
     setLoadingClient(true)
@@ -64,9 +60,8 @@ export const useCliente = () => {
           })
           console.error("Error actualizando cliente:", error)
         }
-      }
+  }
   
-
   const deleteCliente = async (cliente: Cliente) => {
     try {
       await ClienteService.deleteCliente(cliente.id) 
@@ -85,12 +80,15 @@ export const useCliente = () => {
     }
   }
 
+  useEffect(() => {
+    loadClientes()
+  }, [])
 
 
 
   return {
     clientes,
-    loadingClient,
+    loadingCliente,
     errorCliente,
     reloadClientes: loadClientes,
     addCliente,

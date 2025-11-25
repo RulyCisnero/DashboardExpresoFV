@@ -7,17 +7,18 @@ import { MapPin, Edit, Trash2 } from "lucide-react"
 
 import type { Localidad, LocalidadFormData } from "../../types/encomienda"
 import { DeleteLocalidadModal } from "../modals/delete-localidad-modal"
-import { useLocalidades } from "../../services/hooks-services/use-localidades"
 import { EditDestinoModal } from "../modals/edit-destino-modal"
 
 interface DestinosViewProps {
   localidades: Localidad[]
-  onDeleteLocalidad: (localidad: Localidad) => Promise<void>
-  onEditLocalidad: (id: number, data: LocalidadFormData) => Promise<void>
-  //onDeleteLocalidad?: (/* id: number */) => void
+  onAddClick: () => void
+  onEditLocalidad: (id:number,data: LocalidadFormData) => void
+  onDeleteLocalidad: (localidad: Localidad) =>Promise <void>
+  loading: boolean
+  error: string | null
 }
 
-export function DestinosView({ localidades /* = [] */, onDeleteLocalidad, onEditLocalidad  }: DestinosViewProps) {
+export function DestinosView({ localidades, onDeleteLocalidad, onEditLocalidad,loading,error  }: DestinosViewProps) {
   const [selectedLocalidad, setSelectedLocalidad] = useState<Localidad | null>(null)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
@@ -113,7 +114,6 @@ export function DestinosView({ localidades /* = [] */, onDeleteLocalidad, onEdit
         localidad={selectedLocalidad || undefined}
         onSubmit={handleUpdate}
       />
-
     </div>
   )
 }

@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react"
-import type { Encomienda, EncomiendaForInput, EncomiendaFormData } from "../../types/encomienda"
+import type { Encomienda, EncomiendaForInput, EncomiendaFormData, EncomiendaInput, EncomiendaTable } from "../../types/encomienda"
 import { EncomiendaService } from "../encomienda"
 import { toast } from "../../hooks/use-toast"
 
 
 export const useEncomienda = () => {
   //const [encomiendasApi, setEncomiendasApi] = useState<Encomienda[]>([])
-  const [encomiendasApi, setEncomiendasApi] = useState<Encomienda[]>([])
+  const [encomiendasApi, setEncomiendasApi] = useState<EncomiendaTable[]>([])
   const [loadingEncomiendas, setLoadingEncomiendas] = useState(true)
   const [errorEncomienda, setErrorEncomienda] = useState<string | null>(null)
 
@@ -24,10 +24,16 @@ export const useEncomienda = () => {
     }
   }
 
-  const addNewEncomienda = async (data: EncomiendaForInput) => {
+  const addNewEncomienda = async (data: EncomiendaInput /* EncomiendaForInput */) => {
     try {
-      const nuevaEncomienda = await EncomiendaService.addNewEncomienda(data)
-      setEncomiendasApi((prev) => [...prev, nuevaEncomienda])
+      // 1️⃣ Primero creás la encomienda mínima (solo IDs)
+      const nueva = await EncomiendaService.addNewEncomienda(data)
+      // 2️⃣ Luego pedís la encomienda completa ya enriquecida
+      const completa = await EncomiendaService.getEncomiendaById(nueva.id)
+      // 3️⃣ Guardás la COMPLETA en tu estado
+      setEncomiendasApi(prev => [...prev, completa])
+      //const nuevaEncomienda = await EncomiendaService.addNewEncomienda(data)
+      //setEncomiendasApi((prev) => [...prev, nuevaEncomienda])
       toast({
         title: "Encomienda Agregada",
         description: "La nueva encomienda ha sido registrado exitosamente.",
@@ -42,12 +48,49 @@ export const useEncomienda = () => {
       console.error("Error agregando encomienda:", error)
     }
   }
+  const getEncomiendaById = async (id: number): Promise<Encomienda | null> => {
+    try {
+      const encomienda = await EncomiendaService.getEncomiendaById(id);
+      return encomienda;
+    } catch (error) {
+      console.error("Error obteniendo encomienda:", error);
+      return null;
+    }
+  };
 
+
+  /*   const updateEncomienda = async (id: number, data: EncomiendaFormData) => {
+      try {
+        const updated = await EncomiendaService.updateEncomienda(id, data)
+        setEncomiendasApi((prev) =>
+          prev.map((encomienda) => (encomienda.id === id ? updated : encomienda))
+        )
+  
+        toast({
+          title: "Encomienda Actualizada",
+          description: "Los cambios se guardaron correctamente.",
+        })
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "No se pudo actualizar la encomienda.",
+          variant: "destructive",
+        })
+        console.error("Error actualizando encomienda:", error)
+      }
+    }
+   */
   const updateEncomienda = async (id: number, data: EncomiendaFormData) => {
     try {
-      const updated = await EncomiendaService.updateEncomienda(id, data)
-      setEncomiendasApi((prev) =>
-        prev.map((encomienda) => (encomienda.id === id ? updated : encomienda))
+      // 1️⃣ Actualizar
+      await EncomiendaService.updateEncomienda(id, data)
+
+      // 2️⃣ Traer versión enriquecida
+      const completa = await EncomiendaService.getEncomiendaById(id)
+
+      // 3️⃣ Guardarla
+      setEncomiendasApi(prev =>
+        prev.map(e => (e.id === id ? completa : e))
       )
 
       toast({
@@ -63,7 +106,6 @@ export const useEncomienda = () => {
       console.error("Error actualizando encomienda:", error)
     }
   }
-
 
   const deleteEncomienda = async (encomienda: Encomienda) => {
     try {
@@ -83,8 +125,6 @@ export const useEncomienda = () => {
     }
   }
 
-
-
   useEffect(() => {
     loadEncomiendas()
   }, [])
@@ -95,6 +135,7 @@ export const useEncomienda = () => {
     errorEncomienda,
     reload: loadEncomiendas,
     addNewEncomienda,
+    getEncomiendaById,
     updateEncomienda,
     deleteEncomienda
   }

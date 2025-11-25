@@ -11,7 +11,7 @@ interface DashboardHeaderProps {
   onLocalidadChange: (value: Localidad | "Todas") => void;
 }
 
-export function DashboardHeader({ localidades, selectedLocalidad, onLocalidadChange }: DashboardHeaderProps) {
+export function DashboardHeader({ localidades, selectedLocalidad, onLocalidadChange}: DashboardHeaderProps) {
   
   return (
     <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">

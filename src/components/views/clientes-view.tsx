@@ -1,57 +1,55 @@
 "use client"
-import { useState } from "react" //Eliminar luego
+import { useState } from "react" 
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table"
 import { Button } from "../ui/button"
 import { Users, Phone, Mail, MapPin, Edit, Trash2 } from "lucide-react"
-import type { Cliente, ClienteFormData, ClienteFormInput } from "../../types/encomienda"
-import { useCliente } from "../../services/hooks-services/use-cliente"
+import type { Cliente, ClienteFormInput, Localidad } from "../../types/encomienda"
 import { DeleteClienteModal } from "../modals/delete-cliente-modal"
 import { EditClienteModal } from "../modals/edit-cliente-modal"
 
 interface ClientesViewProps {
   clientes: Cliente[]
+  localidades: Localidad[]
+  onEditCliente: (id: number, data: ClienteFormInput) => Promise<void>
+  onDeleteCliente: (cliente: Cliente) => Promise<void>
+  loading?: boolean
+  error?: string | null
 }
 
-export function ClientesView({ clientes = [] }: ClientesViewProps) {
-  const [searchTerm, setSearchTerm] = useState("")//eliminar luego
+export function ClientesView({ clientes, onDeleteCliente, onEditCliente, loading, error, localidades}: ClientesViewProps) {
+  const [searchTerm, setSearchTerm] = useState("")
 
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
-  const [editModalOpen, setEditModalOpen] = useState(false)
-
-  const {
-    deleteCliente,
-    updateCliente
-  } = useCliente()
+  const [isEditOpen, setEditOpen] = useState(false)
+ 
+  // ✅ Handlers locales (solo controlan apertura de modales)
+  const handleEditClick = (cliente: Cliente) => {
+    setSelectedCliente(cliente)
+    setEditOpen(true)
+  }
 
   const handleDeleteClick = (cliente: Cliente) => {
     setSelectedCliente(cliente)
     setIsDeleteOpen(true)
   }
 
-  const handleEditClick = (cliente: Cliente) => {
-    setSelectedCliente(cliente)
-    setEditModalOpen(true)
-  }
-
-  const handleUpdate = async (id: number, data: ClienteFormInput) => {
-    await updateCliente(id, data)
-    /* setSelectedLocalidad(prev =>
-      prev.map(loc => (loc.id === id ? updated : loc))
-    ) */
-    setEditModalOpen(false)
-  }
-
 
   const handleConfirmDelete = async () => {
     if (selectedCliente) {
-      await deleteCliente(selectedCliente)
+      await onDeleteCliente(selectedCliente)
       setIsDeleteOpen(false)
       setSelectedCliente(null)
     }
+  }
+
+  const handleSubmitEdit = async (id: number, data: ClienteFormInput) => {
+    await onEditCliente(id, data)
+    setEditOpen(false)
+    setSelectedCliente(null)
   }
 
   // Filtrado simple (case-insensitive)
@@ -94,67 +92,74 @@ export function ClientesView({ clientes = [] }: ClientesViewProps) {
 
       <Card>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>Nombre y Apellido</TableHead>
-                <TableHead>Teléfono</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Dirección Local</TableHead>
-                <TableHead>Localidad</TableHead>
-                <TableHead>Acciones</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredClientes.map((cliente) => (
-                <TableRow key={cliente.id}>
-                  <TableCell className="font-medium">#{cliente.id}</TableCell>
-                  <TableCell className="font-medium">{cliente.nombre} {cliente.apellido}</TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Phone className="h-4 w-4 text-gray-400" />
-                      {cliente.telefono}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Mail className="h-4 w-4 text-gray-400" />
-                      {cliente.email}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{cliente.direccion_local}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4 text-gray-400" />
-                      <span className="text-sm">{cliente.localidad.nombre}</span>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm">
-                        <Edit className="h-4 w-4"
-                          onClick={() => handleEditClick(cliente)} />
-                      </Button>
-                      <Button variant="ghost" size="sm">
-                        <Trash2 className="h-4 w-4"
-                          onClick={() => handleDeleteClick(cliente)} />
-                      </Button>
-                    </div>
-                  </TableCell>
+          {loading ? (
+            <p className="text-center py-4 text-gray-500">Cargando clientes...</p>
+          ) : error ? (
+            <p className="text-center py-4 text-red-500">Error: {error}</p>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID</TableHead>
+                  <TableHead>Nombre y Apellido</TableHead>
+                  <TableHead>Teléfono</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Dirección Local</TableHead>
+                  <TableHead>Localidad</TableHead>
+                  <TableHead>Acciones</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredClientes.map((cliente) => (
+                  <TableRow key={cliente.id}>
+                    <TableCell className="font-medium">#{cliente.id}</TableCell>
+                    <TableCell className="font-medium">{cliente.nombre} {cliente.apellido}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-4 w-4 text-gray-400" />
+                        {cliente.telefono}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-gray-400" />
+                        {cliente.email}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm">{cliente.direccion_local}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-gray-400" />
+                        <span className="text-sm">{cliente.localidad.nombre}</span>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" size="sm">
+                          <Edit className="h-4 w-4"
+                            onClick={() => handleEditClick(cliente)} />
+                        </Button>
+                        <Button variant="ghost" size="sm">
+                          <Trash2 className="h-4 w-4"
+                            onClick={() => handleDeleteClick(cliente)} />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
         </CardContent>
       </Card>
 
-      {clientes.length === 0 && (
+      {/* Mensajes vacíos */}
+      {!loading && clientes.length === 0 && (
         <Card>
           <CardContent className="text-center py-8">
             <Users className="h-12 w-12 mx-auto mb-4 text-gray-300" />
@@ -163,7 +168,7 @@ export function ClientesView({ clientes = [] }: ClientesViewProps) {
         </Card>
       )}
 
-      {filteredClientes.length === 0 && clientes.length > 0 && (
+      {!loading && filteredClientes.length === 0 && clientes.length > 0 && (
         <div className="text-center py-4 text-muted-foreground">
           No se encontraron coincidencias para "{searchTerm}"
         </div>
@@ -177,10 +182,11 @@ export function ClientesView({ clientes = [] }: ClientesViewProps) {
       />
 
       <EditClienteModal
-        open={editModalOpen}
-        onOpenChange={setEditModalOpen}
-        cliente={selectedCliente || undefined}
-        onSubmit={handleUpdate}
+        open={isEditOpen}
+        onOpenChange={setEditOpen}
+        cliente={selectedCliente ?? undefined}
+        localidades={localidades}
+        onSubmit={handleSubmitEdit} 
       />
 
     </div>

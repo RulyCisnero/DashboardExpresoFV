@@ -519,12 +519,16 @@ class EncomiendaModel {
     }
  */
 
-    async updateEncomienda(id: number, data: Partial<IEncomienda>): Promise<IEncomienda> {
+    /* async updateEncomienda(id: number, data: Partial<IEncomienda>): Promise<IEncomienda> {
         const camposSiemprePermitidos = [
             "estado",
+            "tipo",
             "descripcion",
             "direccion_destino",
-            "chofer_id"
+            "chofer_id",
+            "cliente_destinatario_id",
+            "fecha_creacion",
+            "precio"
         ];
 
         const camposCondicionales = [
@@ -580,7 +584,48 @@ class EncomiendaModel {
 
         const result = await pool.query(updateQuery, valores);
         return result.rows[0];
+    } */
+    async updateEncomienda(id: number, data: Partial<IEncomienda>): Promise<IEncomienda> {
+        // 1️⃣ Traer la encomienda original
+        const { rows } = await pool.query("SELECT * FROM encomienda WHERE id = $1", [id]);
+        if (rows.length === 0) throw new Error("Encomienda no encontrada");
+
+        const encomienda = rows[0];
+
+        // 2️⃣ Si está entregada → no se puede modificar
+        if (encomienda.estado === "Entregada") {
+            throw new Error("No se puede modificar una encomienda que ya fue entregada");
+        }
+
+        // 3️⃣ No permitir update vacío
+        if (!data || Object.keys(data).length === 0) {
+            throw new Error("No se enviaron campos para actualizar");
+        }
+
+        // 4️⃣ Construcción dinámica del UPDATE
+        const campos = [];
+        const valores = [];
+        let idx = 1;
+
+        for (const [key, value] of Object.entries(data)) {
+            campos.push(`${key} = $${idx}`);
+            valores.push(value);
+            idx++;
+        }
+
+        valores.push(id);
+
+        const updateQuery = `
+        UPDATE encomienda
+        SET ${campos.join(", ")}
+        WHERE id = $${idx}
+        RETURNING *
+    `;
+
+        const result = await pool.query(updateQuery, valores);
+        return result.rows[0];
     }
+
 
     async existeEncomienda(id: number): Promise<boolean> {
         const result = await pool.query('SELECT 1 FROM encomienda WHERE id = $1', [id]);

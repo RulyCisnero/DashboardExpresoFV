@@ -15,7 +15,7 @@ export function AddDestinoModal({ open, onOpenChange, onSubmit }: AddDestinoModa
     onSubmit(data)
     onOpenChange(false)
   }
-
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
