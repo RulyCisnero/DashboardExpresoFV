@@ -11,6 +11,8 @@ import { Button } from "../ui/button"
 import { Search, Eye, Calendar, MapPin } from "lucide-react"
 import { getEstadoBadgeVariant } from "../../lib/utils-encomienda"
 import type { Encomienda, EncomiendaFormData } from "../../types/encomienda"
+import {useBuscarCliente} from "../../services/hooks-services/use-buscarCliente"
+import {useEncomiendasPorCliente} from "../../services/hooks-services/use.-encomiendasPorCliente" 
 
 interface EncomiendaSearchProps {
   //encomiendas: Encomienda[]
@@ -23,19 +25,50 @@ export function EncomiendaSearch({ encomiendas, onViewDetails }: EncomiendaSearc
   const [searchTerm, setSearchTerm] = useState("")
   const [filterEstado, setFilterEstado] = useState("all")
   const [filterFecha, setFilterFecha] = useState("")
+/*   const [query, setQuery] = useState("")
+  const {
+    cliente,
+    loadingBuscar,
+    errorBuscar,
+    searchCliente
+  } = useBuscarCliente()
+
+  const {
+    encomiendas,
+    loading,
+    error,
+    loadByCliente
+  } = useEncomiendasPorCliente()
+
+  const handleSearch = async () => {
+    if (!query.trim()) return
+
+    try {
+      // 1) Buscamos cliente por nombre / apellido / documento
+      const result = await searchCliente(query)
+
+      // 2) Cargamos encomiendas del cliente encontrado
+      if (result?.id) {
+        await loadByCliente(result.id)
+      }
+    } catch (e) {
+      console.error("Error en búsqueda:", e)
+    }
+  }
+ */
 
   const filteredEncomiendas = useMemo(() => {
     return encomiendas.filter((encomienda) => {
       const matchesSearch =
         //encomienda.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        encomienda.cliente.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        encomienda.destinatario.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        encomienda.origen.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        encomienda.destino.nombre.toLowerCase().includes(searchTerm.toLowerCase())
+        encomienda.cliente?.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        encomienda.destinatario?.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        encomienda.origen?.nombre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        encomienda.destino?.nombre?.toLowerCase().includes(searchTerm.toLowerCase())
 
       const matchesEstado = filterEstado === "all" || encomienda.estado === filterEstado
 
-      const matchesFecha = !filterFecha || encomienda.fecha_creacion.toDateString() === filterFecha
+      const matchesFecha = !filterFecha || encomienda.fecha_creacion.toDateString()  === filterFecha
 
       return matchesSearch && matchesEstado && matchesFecha
     })
@@ -82,11 +115,11 @@ export function EncomiendaSearch({ encomiendas, onViewDetails }: EncomiendaSearc
             </div>
 
             <div>
-              <Label htmlFor="fecha">Filtrar por fecha de envío</Label>
+              <Label htmlFor="fecha_creacion">Filtrar por fecha de envío</Label>
               <Input
-                id="fecha"
+                id="fecha_creacion"
                 type="date"
-                value={filterFecha}
+                value={(filterFecha)}
                 onChange={(e) => setFilterFecha(e.target.value)}
                 className="mt-1"
               />
@@ -145,6 +178,7 @@ export function EncomiendaSearch({ encomiendas, onViewDetails }: EncomiendaSearc
                       <div className="flex items-center gap-1 text-sm">
                         <Calendar className="h-3 w-3" />
                         {/* {(encomienda.fecha_creacion).toLocaleDateString()} */}
+                        {/* {new Date(encomienda.fecha_creacion).toLocaleDateString()} */}
                         {encomienda.fecha_creacion}
                       </div>
                     </TableCell>

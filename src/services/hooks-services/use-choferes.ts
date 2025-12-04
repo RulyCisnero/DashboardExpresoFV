@@ -33,6 +33,7 @@ export const useChoferes = () => {
        toast({
         title: "Chofer agregado",
         description: "El nuevo chofer ha sido registrado exitosamente.",
+        variant: "success"
       })
     } catch (error) {
       toast({
@@ -54,6 +55,7 @@ export const useChoferes = () => {
         toast({
           title: "Chofer actualizado",
           description: "Los cambios se guardaron correctamente.",
+          variant: "success"
         })
       } catch (error) {
         toast({
@@ -72,6 +74,7 @@ export const useChoferes = () => {
         toast({
           title: "Chofer Eliminado",
           description: `Se eliminó el chofer: "${chofer.nombre}".`,
+          variant: "success"
         })
       } catch (error) {
         toast({

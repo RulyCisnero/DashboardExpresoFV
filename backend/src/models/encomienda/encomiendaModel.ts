@@ -661,5 +661,125 @@ class EncomiendaModel {
         }
     };
 
+    async getEncomiendasByCliente(clienteId: number): Promise<IEncomiendaVista[]> {
+        try {
+            const query = `
+        SELECT
+        e.id AS encomienda_id,
+        e.tipo,
+        e.estado,
+        e.direccion_destino,
+        e.fecha_creacion,
+        e.descripcion,
+        e.precio,
+
+        -- Cliente remitente
+        c.id AS cliente_id,
+        c.nombre AS cliente_nombre,
+        c.apellido AS cliente_apellido,
+        c.direccion_local AS cliente_direccion,
+        c.telefono AS cliente_telefono,
+        c.email AS cliente_email,
+        lc.id AS cliente_localidad_id,
+        lc.nombre AS cliente_localidad_nombre,
+
+        -- Cliente destinatario
+        cd.id AS destinatario_id,
+        cd.nombre AS destinatario_nombre,
+        cd.apellido AS destinatario_apellido,
+        cd.direccion_local AS destinatario_direccion,
+        cd.telefono AS destinatario_telefono,
+        cd.email AS destinatario_email,
+        lcd.id AS destinatario_localidad_id,
+        lcd.nombre AS destinatario_localidad_nombre,
+
+        -- Chofer
+        ch.id AS chofer_id,
+        ch.nombre AS chofer_nombre,
+        ch.apellido AS chofer_apellido,
+        ch.telefono AS chofer_telefono,
+        ch.email AS chofer_email,
+
+        -- Origen y destino
+        lo.id AS origen_id,
+        lo.nombre AS origen_nombre,
+        ld.id AS destino_id,
+        ld.nombre AS destino_nombre
+
+        FROM encomienda e
+        LEFT JOIN cliente c ON e.cliente_id = c.id
+        LEFT JOIN localidad lc ON c.id_localidad = lc.id
+        LEFT JOIN cliente cd ON e.cliente_destinatario_id = cd.id
+        LEFT JOIN localidad lcd ON cd.id_localidad = lcd.id
+        LEFT JOIN chofer ch ON e.chofer_id = ch.id
+        LEFT JOIN localidad lo ON e.origen_id = lo.id
+        LEFT JOIN localidad ld ON e.destino_id = ld.id
+
+        WHERE e.cliente_id = $1 OR e.cliente_destinatario_id = $1
+        ORDER BY e.fecha_creacion DESC
+        `;
+
+            const { rows } = await pool.query(query, [clienteId]);
+
+            return rows.map(row => ({
+                id: row.encomienda_id,
+                tipo: row.tipo,
+                estado: row.estado,
+                direccion_destino: row.direccion_destino,
+                fecha_creacion: new Date(row.fecha_creacion),
+                descripcion: row.descripcion,
+                precio: parseFloat(row.precio),
+
+                origen: {
+                    id: row.origen_id,
+                    nombre: row.origen_nombre
+                },
+
+                destino: {
+                    id: row.destino_id,
+                    nombre: row.destino_nombre
+                },
+
+                cliente: {
+                    id: row.cliente_id,
+                    nombre: row.cliente_nombre,
+                    apellido: row.cliente_apellido,
+                    direccion_local: row.cliente_direccion,
+                    telefono: row.cliente_telefono,
+                    email: row.cliente_email,
+                    localidad: {
+                        id: row.cliente_localidad_id,
+                        nombre: row.cliente_localidad_nombre
+                    }
+                },
+
+                destinatario: {
+                    id: row.destinatario_id,
+                    nombre: row.destinatario_nombre,
+                    apellido: row.destinatario_apellido,
+                    direccion_local: row.destinatario_direccion,
+                    telefono: row.destinatario_telefono,
+                    email: row.destinatario_email,
+                    localidad: {
+                        id: row.destinatario_localidad_id,
+                        nombre: row.destinatario_localidad_nombre
+                    }
+                },
+
+                chofer: row.chofer_id ? {
+                    id: row.chofer_id,
+                    nombre: row.chofer_nombre,
+                    apellido: row.chofer_apellido,
+                    telefono: row.chofer_telefono,
+                    email: row.chofer_email
+                } : null
+            }));
+        } catch (error) {
+            console.error("Error en getEncomiendasByCliente:", error);
+            throw error;
+        }
+    }
+
+
 };
 export default new EncomiendaModel();

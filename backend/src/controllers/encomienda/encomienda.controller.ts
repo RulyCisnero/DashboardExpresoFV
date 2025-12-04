@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import EncomiendaModel from "../../models/encomienda/encomiendaModel.ts";
+import encomiendaModel from "../../models/encomienda/encomiendaModel.ts";
 //import { IEncomiendaVista } from "../../interfaces/encomienda";
 
 const ESTADOS_VALIDOS = ["Pendiente", "Entregada"];
@@ -131,6 +132,25 @@ export class EncomiendaController {
       res.status(500).json({ message: "Error al eliminar la encomienda" });
     }
   }
+
+  async getEncomiendasByCliente(req: Request, res:Response) {
+    try {
+      const clienteId = Number(req.params.id);
+
+      if (isNaN(clienteId)) {
+        return res.status(400).json({ message: "ID inválido" });
+      }
+
+      const encomiendas = await encomiendaModel.getEncomiendasByCliente(clienteId);
+
+      res.status(200).json(encomiendas);
+
+    } catch (error) {
+      console.error("Error en getEncomiendasByCliente:", error);
+      res.status(500).json({ message: "Error al obtener encomiendas" });
+    }
+  }
+
 }
 
 export default new EncomiendaController();

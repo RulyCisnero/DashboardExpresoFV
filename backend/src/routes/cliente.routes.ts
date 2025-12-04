@@ -5,7 +5,7 @@ const router = Router();
 
 //agregar a las rutas http://localhost:5100/api/clientes
 router.post('/', validateCreateCliente, clienteController.createCliente);
-router.get('/buscar', validateSearchCliente, clienteController.searchCliente); ///clientes?nombre=Juan
+router.get('/buscar',/*  validateSearchCliente, */ clienteController.searchCliente); ///http://localhost:5100/api/clientes/buscar?q=Eliana
 router.get('/:id', validateIdParam, clienteController.getClienteById);
 router.get('/', clienteController.getAllClientes);
 router.put('/:id', validateIdParam, validateCreateCliente, clienteController.updateCliente);

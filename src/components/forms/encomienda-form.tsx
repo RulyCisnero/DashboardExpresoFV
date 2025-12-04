@@ -24,7 +24,7 @@ export function EncomiendaForm({ onSubmit, clientes, localidad, initialData, cho
     tipo: "ENTRANTE",
     estado: "Pendiente",
     direccion_destino: "",
-    fecha_creacion: new Date(),
+    fecha_creacion:"", //new Date(),
     descripcion: "",
     precio: 0,
     origen_id: 0,
@@ -212,7 +212,7 @@ export function EncomiendaForm({ onSubmit, clientes, localidad, initialData, cho
           <Input
             id="fecha_creacion"
             type="date"
-            //value={formData.fecha_creacion}
+            value={formData.fecha_creacion}
             onChange={(e) => handleInputChange("fecha_creacion", e.target.value)}
             required
           />

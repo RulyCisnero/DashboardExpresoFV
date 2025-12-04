@@ -80,6 +80,7 @@ export const useLocalidades = () => {
       toast({
         title: "Localidad actualizada",
         description: "Los cambios se guardaron correctamente.",
+        variant: "success"
       })
     } catch (error) {
       toast({

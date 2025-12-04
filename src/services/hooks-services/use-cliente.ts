@@ -51,6 +51,7 @@ export const useCliente = () => {
           toast({
             title: "Cliente actualizado",
             description: "Los cambios se guardaron correctamente.",
+            variant: "success"
           })
         } catch (error) {
           toast({
@@ -69,6 +70,7 @@ export const useCliente = () => {
       toast({
         title: "Cliente Eliminado",
         description: `Se eliminó el cliente: "${cliente.nombre} ${cliente.apellido}".`,
+        variant: "success"
       })
     } catch (error) {
       toast({

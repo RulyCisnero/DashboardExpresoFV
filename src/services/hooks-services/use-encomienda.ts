@@ -96,6 +96,7 @@ export const useEncomienda = () => {
       toast({
         title: "Encomienda Actualizada",
         description: "Los cambios se guardaron correctamente.",
+        variant: "success"
       })
     } catch (error) {
       toast({
@@ -114,6 +115,7 @@ export const useEncomienda = () => {
       toast({
         title: "Encomienda eliminada",
         description: `Se eliminó la encomienda: "${encomienda.id}".`,
+        variant: "success"
       })
     } catch (error) {
       toast({

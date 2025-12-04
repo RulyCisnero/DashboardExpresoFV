@@ -38,16 +38,17 @@ export function EditEncomiendaModal({ open, onOpenChange, onSubmit, encomienda, 
         tipo: encomienda.tipo,
         estado: encomienda.estado,
         direccion_destino: encomienda.direccion_destino,
-        fecha_creacion: encomienda.fecha_creacion,
+        //fecha_creacion: new Date(encomienda.fecha_creacion),
+        fecha_creacion: new Date(encomienda.fecha_creacion).toISOString().split("T")[0],
         descripcion: encomienda.descripcion,
         precio: encomienda.precio,
 
         // ⚠ Aquí mapeamos OBJETOS → IDs
         cliente_id: encomienda.cliente.id,
-        cliente_destinatario_id: encomienda.destinatario.id,
+        cliente_destinatario_id: encomienda.destinatario?.id ?? null,
         origen_id: encomienda.origen.id,
-        destino_id: encomienda.destino.id,
-        chofer_id: encomienda.chofer?.id ?? 0
+        destino_id: encomienda.destino.id ?? null,
+        chofer_id: encomienda.chofer?.id ?? null
       }
       : undefined
   const handleSubmit = (data:  /* EncomiendaFormData  */ EncomiendaForInput) => {
@@ -67,7 +68,7 @@ export function EditEncomiendaModal({ open, onOpenChange, onSubmit, encomienda, 
           clientes={clientes}
           localidad={localidades}
           chofer={chofer}
-          /* initialData={encomienda}  */
+        /* initialData={encomienda}  */
         />
       </DialogContent>
     </Dialog>

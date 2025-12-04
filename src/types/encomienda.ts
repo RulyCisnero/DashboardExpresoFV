@@ -6,7 +6,7 @@ export interface Encomienda {
   tipo: TipoEncomienda //o string?
   direccion_destino: string; 
   estado: EstadoEncomienda; //o string?
-  fecha_creacion: Date
+  fecha_creacion: string//Date
   precio: number;
   descripcion?: string;
   cliente_id: number;
@@ -34,7 +34,7 @@ export interface EncomiendaRich extends Omit<Encomienda,
   tipo:TipoEncomienda
   estado: EstadoEncomienda
   direccion_destino:string
-  fecha_creacion: Date
+  fecha_creacion: string//Date
   descripcion?: string
   precio: number
   origen_id: number

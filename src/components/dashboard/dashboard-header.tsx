@@ -1,7 +1,6 @@
 "use client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Label } from "../ui/label"
-//import  { LOCALIDADES,type Localidad } from "../../types/encomienda"
 import type { Localidad } from "../../types/encomienda";
 import { UserMenu } from "../layout/user-menu"
 
