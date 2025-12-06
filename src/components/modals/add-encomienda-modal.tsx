@@ -2,12 +2,12 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { EncomiendaForm } from "../forms/encomienda-form"
-import type { EncomiendaForInput, Cliente, Localidad, Chofer } from "../../types/encomienda"
+import type { EncomiendaInput, Cliente, Localidad, Chofer } from "../../types/encomienda"
 
 interface AddEncomiendaModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  onSubmit: (data: EncomiendaForInput) => void
+  onSubmit: (data: EncomiendaInput) => void
   clientes: Cliente[]
   localidades: Localidad[]
   choferes: Chofer[]
@@ -16,7 +16,7 @@ interface AddEncomiendaModalProps {
 export function AddEncomiendaModal({ open, onOpenChange, onSubmit, clientes, localidades,choferes
 
  }: AddEncomiendaModalProps) {
-  const handleSubmit = (data: EncomiendaForInput) => {
+  const handleSubmit = (data: EncomiendaInput) => {
     onSubmit(data)
     onOpenChange(false)
   }

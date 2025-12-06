@@ -1,55 +1,66 @@
-import type { Encomienda, EncomiendaInput, EncomiendaUpdate, EncomiendaForInput, EncomiendaFormData, EncomiendaTable } from "../types/encomienda"
+import type {
+  Encomienda,
+  EncomiendaInput,
+  EncomiendaUpdate,
+  EncomiendaRich
+} from "../types/encomienda"
 
 const API_URL = "http://localhost:5100/api/encomiendas"
 
-//GetAll uso para mostrar localidades con en formulario Destinos (id,nombre)
 export const EncomiendaService = {
-  async getAllEncomiendas(): Promise</* Encomienda */EncomiendaTable[]> {
+
+  /** 🔹 Obtener TODAS las encomiendas (crudas) */
+  async getAll(): Promise<EncomiendaRich[]> {
     const res = await fetch(API_URL)
     if (!res.ok) throw new Error("Error al cargar las encomiendas")
     return res.json()
   },
 
-  async addNewEncomienda(data: EncomiendaInput): Promise<Encomienda> {
+  /** 🔹 Crear una nueva encomienda */
+  async create(data: EncomiendaInput): Promise<Encomienda> {
     const res = await fetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
 
     if (!res.ok) {
       const errorData = await res.json()
-      throw new Error(errorData.message || "Error al crear nueva encomienda")
+      throw new Error(errorData.message || "Error al crear la encomienda")
     }
-    const nuevaEncomienda: Encomienda = await res.json()
-    return nuevaEncomienda
-  },
 
-  async updateEncomienda(id: number, data: EncomiendaFormData): Promise<Encomienda> {
-    const res = await fetch(`${API_URL}/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-    if (!res.ok) throw new Error("Error al actualizar encomienda")
     return res.json()
   },
 
-   async getEncomiendaById(id: number) {
-    const res = await fetch(`${API_URL}/${id}`);
-    if (!res.ok) {
-      throw new Error("Error al obtener la encomienda");
-    }
-    return await res.json();
-  }, 
+  /** 🔹 Actualizar una encomienda */
+  async update(id: number, data: EncomiendaUpdate): Promise<Encomienda> {
+    const res = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    })
 
-  async deleteEncomienda(id: number): Promise<void> {
-    const res = await fetch(`${API_URL}/${id}`,
-      { method: "DELETE" })
-    if (!res.ok) throw new Error("Error al eliminar encomienda")
+    if (!res.ok) throw new Error("Error al actualizar la encomienda")
+    return res.json()
+  },
+
+  /** 🔹 Obtener encomienda por ID (enriquecida) */
+  async getById(id: number): Promise<EncomiendaRich> {
+    const res = await fetch(`${API_URL}/${id}`)
+    if (!res.ok) throw new Error("Error al obtener la encomienda")
+    return res.json()
+  },
+
+  async getByCliente(clienteId: number): Promise<EncomiendaRich[]> {
+    const res = await fetch(`${API_URL}/cliente/${clienteId}`)
+    if (!res.ok) throw new Error("Error al cargar encomiendas del cliente")
+    return res.json()
+  },
+
+
+  /** 🔹 Eliminar */
+  async delete(id: number): Promise<void> {
+    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" })
+    if (!res.ok) throw new Error("Error al eliminar la encomienda")
   },
 }

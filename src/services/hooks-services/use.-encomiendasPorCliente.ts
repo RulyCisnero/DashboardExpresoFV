@@ -1,9 +1,9 @@
 import { useState } from "react"
-import type { Encomienda } from "../../types/encomienda"
+import type { EncomiendaRich } from "../../types/encomienda"
 import { EncomiendaService } from "../encomienda"
 
 export const useEncomiendasPorCliente = () => {
-  const [encomiendas, setEncomiendas] = useState<Encomienda[]>([])
+  const [encomiendas, setEncomiendas] = useState<EncomiendaRich[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -12,7 +12,7 @@ export const useEncomiendasPorCliente = () => {
       setLoading(true)
       setError(null)
 
-      const data = await EncomiendaService.getEncomiendaById(clienteId)
+      const data = await EncomiendaService.getByCliente(clienteId)
       setEncomiendas(data)
 
       return data

@@ -10,15 +10,14 @@ import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
 import { Search, Eye, Calendar, MapPin } from "lucide-react"
 import { getEstadoBadgeVariant } from "../../lib/utils-encomienda"
-import type { Encomienda, EncomiendaFormData } from "../../types/encomienda"
+import type { EncomiendaRich } from "../../types/encomienda"
 import {useBuscarCliente} from "../../services/hooks-services/use-buscarCliente"
 import {useEncomiendasPorCliente} from "../../services/hooks-services/use.-encomiendasPorCliente" 
 
 interface EncomiendaSearchProps {
-  //encomiendas: Encomienda[]
-  encomiendas: EncomiendaFormData[]
-  //onViewDetails: (encomienda: Encomienda) => void
-  onViewDetails: (encomienda: EncomiendaFormData) => void
+  //encomiendas: EncomiendaFormData[]
+  encomiendas: EncomiendaRich[]
+  onViewDetails: (encomienda: EncomiendaRich) => void
 }
 
 export function EncomiendaSearch({ encomiendas, onViewDetails }: EncomiendaSearchProps) {
@@ -68,7 +67,7 @@ export function EncomiendaSearch({ encomiendas, onViewDetails }: EncomiendaSearc
 
       const matchesEstado = filterEstado === "all" || encomienda.estado === filterEstado
 
-      const matchesFecha = !filterFecha || encomienda.fecha_creacion.toDateString()  === filterFecha
+      const matchesFecha = !filterFecha || encomienda.fecha_creacion === filterFecha
 
       return matchesSearch && matchesEstado && matchesFecha
     })

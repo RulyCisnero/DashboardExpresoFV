@@ -3,10 +3,10 @@ import { Badge } from "../ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { getEstadoBadgeVariant } from "../../lib/utils-encomienda"
 import { Package, User, MapPin, Calendar, DollarSign, Phone } from "lucide-react"
-import type { EncomiendaView } from "../../types/encomienda"
+import type { EncomiendaRich } from "../../types/encomienda"
 
 interface EncomiendaDetailModalProps {
-  encomienda: EncomiendaView | null
+  encomienda: EncomiendaRich | null
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -115,10 +115,10 @@ export function EncomiendaDetailModal({encomienda, open, onOpenChange }: Encomie
                   </Badge>
 
                 </div>
-                <div>
+                {/* <div>
                   <p className="text-sm text-gray-600">Peso</p>
                   <p className="font-medium">{encomienda?.peso}</p>
-                </div>
+                </div> */}
                 <div>
                   <p className="text-sm text-gray-600">Precio</p>
                   <p className="font-medium flex items-center gap-2">

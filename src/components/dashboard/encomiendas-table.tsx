@@ -9,17 +9,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Eye, Edit, Trash2, ArrowUpDown, Package, /* Calendar,  MapPin */ } from "lucide-react"
 //import { getEstadoColor } from "../../lib/utils-encomienda"
 import { getEstadoBadgeVariant } from "../../lib/utils-encomienda"
-import type { Encomienda, EncomiendaFormData, EncomiendaTable } from "../../types/encomienda"
-//import { TableContent } from "../ui/table" // Import TableContent 
+import type { EncomiendaRich } from "../../types/encomienda"
+
 
 interface EncomiendasTableProps {
-  encomiendasData: EncomiendaTable[]
-  onViewDetails: (encomienda: EncomiendaTable) => void
-  onEdit: (encomienda: EncomiendaTable) => void
+  encomiendasData: EncomiendaRich[]
+  onViewDetails: (encomienda: EncomiendaRich) => void
+  onEdit: (encomienda: EncomiendaRich) => void
   onDelete: (id: number) => void
 }
 
-type SortField = keyof EncomiendaTable/* Encomienda */
+type SortField = keyof EncomiendaRich
 type SortDirection = "asc" | "desc"
 
 export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDelete }: EncomiendasTableProps) {

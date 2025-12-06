@@ -1,20 +1,19 @@
 import { useState, useEffect } from "react"
-import type { Encomienda, EncomiendaForInput, EncomiendaFormData, EncomiendaInput, EncomiendaTable } from "../../types/encomienda"
+import type { EncomiendaInput, EncomiendaRich, EncomiendaUpdate } from "../../types/encomienda"
 import { EncomiendaService } from "../encomienda"
 import { toast } from "../../hooks/use-toast"
 
 
 export const useEncomienda = () => {
-  //const [encomiendasApi, setEncomiendasApi] = useState<Encomienda[]>([])
-  const [encomiendasApi, setEncomiendasApi] = useState<EncomiendaTable[]>([])
+  const [encomiendas, setEncomiendas] = useState<EncomiendaRich[]>([])
   const [loadingEncomiendas, setLoadingEncomiendas] = useState(true)
   const [errorEncomienda, setErrorEncomienda] = useState<string | null>(null)
 
   const loadEncomiendas = async () => {
     setLoadingEncomiendas(true)
     try {
-      const data = await EncomiendaService.getAllEncomiendas()
-      setEncomiendasApi(data)
+      const data = await EncomiendaService.getAll()
+      setEncomiendas(data)
       setErrorEncomienda(null)
     } catch (e) {
       setErrorEncomienda("No se pudieron cargar los datos")
@@ -24,14 +23,14 @@ export const useEncomienda = () => {
     }
   }
 
-  const addNewEncomienda = async (data: EncomiendaInput /* EncomiendaForInput */) => {
+  const addNewEncomienda = async (data: EncomiendaInput) => {
     try {
       // 1️⃣ Primero creás la encomienda mínima (solo IDs)
-      const nueva = await EncomiendaService.addNewEncomienda(data)
+      const nueva = await EncomiendaService.create(data)
       // 2️⃣ Luego pedís la encomienda completa ya enriquecida
-      const completa = await EncomiendaService.getEncomiendaById(nueva.id)
+      const completa = await EncomiendaService.getById(nueva.id)
       // 3️⃣ Guardás la COMPLETA en tu estado
-      setEncomiendasApi(prev => [...prev, completa])
+      setEncomiendas(prev => [...prev, completa])
       //const nuevaEncomienda = await EncomiendaService.addNewEncomienda(data)
       //setEncomiendasApi((prev) => [...prev, nuevaEncomienda])
       toast({
@@ -48,9 +47,9 @@ export const useEncomienda = () => {
       console.error("Error agregando encomienda:", error)
     }
   }
-  const getEncomiendaById = async (id: number): Promise<Encomienda | null> => {
+  const getEncomiendaById = async (id: number): Promise<EncomiendaRich | null> => {
     try {
-      const encomienda = await EncomiendaService.getEncomiendaById(id);
+      const encomienda = await EncomiendaService.getById(id);
       return encomienda;
     } catch (error) {
       console.error("Error obteniendo encomienda:", error);
@@ -58,38 +57,16 @@ export const useEncomienda = () => {
     }
   };
 
-
-  /*   const updateEncomienda = async (id: number, data: EncomiendaFormData) => {
-      try {
-        const updated = await EncomiendaService.updateEncomienda(id, data)
-        setEncomiendasApi((prev) =>
-          prev.map((encomienda) => (encomienda.id === id ? updated : encomienda))
-        )
-  
-        toast({
-          title: "Encomienda Actualizada",
-          description: "Los cambios se guardaron correctamente.",
-        })
-      } catch (error) {
-        toast({
-          title: "Error",
-          description: "No se pudo actualizar la encomienda.",
-          variant: "destructive",
-        })
-        console.error("Error actualizando encomienda:", error)
-      }
-    }
-   */
-  const updateEncomienda = async (id: number, data: EncomiendaFormData) => {
+  const updateEncomienda = async (id: number, data: EncomiendaUpdate) => {
     try {
       // 1️⃣ Actualizar
-      await EncomiendaService.updateEncomienda(id, data)
+      await EncomiendaService.update(id, data)
 
       // 2️⃣ Traer versión enriquecida
-      const completa = await EncomiendaService.getEncomiendaById(id)
+      const completa = await EncomiendaService.getById(id)
 
       // 3️⃣ Guardarla
-      setEncomiendasApi(prev =>
+      setEncomiendas(prev =>
         prev.map(e => (e.id === id ? completa : e))
       )
 
@@ -108,13 +85,13 @@ export const useEncomienda = () => {
     }
   }
 
-  const deleteEncomienda = async (encomienda: Encomienda) => {
+  const deleteEncomienda = async (id: number) => {
     try {
-      await EncomiendaService.deleteEncomienda(encomienda.id)
-      setEncomiendasApi((prev) => prev.filter((e) => e.id !== encomienda.id))
+      await EncomiendaService.delete(id)
+      setEncomiendas((prev) => prev.filter((e) => e.id !== id))
       toast({
         title: "Encomienda eliminada",
-        description: `Se eliminó la encomienda: "${encomienda.id}".`,
+        description: `Se eliminó la encomienda: "${id}".`,
         variant: "success"
       })
     } catch (error) {
@@ -132,7 +109,7 @@ export const useEncomienda = () => {
   }, [])
 
   return {
-    encomiendasApi,
+    encomiendas,
     loadingEncomiendas,
     errorEncomienda,
     reload: loadEncomiendas,

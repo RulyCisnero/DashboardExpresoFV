@@ -1,10 +1,10 @@
 export type EstadoEncomienda = "Pendiente" | "En tránsito" | "Entregada" | "Cancelado"
-export type TipoEncomienda = "ENTRANTE"|"SALIENTE"
+export type TipoEncomienda = "ENTRANTE" | "SALIENTE"
 
 export interface Encomienda {
   id: number
   tipo: TipoEncomienda //o string?
-  direccion_destino: string; 
+  direccion_destino: string;
   estado: EstadoEncomienda; //o string?
   fecha_creacion: string//Date
   precio: number;
@@ -19,21 +19,19 @@ export type EncomiendaInput = Omit<Encomienda, "id">
 
 export type EncomiendaUpdate = Omit<Encomienda, "id">
 
-export interface EncomiendaRich extends Omit<Encomienda, 
-  "cliente_id" | "cliente_destinatario_id" | "origen_id" | "destino_id" | "chofer_id"> 
-{
-  cliente: ClienteFormData
-  destinatario: ClienteFormData
-  origen: LocalidadFormData
-  destino: LocalidadFormData
-  chofer: ChoferFormData
+export interface EncomiendaRich extends Omit<Encomienda,
+  "cliente_id" | "cliente_destinatario_id" | "origen_id" | "destino_id" | "chofer_id"> {
+  cliente: Cliente //ClienteFormData
+  destinatario: Cliente //ClienteFormData
+  origen: Localidad //LocalidadFormData
+  destino: Localidad //LocalidadFormData
+  chofer: Chofer //ChoferFormData
 }
 
-
-  export interface EncomiendaForInput {
-  tipo:TipoEncomienda
+export interface EncomiendaForInput {
+  tipo: TipoEncomienda
   estado: EstadoEncomienda
-  direccion_destino:string
+  direccion_destino: string
   fecha_creacion: string//Date
   descripcion?: string
   precio: number
@@ -41,11 +39,8 @@ export interface EncomiendaRich extends Omit<Encomienda,
   destino_id: number
   cliente_id: number
   cliente_destinatario_id: number
-  chofer_id:number
+  chofer_id: number
 }
-
-
-
 
 export interface Cliente {
   id: number
@@ -67,15 +62,14 @@ export interface ClienteFormInput {
 }
 
 export interface ClienteFormData {
-    id: number;
-    nombre: string;
-    apellido: string;
-    direccion_local: string;
-    telefono: string;
-    email: string;
-    localidad: Localidad;
+  id: number;
+  nombre: string;
+  apellido: string;
+  direccion_local: string;
+  telefono: string;
+  email: string;
+  localidad: Localidad;
 }
-
 
 export interface Chofer {
   id: number
@@ -83,18 +77,15 @@ export interface Chofer {
   apellido: string
   telefono: string
   email: string
-  //vehiculo: string
-  //estado: EstadoChofer
 }
 
-//estado anterior
-export interface Destino {
-  id: number
+export interface ChoferFormData {
   nombre: string
+  apellido: string
+  telefono: string
+  email: string
 }
-//
 
-//interface de la base de dato = tabla
 export interface Localidad {
   id: number
   nombre: string
@@ -105,64 +96,3 @@ export interface LocalidadFormData {
   nombre: string
 }
 
-
-
-export interface EncomiendaFormData {
-  id:number
-  tipo:TipoEncomienda
-  estado: EstadoEncomienda
-  direccion_destino:string
-  cliente: ClienteFormData
-  destinatario: ClienteFormData
-  origen: LocalidadFormData
-  destino: LocalidadFormData
-  fecha_creacion: Date
-  precio: string
-  descripcion?: string
-}
-
-export interface EncomiendaView {
-  id:number
-  tipo: TipoEncomienda
-  estado: EstadoEncomienda
-  direccion_destino:string
-  cliente: ClienteFormData
-  destinatario: ClienteFormData
-  origen: Localidad//LocalidadFormData
-  destino: Localidad//LocalidadFormData
-  fecha_creacion: Date
-  peso?: string
-  precio: number //string
-  descripcion?: string
-  chofer:Chofer
-}
-
-
-export interface EncomiendaTable {
-  id:number
-  tipo: TipoEncomienda
-  estado: EstadoEncomienda
-  direccion_destino:string
-  cliente: ClienteFormData
-  destinatario: ClienteFormData
-  origen: LocalidadFormData
-  destino: LocalidadFormData
-  fecha_creacion: Date
-  precio: string
-  descripcion?: string
-}
-
-export interface ChoferFormData {
-  nombre: string
-  apellido: string
-  telefono: string
-  email: string
-}
-
-export interface DestinoFormData {
-  nombre: string
-}
-
-export interface LocalidadFormData {
-  nombre: string
-}

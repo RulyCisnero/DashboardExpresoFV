@@ -1,0 +1,11 @@
+Refactorizar el servicio (encomienda-service.ts)
+
+Método getAll() devuelve: Encomienda[]
+
+Método getById() devuelve: EncomiendaRich
+
+Método create() recibe: EncomiendaInput
+
+Método update() recibe: EncomiendaUpdate
+
+Método delete() recibe: id

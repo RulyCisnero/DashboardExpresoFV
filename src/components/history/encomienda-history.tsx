@@ -7,11 +7,11 @@ import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { History, Calendar, TrendingUp, Package, CheckCircle } from "lucide-react"
 import { getEstadoBadgeVariant, getEstadoStats } from "../../lib/utils-encomienda"
-import type {EncomiendaView } from "../../types/encomienda"
+import type {EncomiendaRich } from "../../types/encomienda"
 
 
 interface EncomiendaHistoryProps {
-  encomiendas: EncomiendaView[]
+  encomiendas: EncomiendaRich[]
 }
 
 export function EncomiendaHistory({ encomiendas }: EncomiendaHistoryProps) {

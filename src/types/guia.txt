@@ -1,0 +1,60 @@
+export type EstadoEncomienda = "Pendiente" | "En tránsito" | "Entregada" | "Cancelado"
+export type TipoEncomienda = "ENTRANTE" | "SALIENTE"
+
+/**
+ * 📌 Representa UNA FILA de la tabla 'encomiendas'
+ *     → Esto es exactamente lo que devuelve el backend crudo.
+ */
+export interface Encomienda {
+  id: number
+  tipo: TipoEncomienda
+  direccion_destino: string
+  estado: EstadoEncomienda
+  fecha_creacion: string
+  precio: number
+  descripcion?: string
+  cliente_id: number
+  chofer_id: number
+  origen_id: number
+  destino_id: number
+  cliente_destinatario_id: number
+}
+
+/** 📌 Para POST */
+export type EncomiendaInput = Omit<Encomienda, "id">
+
+/** 📌 Para PATCH/PUT */
+export type EncomiendaUpdate = Omit<Encomienda, "id">
+
+/**
+ * 📌 Para mostrar en UI
+ *   → Enriquecida con relaciones
+ *   → Esta es la que usás en Dashboard, tablas, etc.
+ */
+export interface EncomiendaRich extends Omit<
+  Encomienda,
+  "cliente_id" | "cliente_destinatario_id" | "origen_id" | "destino_id" | "chofer_id"
+> {
+  cliente: ClienteFormData
+  destinatario: ClienteFormData
+  origen: LocalidadFormData
+  destino: LocalidadFormData
+  chofer: ChoferFormData
+}
+✔ Encomienda
+Es idéntica a la BD.
+Es lo que devolvés crudo cuando hacés un SELECT * FROM encomiendas.
+
+✔ EncomiendaInput / EncomiendaUpdate
+Son DTOs para POST/PUT.
+No llevan cosas enriquecidas.
+
+✔ EncomiendaRich
+Es la que se usa en el front para mostrar:
+cliente.nombre
+origen.nombre
+chofer.nombre
+destino.nombre
+cliente_destinatario.nombre
+
+📌 Es exactamente lo que hoy tenés como EncomiendaView o EncomiendaTable, pero TODO unificado.

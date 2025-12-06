@@ -14,13 +14,13 @@ interface EncomiendaFormProps {
   clientes: Cliente[]
   localidad: Localidad[]
   chofer: Chofer[]
-  initialData?: Partial</* EncomiendaForInput */EncomiendaInput>
-  onSubmit: (data: /* EncomiendaForInput */EncomiendaInput) => void
+  initialData?: Partial<EncomiendaInput>
+  onSubmit: (data: EncomiendaInput) => void
 }
 
 export function EncomiendaForm({ onSubmit, clientes, localidad, initialData, chofer }: EncomiendaFormProps) {
 
-  const [formData, setFormData] = useState</* EncomiendaForInput */EncomiendaInput>({
+  const [formData, setFormData] = useState<EncomiendaInput>({
     tipo: "ENTRANTE",
     estado: "Pendiente",
     direccion_destino: "",
@@ -171,7 +171,8 @@ export function EncomiendaForm({ onSubmit, clientes, localidad, initialData, cho
         <div className="space-y-2">
           <Label htmlFor="cliente_destinatario_id">Destinatario *</Label>
           <Select
-            value={(formData.cliente_destinatario_id).toString()}
+           value={formData.cliente_destinatario_id ? formData.cliente_destinatario_id.toString() : undefined}
+            /* value={(formData.cliente_destinatario_id).toString()} */
             onValueChange={(value) => handleInputChange("cliente_destinatario_id", (value))}>
             <SelectTrigger>
               <SelectValue placeholder="Seleccionar destinatario" />

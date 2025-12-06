@@ -23,15 +23,15 @@ import { ViewChoferesModal } from "../components/modals/view-choferes-modal"
 import { PadreLocalidad } from "../components/PadreLocalidades/PadreLocalidad"
 import { PadreCliente } from "../components/padreCliente/padreCliente"
 
-import type { Encomienda, EncomiendaTable, EncomiendaView, Localidad } from "../types/encomienda"
+import type { EncomiendaRich, Localidad } from "../types/encomienda"
 
 
 /**
  * Componente principal del Dashboard
  */
 export default function Dashboard() {
-  //hook de encomiendas
-  const { encomiendasApi, addNewEncomienda, getEncomiendaById, deleteEncomienda, updateEncomienda } = useEncomienda()
+  
+  const { encomiendas, addNewEncomienda, getEncomiendaById, deleteEncomienda, updateEncomienda } = useEncomienda()
 
   // 👉 Hook solo de localidades (destinos)
   const {
@@ -55,8 +55,8 @@ export default function Dashboard() {
 
   // Modal states
   //const [selectedEncomienda, setSelectedEncomienda] = useState<Encomienda | null>(null)
-  const [selectedEncomiendaView, setSelectedEncomiendaView] = useState<EncomiendaView | null>(null)
-  const [editingEncomienda, setEditingEncomienda] = useState<EncomiendaView | null>(null)
+  const [selectedEncomiendaView, setSelectedEncomiendaView] = useState<EncomiendaRich | null>(null)
+  const [editingEncomienda, setEditingEncomienda] = useState<EncomiendaRich | null>(null)
   const [isDetailOpen, setIsDetailOpen] = useState(false)
   const [isAddEncomiendaOpen, setIsAddEncomiendaOpen] = useState(false)
   const [isEditOpen, setIsEditOpen] = useState(false)
@@ -71,16 +71,16 @@ export default function Dashboard() {
 
   // Filtrar encomiendas por localidad
   const filteredEncomiendas = useMemo(() => {
-    if (selectedLocalidad === "Todas") return encomiendasApi
-    return encomiendasApi.filter(
+    if (selectedLocalidad === "Todas") return encomiendas
+    return encomiendas.filter(
       (enc) =>
         enc.origen.nombre === selectedLocalidad.nombre ||
         enc.destino.nombre === selectedLocalidad.nombre
     )
-  }, [encomiendasApi, selectedLocalidad])
+  }, [encomiendas, selectedLocalidad])
 
   // Handlers
-  const handleViewDetails = (encomienda: EncomiendaView) => {
+  const handleViewDetails = (encomienda: EncomiendaRich) => {
     setSelectedEncomiendaView(encomienda)
     setIsDetailOpen(true)
   }
@@ -90,7 +90,7 @@ export default function Dashboard() {
     setEditingEncomienda(encomienda)
     setIsEditOpen(true)
   } */
-  const handleEditEncomienda = async (encomienda: EncomiendaTable) => {
+  const handleEditEncomienda = async (encomienda: /* EncomiendaTable */EncomiendaRich) => {
     const encomiendaCompleta = await getEncomiendaById(encomienda.id);
     console.log('Fetch en : ', encomiendaCompleta)
     if (encomiendaCompleta) {
@@ -99,8 +99,8 @@ export default function Dashboard() {
     }
   };
 
-  const handleDeleteEncomienda = (encomienda: Encomienda) => {
-    deleteEncomienda(encomienda)
+  const handleDeleteEncomienda = (id: number) => {
+    deleteEncomienda(id)
   }
 
   const handleUpdateEncomienda = (data: any) => {
@@ -146,12 +146,14 @@ export default function Dashboard() {
         {/* Dashboard Content */}
         <div className="container mx-auto p-4 space-y-8">
           {/* Stats Cards */}
-          <StatsCards encomiendas={filteredEncomiendas} />
+          <StatsCards
+            encomiendas={filteredEncomiendas}
+          />
 
           {/* Encomiendas Table */}
           <EncomiendasTable
-            encomiendas={filteredEncomiendas}
-            encomiendasData={/* encomiendas */encomiendasApi}
+            //encomiendas={filteredEncomiendas}
+            encomiendasData={encomiendas}
             onViewDetails={handleViewDetails}
             onEdit={handleEditEncomienda}
             onDelete={handleDeleteEncomienda}
@@ -192,14 +194,14 @@ export default function Dashboard() {
       <SearchModal
         open={isSearchOpen}
         onOpenChange={setIsSearchOpen}
-        encomiendas={encomiendasApi/* encomiendas */}
+        encomiendas={encomiendas}
         onViewDetails={handleViewDetails}
       />
 
       <HistoryModal
         open={isHistoryOpen}
         onOpenChange={setIsHistoryOpen}
-        encomiendas={encomiendasApi /* encomiendas} */}
+        encomiendas={encomiendas}
       />
 
       <PadreCliente

@@ -2,13 +2,13 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog"
 import { EncomiendaSearch } from "../search/encomienda-search"
-import type { Encomienda, EncomiendaFormData, EncomiendaView } from "../../types/encomienda"
+import type { EncomiendaRich } from "../../types/encomienda"
 
 interface SearchModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  encomiendas: EncomiendaFormData[]
-  onViewDetails: (encomienda: EncomiendaView) => void
+  encomiendas: EncomiendaRich[]
+  onViewDetails: (encomienda: EncomiendaRich) => void
 }
 
 export function SearchModal({ open, onOpenChange, encomiendas, onViewDetails }: SearchModalProps) {
