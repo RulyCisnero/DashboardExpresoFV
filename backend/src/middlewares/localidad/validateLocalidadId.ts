@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 /**
  * Valida que el ID recibido por parámetro sea un número válido y mayor a cero.

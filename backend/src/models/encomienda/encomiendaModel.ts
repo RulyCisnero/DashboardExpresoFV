@@ -1,5 +1,5 @@
 import pool from '../../database/connectionPostgreSQL.ts';
-import { IEncomienda, IEncomiendaVista } from '../../interfaces/Index.ts'
+import type { IEncomienda, IEncomiendaVista } from '../../interfaces/Index.ts'
 
 class EncomiendaModel {
     async createEncomienda(encomiendaData: IEncomienda): Promise<IEncomienda> {

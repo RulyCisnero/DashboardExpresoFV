@@ -1,5 +1,5 @@
 import pool from '../../database/connectionPostgreSQL.ts';
-import { ICliente, IClienteVista } from '../../interfaces/Index.ts'
+import type { ICliente, IClienteVista } from '../../interfaces/Index.ts'
 
 class ClienteModel {
     async createCliente(clienteData: Omit<ICliente, "id">): Promise<IClienteVista> {

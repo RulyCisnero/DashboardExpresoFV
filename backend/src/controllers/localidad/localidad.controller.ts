@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import localidadModel from '../../models/localidad/localidadModel.ts';
 
 export class LocalidadController {

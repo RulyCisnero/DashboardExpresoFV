@@ -1,5 +1,5 @@
-import pool from '../../database/connectionPostgreSQL.js';
-import { IChofer, IChoferVista } from '../../interfaces/Index.ts';
+import pool from '../../database/connectionPostgreSQL.ts';
+import type { IChofer, IChoferVista } from '../../interfaces/Index.ts';
 
 class ChoferModel {
     async createChofer(choferData: Omit<IChofer, "id">): Promise<IChofer> {

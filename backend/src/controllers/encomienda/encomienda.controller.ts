@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import type { Request, Response } from "express";
 import EncomiendaModel from "../../models/encomienda/encomiendaModel.ts";
 import encomiendaModel from "../../models/encomienda/encomiendaModel.ts";
 //import { IEncomiendaVista } from "../../interfaces/encomienda";

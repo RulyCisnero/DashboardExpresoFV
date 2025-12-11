@@ -1,6 +1,6 @@
-import { Request, Response } from 'express';
+import type{ Request, Response } from 'express';
 import clienteModel from '../../models/cliente/clienteModel.ts';
-import { ICliente, IClienteVista } from '../../interfaces/Index.ts'
+import type { ICliente, IClienteVista } from '../../interfaces/Index.ts'
 
 
 export class ClienteController {

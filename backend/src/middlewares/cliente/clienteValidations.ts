@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 export const validateCreateCliente = (req: Request, res: Response, next: NextFunction) => {
   const { nombre, apellido, direccion_local, telefono, email, id_localidad } = req.body;

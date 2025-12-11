@@ -1,5 +1,5 @@
-import pool from '../../database/connectionPostgreSQL.js';
-import { Localidad } from '../../interfaces/localidad.ts';
+import pool from '../../database/connectionPostgreSQL.ts';
+import type { Localidad } from '../../interfaces/localidad.ts';
 
 class LocalidadModel {
     async getAllLocalidades(): Promise<Localidad[]> {

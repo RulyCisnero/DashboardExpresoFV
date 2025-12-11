@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import choferModel from '../../models/chofer/choferModel.ts';
 
 export class ChoferController {
