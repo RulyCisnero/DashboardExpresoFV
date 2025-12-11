@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog"
 import { EncomiendaHistory } from "../history/encomienda-history"
-import type { Encomienda, EncomiendaRich} from "../../types/encomienda"
+import type { EncomiendaRich} from "../../types/encomienda"
 import { useEncomienda } from "../../services/hooks-services/use-encomienda"
 
 

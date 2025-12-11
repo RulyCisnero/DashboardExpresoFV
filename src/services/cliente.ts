@@ -46,6 +46,17 @@ export const ClienteService = {
     return await res.json();
   },
 
+  async searchClienteTexto(query: string): Promise<Cliente[]> {
+    const res = await fetch(`${API_URL}/buscar?q=${encodeURIComponent(query)}`);
+    if (res.status === 404) {
+      return []; // sin resultados (NO es error)
+    }
+    if (!res.ok) {
+      throw new Error("Error al buscar cliente");
+    }
+    return await res.json();
+  },
+
   async deleteCliente(id: number): Promise<void> {
     const res = await fetch(`${API_URL}/${id}`,
       { method: "DELETE" })

@@ -91,7 +91,59 @@
   }
 }
  */
- @tailwind base;
+/*  
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --font-sans: var(--font-geist-sans);
+    --font-mono: var(--font-geist-mono);
+    --background: 214 62% 10%;
+    --foreground: 210 40% 98%;
+    --card: 216 50% 16%;
+    --card-foreground: 210 40% 98%;
+    --popover: 216 50% 16%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 10 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 210 100% 50%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 215 30% 25%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 280 100% 70%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 215 40% 20%;
+    --input: 215 40% 20%;
+    --ring: 10 100% 65%;
+    --chart-1: 10 100% 65%;
+    --chart-2: 280 100% 70%;
+    --chart-3: 180 100% 50%;
+    --chart-4: 45 100% 60%;
+    --chart-5: 210 100% 50%;
+    --radius: 1rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+ */
+@tailwind base;
 @tailwind components;
 @tailwind utilities;
 
@@ -142,3 +194,4 @@
     @apply bg-background text-foreground;
   }
 }
+

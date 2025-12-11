@@ -22,7 +22,7 @@ export function SearchModal({ open, onOpenChange, encomiendas, onViewDetails }: 
           </DialogDescription>
         </DialogHeader>
         <EncomiendaSearch
-          encomiendas={encomiendas}
+          encomiendasData={encomiendas}
           onViewDetails={onViewDetails} />
       </DialogContent>
     </Dialog>

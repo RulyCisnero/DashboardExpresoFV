@@ -142,7 +142,7 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                         onClick={() => onViewDetails(encomienda)}
                         title="Ver detalles"
                       >
-                        <Eye className="h-4 w-4" />
+                      <Eye className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => onEdit(encomienda)} title="Editar">
                         <Edit className="h-4 w-4" />

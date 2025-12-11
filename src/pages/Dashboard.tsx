@@ -14,11 +14,9 @@ import { EncomiendasTable } from "../components/dashboard/encomiendas-table"
 import { EncomiendaDetailModal } from "../components/modals/encomienda-detail-modal"
 import { AddEncomiendaModal } from "../components/modals/add-encomienda-modal"
 import { EditEncomiendaModal } from "../components/modals/edit-encomienda-modal"
-//import { AddClienteModal } from "../components/modals/add-cliente-modal"
 import { AddChoferModal } from "../components/modals/add-chofer-modal"
 import { SearchModal } from "../components/modals/search-modal"
 import { HistoryModal } from "../components/modals/history-modal"
-//import { ViewClientesModal } from "../components/modals/view-clientes-modal"
 import { ViewChoferesModal } from "../components/modals/view-choferes-modal"
 import { PadreLocalidad } from "../components/PadreLocalidades/PadreLocalidad"
 import { PadreCliente } from "../components/padreCliente/padreCliente"
@@ -85,11 +83,6 @@ export default function Dashboard() {
     setIsDetailOpen(true)
   }
 
-  /* const handleEditEncomienda = (encomienda: EncomiendaView) => {
-    console.log("id de la encomienda seleccionada: ",encomienda.id)
-    setEditingEncomienda(encomienda)
-    setIsEditOpen(true)
-  } */
   const handleEditEncomienda = async (encomienda: /* EncomiendaTable */EncomiendaRich) => {
     const encomiendaCompleta = await getEncomiendaById(encomienda.id);
     console.log('Fetch en : ', encomiendaCompleta)
@@ -128,19 +121,9 @@ export default function Dashboard() {
       <div className="md:pl-64">
         {/* Header */}
         <DashboardHeader
-          /*    onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
-             onAddCliente={() => setIsAddClienteOpen(true)}
-             onAddChofer={() => setIsAddChoferOpen(true)}
-             onAddDestino={() => setIsAddDestinoOpen(true)}
-             onShowHistorial={() => setIsHistoryOpen(true)}
-             onShowBuscador={() => setIsSearchOpen(true)}
-             onViewClientes={() => setIsViewClientesOpen(true)}
-             onViewChoferes={() => setIsViewChoferesOpen(true)}
-             onViewDestinos={() => setIsViewDestinosOpen(true)}   */
           localidades={localidades}
           selectedLocalidad={selectedLocalidad}
           onLocalidadChange={setSelectedLocalidad}
-        //onViewDestinos={() => setIsViewDestinosOpen(true)}
         />
 
         {/* Dashboard Content */}

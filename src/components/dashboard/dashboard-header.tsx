@@ -1,7 +1,7 @@
 "use client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Label } from "../ui/label"
-import type { Localidad } from "../../types/encomienda";
+import type { EncomiendaRich, Localidad } from "../../types/encomienda";
 import { UserMenu } from "../layout/user-menu"
 
 interface DashboardHeaderProps {
@@ -32,18 +32,6 @@ export function DashboardHeader({ localidades, selectedLocalidad, onLocalidadCha
           <Label htmlFor="localidad" className="text-sm font-medium">
             Filtrar por localidad:
           </Label>
-          {/* <Select value={selectedLocalidad.nombre} onValueChange={onLocalidadChange}>
-            <SelectTrigger className="w-48">
-              <SelectValue placeholder="Seleccionar localidad" />
-            </SelectTrigger>
-            <SelectContent>
-             {localidades.map((loc) => (
-                <SelectItem key={loc.id} value={loc.nombre}>
-                  {loc.nombre}
-                </SelectItem>
-              ))}  
-            </SelectContent>
-          </Select> */}
           <Select
             value={selectedLocalidad === "Todas" ? "Todas" : selectedLocalidad.nombre}
             onValueChange={(nombre) => {

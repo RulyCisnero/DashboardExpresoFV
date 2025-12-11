@@ -20,14 +20,22 @@ export class ClienteController {
         try {
             const searchParams = req.query.q;
             // Validación básica del parámetro
-            if (typeof searchParams !== "string" || searchParams.trim() === "") {
+            /* if (typeof searchParams !== "string" || searchParams.trim() === "") {
                 res.status(400).json({ message: "Parámetro de búsqueda inválido o vacío" });
                 return;
+            } */
+            if (typeof searchParams !== "string" || searchParams.trim() === "") {
+                res.status(200).json([]); // simplemente no devolver nada
+                return;
             }
-            
+
             const clientes = await clienteModel.searchCliente2(searchParams);
-            if (clientes.length === 0) {
+            /* if (clientes.length === 0) {
                 res.status(404).json({ message: "No se encontraron clientes" });
+                return;
+            } */
+            if (clientes.length === 0) {
+                res.status(200).json([]);  // resultado vacío, NO error
                 return;
             }
             res.status(200).json(clientes);
