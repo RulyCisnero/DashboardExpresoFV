@@ -133,7 +133,7 @@ export class EncomiendaController {
     }
   }
 
-  async getEncomiendasByCliente(req: Request, res:Response) {
+  async getEncomiendasByCliente(req: Request, res: Response) {
     try {
       const clienteId = Number(req.params.id);
 
@@ -151,6 +151,22 @@ export class EncomiendaController {
     }
   }
 
+  async getEncomiendasByFecha(req: Request, res: Response) {
+    try {
+      const fecha = req.query.fecha as string;
+      if (!fecha) {
+        return res.status(400).json({ message: "Fecha inválida" });
+      }
+
+      const encomiendas = await EncomiendaModel.getEncomiendasByFecha(fecha);
+
+      res.status(200).json(encomiendas);
+    } catch (error) {
+      console.error("Error en getEncomiendasByFecha:", error);
+      res.status(500).json({ message: "Error al obtener encomiendas" });
+    }
+  }
 }
+
 
 export default new EncomiendaController();

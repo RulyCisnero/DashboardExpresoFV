@@ -780,6 +780,17 @@ class EncomiendaModel {
         }
     }
 
+    async getEncomiendasByFecha(fecha: string): Promise<IEncomiendaVista[]> {
+        const fechaNormalizada = new Date(fecha).toISOString().split("T")[0];
+        const result = await pool.query(
+            `SELECT * FROM encomienda
+            WHERE fecha_creacion::date = $1
+            ORDER BY id ASC`,
+            [fechaNormalizada]
+        )
+        return result.rows
+    }
+
 
 };
 export default new EncomiendaModel();

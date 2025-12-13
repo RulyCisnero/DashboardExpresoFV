@@ -5,17 +5,17 @@ import type { EncomiendaRich, Localidad } from "../../types/encomienda";
 import { UserMenu } from "../layout/user-menu"
 
 interface DashboardHeaderProps {
-  localidades: Localidad[]
+ /*  localidades: Localidad[]
   selectedLocalidad: Localidad | "Todas"
-  onLocalidadChange: (value: Localidad | "Todas") => void;
+  onLocalidadChange: (value: Localidad | "Todas") => void; */
 }
 
-export function DashboardHeader({ localidades, selectedLocalidad, onLocalidadChange}: DashboardHeaderProps) {
+export function DashboardHeader({ /* localidades, selectedLocalidad, onLocalidadChange */}: DashboardHeaderProps) {
   
   return (
     <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Sistema de Encomiendas</h1>
+        <h1 className="text-2xl font-bold tracking-tight">Sistema de Encomiendas</h1>
         <p className="text-muted-foreground">Gestiona y rastrea todas las encomiendas de tu empresa</p>
       </div>
       <div className="flex flex-wrap gap-2">
@@ -27,7 +27,7 @@ export function DashboardHeader({ localidades, selectedLocalidad, onLocalidadCha
       <UserMenu />
 
       {/* Filtro de localidades */}
-      <div className="flex items-center gap-4">
+      {/* <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
           <Label htmlFor="localidad" className="text-sm font-medium">
             Filtrar por localidad:
@@ -39,7 +39,8 @@ export function DashboardHeader({ localidades, selectedLocalidad, onLocalidadCha
               onLocalidadChange(loc ?? "Todas")
             }}
           >
-            <SelectTrigger className="w-48">
+ */}         
+         {/* <SelectTrigger className="w-48">
               <SelectValue placeholder="Seleccionar localidad" />
             </SelectTrigger>
 
@@ -53,7 +54,7 @@ export function DashboardHeader({ localidades, selectedLocalidad, onLocalidadCha
             </SelectContent>
           </Select>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }

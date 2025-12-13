@@ -22,7 +22,7 @@ export type EncomiendaUpdate = Omit<Encomienda, "id">
 export interface EncomiendaRich extends Omit<Encomienda,
   "cliente_id" | "cliente_destinatario_id" | "origen_id" | "destino_id" | "chofer_id"> {
   cliente: Cliente //ClienteFormData
-  destinatario: Cliente //ClienteFormData
+  destinatario: Cliente | null //ClienteFormData
   origen: Localidad //LocalidadFormData
   destino: Localidad //LocalidadFormData
   chofer: Chofer //ChoferFormData

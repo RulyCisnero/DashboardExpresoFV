@@ -2,7 +2,7 @@
 
 import { Button } from "../../components/ui/button"
 import { Calendar } from "../../components/ui/calendar"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "../../components/ui/popover"
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react"
 import { format } from "date-fns"
 import { es } from "date-fns/locale"
@@ -10,10 +10,11 @@ import { cn } from "../../lib/utils"
 
 interface DateFilterProps {
   selectedDate: Date
-  onDateChange: (date: Date) => void
+  onDateChange: (date: Date) => void 
 }
 
 export function DateFilter({ selectedDate, onDateChange }: DateFilterProps) {
+  
   const handleYesterday = () => {
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)

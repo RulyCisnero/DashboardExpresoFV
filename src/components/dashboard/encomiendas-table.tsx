@@ -112,7 +112,10 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                 >
                   <TableCell className="font-medium">ENC-{encomienda.id}</TableCell>
                   <TableCell>{encomienda.cliente.nombre} {encomienda.cliente.apellido}</TableCell>
-                  <TableCell>{encomienda.destinatario.nombre} {encomienda.destinatario.apellido}</TableCell>
+                  <TableCell>
+                    {encomienda.destinatario?.nombre
+                      ? `${encomienda.destinatario.nombre} ${encomienda.destinatario.apellido}`
+                      : "Sin destinatario"}{/* {encomienda.destinatario.nombre} {encomienda.destinatario.apellido }*/}</TableCell>
                   <TableCell>
                     <div className="text-sm">
                       <div>{encomienda.origen.nombre}</div>
@@ -134,7 +137,7 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                   <TableCell>{new Date(encomienda.fecha_creacion).toLocaleDateString()}</TableCell>
                   <TableCell className="font-medium">${encomienda.precio}</TableCell>
                   <TableCell>
-                  
+
                     <div className="flex gap-2">
                       <Button
                         variant="ghost"
@@ -142,7 +145,7 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                         onClick={() => onViewDetails(encomienda)}
                         title="Ver detalles"
                       >
-                      <Eye className="h-4 w-4" />
+                        <Eye className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="icon" onClick={() => onEdit(encomienda)} title="Editar">
                         <Edit className="h-4 w-4" />

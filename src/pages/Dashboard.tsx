@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useEncomienda } from "../services/hooks-services/use-encomienda"
 import { useLocalidades } from "../services/hooks-services/use-localidades"
 import { useChoferes } from "../services/hooks-services/use-choferes"
 import { useCliente } from "../services/hooks-services/use-cliente"
+import { useEncomiendaByDate } from "../services/hooks-services/use-encomiendasPorFecha"
 
 // Components
 import { DashboardHeader } from "../components/dashboard/dashboard-header"
@@ -20,15 +21,17 @@ import { HistoryModal } from "../components/modals/history-modal"
 import { ViewChoferesModal } from "../components/modals/view-choferes-modal"
 import { PadreLocalidad } from "../components/PadreLocalidades/PadreLocalidad"
 import { PadreCliente } from "../components/padreCliente/padreCliente"
+import { Filterlocalidades } from "../components/dashboard/localidades-filter"
 
 import type { EncomiendaRich, Localidad } from "../types/encomienda"
+import { DateFilter } from "../components/dashboard/DateFilter"
 
 
 /**
  * Componente principal del Dashboard
  */
 export default function Dashboard() {
-  
+
   const { encomiendas, addNewEncomienda, getEncomiendaById, deleteEncomienda, updateEncomienda } = useEncomienda()
 
   // 👉 Hook solo de localidades (destinos)
@@ -46,6 +49,8 @@ export default function Dashboard() {
   const {
     clientes
   } = useCliente()
+
+  const { getByDate } = useEncomiendaByDate(clientes, choferes, localidades);
 
   // Estados de filtros
   const [selectedLocalidad, setSelectedLocalidad] = useState<Localidad | "Todas">("Todas")
@@ -66,6 +71,9 @@ export default function Dashboard() {
   const [isViewClientesOpen, setIsViewClientesOpen] = useState(false)
   const [isViewChoferesOpen, setIsViewChoferesOpen] = useState(false)
   const [isViewDestinosOpen, setIsViewDestinosOpen] = useState(false)
+  const [selectedDate, setSelectedDate] = useState(new Date())
+
+
 
   // Filtrar encomiendas por localidad
   const filteredEncomiendas = useMemo(() => {
@@ -83,7 +91,7 @@ export default function Dashboard() {
     setIsDetailOpen(true)
   }
 
-  const handleEditEncomienda = async (encomienda: /* EncomiendaTable */EncomiendaRich) => {
+  const handleEditEncomienda = async (encomienda: EncomiendaRich) => {
     const encomiendaCompleta = await getEncomiendaById(encomienda.id);
     console.log('Fetch en : ', encomiendaCompleta)
     if (encomiendaCompleta) {
@@ -101,6 +109,20 @@ export default function Dashboard() {
       updateEncomienda(editingEncomienda.id, data)
     }
   }
+
+  // 🔵 Estado para encomiendas filtradas por fecha
+  const [encomiendasByDate, setEncomiendasByDate] = useState<EncomiendaRich[]>([])
+
+  useEffect(() => {
+    const f = async () => {
+      const formatted = selectedDate.toISOString().split("T")[0];
+      const data = await getByDate(formatted);
+      setEncomiendasByDate(data);
+    };
+
+    f();
+  }, [selectedDate]);
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -121,9 +143,9 @@ export default function Dashboard() {
       <div className="md:pl-64">
         {/* Header */}
         <DashboardHeader
-          localidades={localidades}
+/*           localidades={localidades}
           selectedLocalidad={selectedLocalidad}
-          onLocalidadChange={setSelectedLocalidad}
+          onLocalidadChange={setSelectedLocalidad} */
         />
 
         {/* Dashboard Content */}
@@ -132,11 +154,24 @@ export default function Dashboard() {
           <StatsCards
             encomiendas={filteredEncomiendas}
           />
+          
+          <div className="flex items-center justify-between gap-4 flex-wrap">
+          <DateFilter
+            selectedDate={selectedDate}
+            onDateChange={setSelectedDate}
+          />
+
+          <Filterlocalidades
+            localidades={localidades}
+            selectedLocalidad={selectedLocalidad}
+            onLocalidadChange={setSelectedLocalidad}
+          />
+          </div>
 
           {/* Encomiendas Table */}
           <EncomiendasTable
             //encomiendas={filteredEncomiendas}
-            encomiendasData={encomiendas}
+            encomiendasData={/* encomiendas */encomiendasByDate}
             onViewDetails={handleViewDetails}
             onEdit={handleEditEncomienda}
             onDelete={handleDeleteEncomienda}

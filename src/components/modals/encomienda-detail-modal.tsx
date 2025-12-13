@@ -11,7 +11,7 @@ interface EncomiendaDetailModalProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function EncomiendaDetailModal({encomienda, open, onOpenChange }: EncomiendaDetailModalProps) {
+export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: EncomiendaDetailModalProps) {
 
   if (!encomienda) return null
   return (
@@ -47,7 +47,7 @@ export function EncomiendaDetailModal({encomienda, open, onOpenChange }: Encomie
                 </p>
               </CardContent>
             </Card>
-              
+
             <Card>
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm flex items-center gap-2">
@@ -55,7 +55,7 @@ export function EncomiendaDetailModal({encomienda, open, onOpenChange }: Encomie
                   Información del Destinatario
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-2">
+              {/*  <CardContent className="space-y-2">
                 <p>
                   <strong>Nombre:</strong> {encomienda?.destinatario.nombre} {encomienda?.destinatario.apellido}
                 </p>
@@ -67,7 +67,26 @@ export function EncomiendaDetailModal({encomienda, open, onOpenChange }: Encomie
                   <Phone className="h-4 w-4" />
                   {encomienda?.destinatario.telefono}
                 </p>
+              </CardContent> */}
+              <CardContent className="space-y-2">
+                <p>
+                  <strong>Nombre:</strong>{" "}
+                  {encomienda.destinatario
+                    ? `${encomienda.destinatario.nombre} ${encomienda.destinatario.apellido}`
+                    : "Sin destinatario"}
+                </p>
+
+                <p className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  {encomienda.destinatario?.direccion_local || "—"}
+                </p>
+
+                <p className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  {encomienda.destinatario?.telefono || "—"}
+                </p>
               </CardContent>
+
             </Card>
           </div>
 
@@ -109,7 +128,7 @@ export function EncomiendaDetailModal({encomienda, open, onOpenChange }: Encomie
                     variant={getEstadoBadgeVariant(encomienda.estado) as any}
                     className={
                       encomienda.estado === "Entregada" ? "bg-green-100 text-green-800 hover:bg-green-300" : "bg-yellow-100 text-yellow-800 hover:bg-yellow-300"
-                    } 
+                    }
                   >
                     {encomienda.estado}
                   </Badge>
