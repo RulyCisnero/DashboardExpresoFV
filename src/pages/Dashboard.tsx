@@ -25,6 +25,7 @@ import { Filterlocalidades } from "../components/dashboard/localidades-filter"
 
 import type { EncomiendaRich, Localidad } from "../types/encomienda"
 import { DateFilter } from "../components/dashboard/DateFilter"
+import { ExportarExcelButton } from "../components/dashboard/ExportarExcelButton"
 
 
 /**
@@ -115,8 +116,10 @@ export default function Dashboard() {
 
   useEffect(() => {
     const f = async () => {
+      console.log("📅 selectedDate:", selectedDate)
       const formatted = selectedDate.toISOString().split("T")[0];
       const data = await getByDate(formatted);
+      console.log("🚀 Fetch encomiendas para fecha:", selectedDate)
       setEncomiendasByDate(data);
     };
 
@@ -143,9 +146,6 @@ export default function Dashboard() {
       <div className="md:pl-64">
         {/* Header */}
         <DashboardHeader
-/*           localidades={localidades}
-          selectedLocalidad={selectedLocalidad}
-          onLocalidadChange={setSelectedLocalidad} */
         />
 
         {/* Dashboard Content */}
@@ -159,6 +159,11 @@ export default function Dashboard() {
           <DateFilter
             selectedDate={selectedDate}
             onDateChange={setSelectedDate}
+          />
+
+          <ExportarExcelButton
+           encomiendas={encomiendasByDate}
+           localidad ={localidades}
           />
 
           <Filterlocalidades

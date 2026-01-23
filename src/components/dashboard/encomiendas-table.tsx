@@ -111,16 +111,16 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                   onClick={() => onViewDetails(encomienda)}
                 >
                   <TableCell className="font-medium">ENC-{encomienda.id}</TableCell>
-                  <TableCell>{encomienda.cliente.nombre} {encomienda.cliente.apellido}</TableCell>
+                  <TableCell>{encomienda.cliente?.nombre} {encomienda.cliente?.apellido}</TableCell>
                   <TableCell>
                     {encomienda.destinatario?.nombre
                       ? `${encomienda.destinatario.nombre} ${encomienda.destinatario.apellido}`
                       : "Sin destinatario"}{/* {encomienda.destinatario.nombre} {encomienda.destinatario.apellido }*/}</TableCell>
                   <TableCell>
                     <div className="text-sm">
-                      <div>{encomienda.origen.nombre}</div>
+                      <div>{encomienda.origen?.nombre}</div>
                       <div className="text-muted-foreground">↓</div>
-                      <div>{encomienda.destino.nombre}</div>
+                      <div>{encomienda.destino?.nombre}</div>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -142,18 +142,29 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => onViewDetails(encomienda)}
+                        onClick={(e) =>{
+                          e.stopPropagation()
+                          onViewDetails(encomienda)}
+                        } 
                         title="Ver detalles"
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" onClick={() => onEdit(encomienda)} title="Editar">
+                      <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        onEdit(encomienda)}}
+                       title="Editar">
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => onDelete(encomienda.id)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onDelete(encomienda.id)}}
                         title="Eliminar"
                         className="text-destructive hover:text-destructive"
                       >

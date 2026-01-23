@@ -38,7 +38,7 @@ export default function Dashboard() {
 
   // Filtrar encomiendas por localidad
   const filteredEncomiendas = useMemo(() => {
-    if (selectedLocalidad === "Todas") {
+    if (selectedLocalidad === "ASD") {
       return encomiendas
     }
     return encomiendas.filter((enc) => enc.origen === selectedLocalidad || enc.destino === selectedLocalidad)

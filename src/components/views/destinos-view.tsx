@@ -12,13 +12,13 @@ import { EditDestinoModal } from "../modals/edit-destino-modal"
 interface DestinosViewProps {
   localidades: Localidad[]
   onAddClick: () => void
-  onEditLocalidad: (id:number,data: LocalidadFormData) => void
-  onDeleteLocalidad: (localidad: Localidad) =>Promise <void>
+  onEditLocalidad: (id: number, data: LocalidadFormData) => void
+  onDeleteLocalidad: (localidad: Localidad) => Promise<void>
   loading: boolean
   error: string | null
 }
 
-export function DestinosView({ localidades, onDeleteLocalidad, onEditLocalidad,loading,error  }: DestinosViewProps) {
+export function DestinosView({ localidades, onDeleteLocalidad, onEditLocalidad, loading, error }: DestinosViewProps) {
   const [selectedLocalidad, setSelectedLocalidad] = useState<Localidad | null>(null)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
@@ -29,6 +29,7 @@ export function DestinosView({ localidades, onDeleteLocalidad, onEditLocalidad,l
   }
 
   const handleEditClick = (localidad: Localidad) => {
+    console.log("click en el boton")
     setSelectedLocalidad(localidad)
     setEditModalOpen(true)
   }
@@ -75,13 +76,17 @@ export function DestinosView({ localidades, onDeleteLocalidad, onEditLocalidad,l
                   <TableCell className="font-medium">{localidad.nombre}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="sm">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditClick(localidad)}>
                         <Edit className="h-4 w-4"
-                          onClick={() => handleEditClick(localidad)} />
+                        />
                       </Button>
-                      <Button variant="ghost" size="sm">
-                        <Trash2 className="h-4 w-4"
-                          onClick={() => handleDeleteClick(localidad)} />
+                      <Button variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteClick(localidad)}>
+                        <Trash2 className="h-4 w-4"/>
                       </Button>
                     </div>
                   </TableCell>

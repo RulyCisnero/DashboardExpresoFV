@@ -34,9 +34,12 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
-                <p>
+                {encomienda.cliente?.nombre
+                      ? `${encomienda.cliente.nombre} ${encomienda.cliente.apellido}`
+                      : "Sin destinatario"}
+                {/* <p>
                   <strong>Nombre:</strong> {encomienda?.cliente.nombre} {encomienda?.cliente.apellido}
-                </p>
+                </p> */}
                 <p className="flex items-center gap-2">
                   <Phone className="h-4 w-4" />
                   {encomienda?.cliente.telefono}

@@ -37,6 +37,7 @@ export function PadreCliente({ isAddOpen, onAddClose, isViewOpen, onViewClose }:
 
     const handleEditCliente = async (id: number, data: ClienteFormInput) => {
         try {
+            console.log("click edit")
             await updateCliente(id, data)
             await reloadClientes()
         } catch (error) {

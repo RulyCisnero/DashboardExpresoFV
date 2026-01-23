@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react" 
+import { useState } from "react"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
@@ -19,13 +19,13 @@ interface ClientesViewProps {
   error?: string | null
 }
 
-export function ClientesView({ clientes, onDeleteCliente, onEditCliente, loading, error, localidades}: ClientesViewProps) {
+export function ClientesView({ clientes, onDeleteCliente, onEditCliente, loading, error, localidades }: ClientesViewProps) {
   const [searchTerm, setSearchTerm] = useState("")
 
   const [selectedCliente, setSelectedCliente] = useState<Cliente | null>(null)
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [isEditOpen, setEditOpen] = useState(false)
- 
+
   // ✅ Handlers locales (solo controlan apertura de modales)
   const handleEditClick = (cliente: Cliente) => {
     setSelectedCliente(cliente)
@@ -140,13 +140,17 @@ export function ClientesView({ clientes, onDeleteCliente, onEditCliente, loading
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="sm">
-                          <Edit className="h-4 w-4"
-                            onClick={() => handleEditClick(cliente)} />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleEditClick(cliente)}>
+                          <Edit className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
-                          <Trash2 className="h-4 w-4"
-                            onClick={() => handleDeleteClick(cliente)} />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDeleteClick(cliente)}>
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -186,7 +190,7 @@ export function ClientesView({ clientes, onDeleteCliente, onEditCliente, loading
         onOpenChange={setEditOpen}
         cliente={selectedCliente ?? undefined}
         localidades={localidades}
-        onSubmit={handleSubmitEdit} 
+        onSubmit={handleSubmitEdit}
       />
 
     </div>

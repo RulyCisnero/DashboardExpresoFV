@@ -95,13 +95,17 @@ export function ChoferesView({ choferes = [], onDeleteChofer }: ChoferesViewProp
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-2">
-                      <Button variant="ghost" size="sm">
-                        <Edit className="h-4 w-4"
-                          onClick={() => handleEditClick(chofer)} />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditClick(chofer)}>
+                        <Edit className="h-4 w-4" />
                       </Button>
-                      <Button variant="ghost" size="sm">
-                        <Trash2 className="h-4 w-4"
-                          onClick={() => handleDeleteClick(chofer)} />
+                      <Button
+                        variant="ghost" 
+                        size="sm" 
+                        onClick={() => handleDeleteClick(chofer)}>
+                        <Trash2 className="h-4 w-4"/>
                       </Button>
                     </div>
                   </TableCell>
