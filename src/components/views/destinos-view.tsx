@@ -56,6 +56,8 @@ export function DestinosView({ localidades, onDeleteLocalidad, onEditLocalidad, 
             Todos los Destinos
           </CardTitle>
           <CardDescription>Lista completa de destinos registrados en el sistema</CardDescription>
+          <MapPin> asd </MapPin>
+          
         </CardHeader>
       </Card>
 

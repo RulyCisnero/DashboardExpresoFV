@@ -128,7 +128,7 @@ export default function Dashboard() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       {/* Sidebar Desktop */}
       <DesktopSidebar
         onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
@@ -166,7 +166,7 @@ export default function Dashboard() {
            localidad ={localidades}
           />
 
-          <Filterlocalidades
+          <Filterlocalidades  
             localidades={localidades}
             selectedLocalidad={selectedLocalidad}
             onLocalidadChange={setSelectedLocalidad}
