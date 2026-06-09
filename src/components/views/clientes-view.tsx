@@ -26,7 +26,7 @@ export function ClientesView({ clientes, onDeleteCliente, onEditCliente, loading
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
   const [isEditOpen, setEditOpen] = useState(false)
 
-  // ✅ Handlers locales (solo controlan apertura de modales)
+  //Handlers locales (solo controlan apertura de modales)
   const handleEditClick = (cliente: Cliente) => {
     setSelectedCliente(cliente)
     setEditOpen(true)
@@ -72,7 +72,10 @@ export function ClientesView({ clientes, onDeleteCliente, onEditCliente, loading
             <Users className="h-5 w-5" />
             Todos los Clientes
           </CardTitle>
-          <CardDescription>Lista completa de clientes registrados en el sistema</CardDescription>
+          <div className="grid grid-cols-2 justify-between">
+            <CardDescription>Lista completa de clientes registrados en el sistema</CardDescription>
+            <CardDescription>Clientes totales en el sistema: {clientes.length} </CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
