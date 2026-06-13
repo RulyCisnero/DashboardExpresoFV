@@ -6,8 +6,10 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { Textarea } from "../ui/textarea"
+import { Checkbox } from "../ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import type { Cliente, Localidad, EncomiendaForInput, Chofer, EncomiendaInput } from "../../types/encomienda"
+
 
 
 interface EncomiendaFormProps {
@@ -48,13 +50,13 @@ export function EncomiendaForm({ onSubmit, clientes, localidad, initialData, cho
     onSubmit(formData)
   }
 
-  const handleInputChange = (field: keyof /* EncomiendaFormData */EncomiendaForInput, value: string) => {
+  const handleInputChange = (field: keyof EncomiendaForInput, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
 
         <div className="space-y-2">
           <Label htmlFor="origen_id">Origen *</Label>
@@ -153,7 +155,9 @@ export function EncomiendaForm({ onSubmit, clientes, localidad, initialData, cho
 
         <div className="space-y-2">
           <Label htmlFor="cliente_id">Remitente *</Label>
-          <Select value={(formData.cliente_id).toString()}
+          <Select 
+            /* value={(formData.cliente_id).toString()} */
+            value={formData.cliente_id ? formData.cliente_id.toString() : undefined}
             onValueChange={(value) => handleInputChange("cliente_id", (value))}>
             <SelectTrigger>
               <SelectValue placeholder="Seleccionar remitente" />
@@ -219,15 +223,21 @@ export function EncomiendaForm({ onSubmit, clientes, localidad, initialData, cho
           />
         </div>
 
-        {/*  <div className="space-y-2">
-          <Label htmlFor="peso">Peso</Label>
-          <Input
-            id="peso"
-            placeholder="ej: 2.5 kg"
-            value={formData.peso}
-            onChange={(e) => handleInputChange("peso", e.target.value)}
-          />
-        </div> */}
+          <div className="space-y-2">
+          <Label htmlFor="tipo">Encomienda Paga *</Label>
+          <Select
+            value={formData.tipo}
+            onValueChange={(value) => handleInputChange("tipo", value)}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Seleccionar tipo de encomienda" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="ENTRANTE">Paga</SelectItem>
+              <SelectItem value="SALIENTE">Por cobrar</SelectItem>
+            </SelectContent>
+          </Select>
+        </div> 
 
         <div className="space-y-2">
           <Label htmlFor="precio">Precio *</Label>

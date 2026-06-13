@@ -5,6 +5,7 @@ import { useState, useEffect } from "react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import type { ClienteFormInput, Localidad } from "../../types/encomienda"
 
 interface ClienteFormProps {
@@ -15,7 +16,7 @@ interface ClienteFormProps {
   initialData?: Partial<ClienteFormInput>
 }
 
-export function ClienteForm({ onSubmit, onCancel, initialData, localidades,loadingLocalidades }: ClienteFormProps) {
+export function ClienteForm({ onSubmit, onCancel, initialData, localidades, loadingLocalidades }: ClienteFormProps) {
 
   const [formData, setFormData] = useState<ClienteFormInput>({
     nombre: "",
@@ -123,34 +124,36 @@ export function ClienteForm({ onSubmit, onCancel, initialData, localidades,loadi
 
 
         <div>
-          <Label htmlFor="localidad">Localidad *</Label>
-          <select
-            id="localidad"
-            className="w-full border rounded-md p-2"
-            value={formData.id_localidad}
-            //REVISAR NUMBER
-            onChange={(e) => handleInputChange("id_localidad",  Number(e.target.value))}
-            required
-            disabled={loadingLocalidades}
-          >
-            <option value="">
-              {loadingLocalidades ? "Cargando...": "Seleccione una localidad" }
-              {/* Seleccione una localidad */}
-              </option>
-            {localidades.map((loc) => (
-              <option key={loc.id} value={loc.id}>
-                {loc.nombre}
-              </option>
-            ))}
-          </select>
+          <div className="space-y-2">
+            <Label htmlFor="localidad">Localidad *</Label>
+            <Select
+              //id="localidad"
+              //className="w-full border rounded-md p-2"
+              value={(formData.id_localidad).toString()}              //REVISAR NUMBER
+              onValueChange={(value) => handleInputChange("id_localidad", Number(value))}
+              required
+              disabled={loadingLocalidades}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Seleccionar localidad" />
+              </SelectTrigger>
+              <SelectContent>
+                
+                {localidades.map((loc) => (
+                  <SelectItem key={loc.id} value={(loc.id).toString()}>
+                    {loc.nombre}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        <div className="flex justify-end gap-2 pt-4">
-          <Button type="button" variant="outline" onClick={onCancel}>
-            Cancelar
-          </Button>
-          <Button type="submit">Guardar Cliente</Button>
-        </div>
+
+        <Button type="button" variant="outline" onClick={onCancel}>
+          Cancelar
+        </Button>
+        <Button type="submit">Guardar Cliente</Button>
+
       </div>
     </form >
   )

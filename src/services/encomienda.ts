@@ -4,6 +4,7 @@ import type {
   EncomiendaUpdate,
   EncomiendaRich
 } from "../types/encomienda"
+import { apiFetch } from "./apiClient.ts"
 
 const API_URL = "http://localhost:5100/api/encomiendas"
 
@@ -11,16 +12,15 @@ export const EncomiendaService = {
 
   /** 🔹 Obtener TODAS las encomiendas (crudas) */
   async getAll(): Promise<EncomiendaRich[]> {
-    const res = await fetch(API_URL)
+    const res = await apiFetch(API_URL)
     if (!res.ok) throw new Error("Error al cargar las encomiendas")
     return res.json()
   },
 
   /** 🔹 Crear una nueva encomienda */
   async create(data: EncomiendaInput): Promise<Encomienda> {
-    const res = await fetch(API_URL, {
+    const res = await apiFetch(API_URL, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
 
@@ -34,9 +34,8 @@ export const EncomiendaService = {
 
   /** 🔹 Actualizar una encomienda */
   async update(id: number, data: EncomiendaUpdate): Promise<Encomienda> {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const res = await apiFetch(`${API_URL}/${id}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     })
 
@@ -46,26 +45,26 @@ export const EncomiendaService = {
 
   /** 🔹 Obtener encomienda por ID (enriquecida) */
   async getById(id: number): Promise<EncomiendaRich> {
-    const res = await fetch(`${API_URL}/${id}`)
+    const res = await apiFetch(`${API_URL}/${id}`)
     if (!res.ok) throw new Error("Error al obtener la encomienda")
     return res.json()
   },
 
   async getByCliente(clienteId: number): Promise<EncomiendaRich[]> {
-    const res = await fetch(`${API_URL}/cliente/${clienteId}`)
+    const res = await apiFetch(`${API_URL}/cliente/${clienteId}`)
     if (!res.ok) throw new Error("Error al cargar encomiendas del cliente")
     return res.json()
   },
 
   async getByDate(fecha: string): Promise<EncomiendaRich[]> {
-    const res = await fetch(`${API_URL}/fecha?fecha=${fecha}`);
+    const res = await apiFetch(`${API_URL}/fecha?fecha=${fecha}`);
     if (!res.ok) throw new Error("Error al filtrar encomiendas por fecha");
     return res.json();
   },
 
   /** 🔹 Eliminar */
   async delete(id: number): Promise<void> {
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" })
+    const res = await apiFetch(`${API_URL}/${id}`, { method: "DELETE" })
     if (!res.ok) throw new Error("Error al eliminar la encomienda")
   },
 }

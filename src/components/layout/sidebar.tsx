@@ -250,9 +250,9 @@ export function DesktopSidebar({
 
   return (
     <div className="hidden md:flex w-64 flex-col fixed inset-y-0 z-50">
-      <div className="flex flex-col flex-grow bg-white border-r border-gray-200 pt-5 pb-4 overflow-y-auto">
+      <div className="flex flex-col flex-grow bg-card border-r border-border pt-5 pb-4 overflow-y-auto">
         <div className="flex items-center flex-shrink-0 px-4">
-          <h2 className="text-lg font-semibold text-gray-900">Menú Principal</h2>
+          <h2 className="text-lg font-semibold text-foreground">Menú Principal</h2>
         </div>
         <div className="mt-5 flex-grow flex flex-col">
           <nav className="flex-1 px-2 space-y-1">
@@ -266,7 +266,7 @@ export function DesktopSidebar({
                 <Button
                   key={index}
                   variant="ghost"
-                  className={cn("w-full justify-start gap-3 h-12", "hover:bg-gray-100 transition-colors")}
+                  className={cn("w-full justify-start gap-3 h-12", "hover:bg-gray-400 transition-colors")}
                   onClick={item.onClick}
                 >
                   <Icon className={cn("h-5 w-5", item.color)} />

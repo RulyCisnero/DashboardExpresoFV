@@ -28,15 +28,19 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
           <div className="grid grid-cols-2 gap-6">
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
+                <CardTitle className="text-lg flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Información del Remitente
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
+                {/* <strong>Nombre:</strong>{" "} */}
+                <p>
+                <strong>Nombre:</strong>{" "}
                 {encomienda.cliente?.nombre
-                      ? `${encomienda.cliente.nombre} ${encomienda.cliente.apellido}`
-                      : "Sin destinatario"}
+                  ? `${encomienda.cliente.nombre} ${encomienda.cliente.apellido}`
+                  : "Sin destinatario"}
+                  </p>
                 {/* <p>
                   <strong>Nombre:</strong> {encomienda?.cliente.nombre} {encomienda?.cliente.apellido}
                 </p> */}
@@ -53,7 +57,7 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
 
             <Card>
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
+                <CardTitle className="text-lg flex items-center gap-2">
                   <User className="h-4 w-4" />
                   Información del Destinatario
                 </CardTitle>
@@ -101,26 +105,18 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="grid grid-cols-1 gap-4">
-                {/* <div>
-                  <p className="text-sm text-gray-600">Origen</p>
-                  <p className="font-medium flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    {encomienda?.origen.nombre}
-                  </p>
-                </div> */}
+              <div className="grid grid-cols-2 gap-4">
+
                 <div>
-                  <p className="text-sm text-gray-600">Direccion Destino</p>
+                  <p className="text-sm text-zinc-100">Direccion Destino</p>
                   <p className="font-medium flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
                     {encomienda.direccion_destino} - {encomienda?.destino.nombre}
                   </p>
                 </div>
-              </div>
 
-              <div className="grid grid-cols-3 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Estado</p>
+                  <p className="text-ms text-white">Estado</p>
                   {/*  <Badge
                     variant={getEstadoBadgeVariant(encomienda.estado)}
                     className={`mt-1 ${encomienda.estado === "Entregado" ? "bg-green-100 text-green-800 hover:bg-green-200" : ""}`}
@@ -135,14 +131,17 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
                   >
                     {encomienda.estado}
                   </Badge>
-
                 </div>
+
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
                 {/* <div>
                   <p className="text-sm text-gray-600">Peso</p>
                   <p className="font-medium">{encomienda?.peso}</p>
                 </div> */}
                 <div>
-                  <p className="text-sm text-gray-600">Precio</p>
+                  <p className="text-sm text-white">Precio</p>
                   <p className="font-medium flex items-center gap-2">
                     <DollarSign className="h-4 w-4" />
                     {encomienda?.precio}
@@ -152,14 +151,14 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <p className="text-sm text-gray-600">Fecha de Envío</p>
+                  <p className="text-sm text-white">Fecha de Envío</p>
                   <p className="font-medium flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
                     {new Date(encomienda.fecha_creacion).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Fecha de Entrega</p>
+                  <p className="text-sm text-white">Fecha de Entrega</p>
                   {/* <p className="font-medium flex items-center gap-2">
                     <Calendar className="h-4 w-4" />
                     {encomiendaV?.fechaEntrega}
@@ -169,8 +168,8 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
 
               {encomienda.descripcion && (
                 <div>
-                  <p className="text-sm text-gray-600">Descripción</p>
-                  <p className="font-medium bg-gray-50 p-3 rounded-md mt-1">{encomienda?.descripcion}</p>
+                  <p className="text-sm text-white-600">Descripción</p>
+                  <p className="font-medium  bg-gray-600 text-white p-3 rounded-md mt-1">{encomienda?.descripcion}</p>
                 </div>
               )}
             </CardContent>

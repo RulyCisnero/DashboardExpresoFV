@@ -107,7 +107,7 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
               {sortedEncomiendas.map((encomienda) => (
                 <TableRow
                   key={encomienda.id}
-                  className="cursor-pointer hover:bg-gray-50"
+                  className="cursor-pointer hover:bg-gray-400"
                   onClick={() => onViewDetails(encomienda)}
                 >
                   <TableCell className="font-medium">ENC-{encomienda.id}</TableCell>

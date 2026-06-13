@@ -1,23 +1,20 @@
 
 import { type Localidad, type LocalidadFormData } from "../types/encomienda"
+import { apiFetch } from "./apiClient.ts"
 
 const API_URL = "http://localhost:5100/api/localidades"
 
-//GetAll uso para mostrar localidades con en formulario Destinos (id,nombre)
 export const LocalidadesService = {
 
   async getAll(): Promise<Localidad[]> {
-    const res = await fetch(API_URL)
+    const res = await apiFetch(API_URL)
     if (!res.ok) throw new Error("Error al cargar localidades")
     return res.json()
   },
 
   async addNewLocalidad(data: LocalidadFormData): Promise<Localidad> {
-    const res = await fetch(API_URL, {
+    const res = await apiFetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(data),
     })
 
@@ -30,11 +27,8 @@ export const LocalidadesService = {
   },
 
   async updateLocalidad(id: number, data: LocalidadFormData): Promise<Localidad> {
-    const res = await fetch(`${API_URL}/${id}`, {
-      method: "PUT", 
-      headers: {
-        "Content-Type": "application/json",
-      },
+    const res = await apiFetch(`${API_URL}/${id}`, {
+      method: "PUT",
       body: JSON.stringify(data),
     })
 
@@ -46,9 +40,8 @@ export const LocalidadesService = {
     return res.json()
   },
 
-  
   async deleteLocalidad(id: number): Promise<void> {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const res = await apiFetch(`${API_URL}/${id}`, {
       method: "DELETE",
     })
 

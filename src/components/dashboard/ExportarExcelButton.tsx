@@ -32,7 +32,7 @@ export const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
             const headerRow = worksheet.addRow(['EXPRESO FV', '', `${localidad} ${today.toLocaleDateString('es-AR')}`]);
             headerRow.font = { bold: true, size: 18 };
             headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
-            headerRow.height = 20;
+            headerRow.height = /* 20 */45;
             headerRow.eachCell((cell) => {
                 cell.border = {
                     top: { style: 'thin' },
@@ -40,11 +40,11 @@ export const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
                     bottom: { style: 'thin' },
                     right: { style: 'thin' }
                 };
-                cell.font = { bold: true, size: 11 };
+                cell.font = { bold: true, size: 14 };
             });
 
             // Fila 2: Encabezados de tabla
-            const tableHeaderRow = worksheet.addRow(['DIRECCION', 'PEDIDO', 'COBRADO']);
+            const tableHeaderRow = worksheet.addRow(['DIRECCION', 'Descripcion', 'COBRADO']);
             tableHeaderRow.font = { bold: true, size: 11 };
             tableHeaderRow.alignment = { horizontal: 'center', vertical: 'middle' };
             tableHeaderRow.fill = {
@@ -52,7 +52,7 @@ export const ExportarExcelButton: React.FC<ExportarExcelButtonProps> = ({
                 pattern: 'solid' as const,
                 fgColor: { argb: 'FFE0E0E0' } // Color gris más oscuro
             };
-            tableHeaderRow.height = 18;
+            tableHeaderRow.height = /* 18 */30;
             tableHeaderRow.eachCell((cell) => {
                 cell.border = {
                     top: { style: 'thin' },

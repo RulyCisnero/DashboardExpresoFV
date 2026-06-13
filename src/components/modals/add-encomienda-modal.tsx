@@ -23,7 +23,7 @@ export function AddEncomiendaModal({ open, onOpenChange, onSubmit, clientes, loc
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent aria-describedby={undefined} className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent aria-describedby={undefined} className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Nueva Encomienda</DialogTitle>
         </DialogHeader>

@@ -129,7 +129,7 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
         </CardHeader>
 
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 ">
             {/* Búsqueda de cliente (input con dropdown resultados) */}
             <div className="relative">
               <Label htmlFor="search">Búsqueda general (cliente)</Label>
@@ -143,14 +143,14 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
 
               {/* Dropdown: solo se muestra si escribiste algo y no hay cliente seleccionado */}
               {query.length > 0 && !selectedClienteName && (
-                <div className="absolute z-50 w-full bg-white shadow-lg border rounded-md mt-1 max-h-60 overflow-auto">
+                <div className="absolute z-50 w-full bg-popover shadow-lg border rounded-md mt-1 max-h-60 overflow-auto">
                   {/* Cargando */}
-                  {loadingBuscar && <p className="p-3 text-sm text-gray-500">Buscando...</p>}
+                  {loadingBuscar && <p className="p-3 text-sm text-white">Buscando...</p>}
 
                   {/* Si NO hay resultados y hubo intento de búsqueda */}
                   {!loadingBuscar && !cliente && clientesEncontrados.length === 0 && errorBuscar && (
-                    <div className="text-center py-4 text-gray-500">
-                      <Search className="h-6 w-6 mx-auto mb-2 text-gray-300" />
+                    <div className="text-center py-4 text-white">
+                      <Search className="h-6 w-6 mx-auto mb-2 text-white" />
                       <p>No se encontraron clientes que coincidan con la búsqueda.</p>
                     </div>
                   )}
@@ -159,8 +159,8 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
                   {!loadingBuscar && clientesEncontrados.length > 0 && clientesEncontrados.map((c) => (
                     <div
                       key={c.id}
-                      onClick={() => handleSelectCliente(c)}
-                      className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                      onClick={() => handleSelectCliente(c)} ///ACA AGREGR TEXTO DE COLOR Y EL FONDO
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-600 text-white"
                     >
                       {c.nombre} {c.apellido} {c.localidad ? `— ${c.localidad.nombre}` : ""}
                     </div>
@@ -170,7 +170,7 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
                   {!loadingBuscar && cliente && (
                     <div
                       onClick={() => handleSelectCliente(cliente)}
-                      className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-600 text-white"
                     >
                       {cliente.nombre} {cliente.apellido} {cliente.localidad ? `— ${cliente.localidad.nombre}` : ""}
                     </div>
@@ -213,14 +213,14 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
 
       {/* Resultados: si no hay encomiendas cargadas (array vacío) se muestra mensaje */}
       <Card>
-        <CardHeader>
+        {/* <CardHeader>
           <CardTitle>Resultados de la búsqueda ({filteredEncomiendas.length} encontradas)</CardTitle>
-        </CardHeader>
+        </CardHeader> */}
 
         <CardContent>
           {filteredEncomiendas.length === 0 ? (
-            <div className="text-center py-8 text-gray-500">
-              <Search className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <div className="text-center py-8 text-gray-100">
+              <Search className="h-12 w-12 mx-auto mb-4 text-gray-100" />
               <p>No se encontraron encomiendas que coincidan con los criterios de búsqueda.</p>
             </div>
           ) : (
@@ -239,7 +239,7 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
 
               <TableBody>
                 {filteredEncomiendas.map((encomienda) => (
-                  <TableRow key={encomienda.id} className="hover:bg-gray-50">
+                  <TableRow key={encomienda.id} className="hover:bg-gray-600">
                     <TableCell className="font-medium">ENC-{encomienda.id}</TableCell>
                     <TableCell>{encomienda.cliente?.nombre} {encomienda.cliente?.apellido}</TableCell>
                     <TableCell>{encomienda.destinatario?.nombre ?? "-"} {encomienda.destinatario?.apellido ?? ""}</TableCell>
@@ -256,7 +256,7 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 text-sm">
-                        <Calendar className="h-3 w-3" />
+                        <Calendar className="h-3 w-3"  />
                         {formatDate(encomienda.fecha_creacion)}
                       </div>
                     </TableCell>

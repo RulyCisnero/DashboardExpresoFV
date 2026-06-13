@@ -22,7 +22,7 @@ export const useCliente = () => {
     }
   }
 
-  const addCliente = async (data: /* ClienteFormData */ClienteFormInput) => {
+  const addCliente = async (data:ClienteFormInput) => {
     try {
       const nuevoCliente = await ClienteService.addNewCliente(data)
       setClientes((prev) => [...prev, nuevoCliente])

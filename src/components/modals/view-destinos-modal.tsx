@@ -3,6 +3,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { DestinosView } from "../views/destinos-view"
 import type { Localidad, LocalidadFormData } from "../../types/encomienda"
+import { Button } from "../ui/button"
 
 interface ViewDestinosModalProps {
   open: boolean
