@@ -6,6 +6,7 @@ import { useLocalidades } from "../services/hooks-services/use-localidades"
 import { useChoferes } from "../services/hooks-services/use-choferes"
 import { useCliente } from "../services/hooks-services/use-cliente"
 import { useEncomiendaByDate } from "../services/hooks-services/use-encomiendasPorFecha"
+import { useAuth } from "../hooks/useAuth"
 
 // Components
 import { DashboardHeader } from "../components/dashboard/dashboard-header"
@@ -73,7 +74,7 @@ export default function Dashboard() {
   const [isViewChoferesOpen, setIsViewChoferesOpen] = useState(false)
   const [isViewDestinosOpen, setIsViewDestinosOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState(new Date())
-
+  const { usuario } = useAuth()
 
 
   // Filtrar encomiendas por localidad
@@ -130,18 +131,19 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen">
       {/* Sidebar Desktop */}
-      <DesktopSidebar
-        onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
-        onAddCliente={() => setIsAddClienteOpen(true)}
-        onAddChofer={() => setIsAddChoferOpen(true)}
-        onAddDestino={() => setIsAddDestinoOpen(true)}
-        onShowHistorial={() => setIsHistoryOpen(true)}
-        onShowBuscador={() => setIsSearchOpen(true)}
-        onViewClientes={() => setIsViewClientesOpen(true)}
-        onViewChoferes={() => setIsViewChoferesOpen(true)}
-        onViewDestinos={() => setIsViewDestinosOpen(true)}
-      />
-
+      {usuario?.rol !== "chofer" && (
+        <DesktopSidebar
+          onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
+          onAddCliente={() => setIsAddClienteOpen(true)}
+          onAddChofer={() => setIsAddChoferOpen(true)}
+          onAddDestino={() => setIsAddDestinoOpen(true)}
+          onShowHistorial={() => setIsHistoryOpen(true)}
+          onShowBuscador={() => setIsSearchOpen(true)}
+          onViewClientes={() => setIsViewClientesOpen(true)}
+          onViewChoferes={() => setIsViewChoferesOpen(true)}
+          onViewDestinos={() => setIsViewDestinosOpen(true)}
+        />
+      )}
       {/* Main Content */}
       <div className="md:pl-64">
         {/* Header */}
@@ -154,23 +156,23 @@ export default function Dashboard() {
           <StatsCards
             encomiendas={filteredEncomiendas}
           />
-          
+
           <div className="flex items-center justify-between gap-4 flex-wrap">
-          <DateFilter
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
-          />
+            <DateFilter
+              selectedDate={selectedDate}
+              onDateChange={setSelectedDate}
+            />
 
-          <ExportarExcelButton
-           encomiendas={encomiendasByDate}
-           localidad ={localidades}
-          />
+            <ExportarExcelButton
+              encomiendas={encomiendasByDate}
+              localidad={localidades}
+            />
 
-          <Filterlocalidades  
-            localidades={localidades}
-            selectedLocalidad={selectedLocalidad}
-            onLocalidadChange={setSelectedLocalidad}
-          />
+            <Filterlocalidades
+              localidades={localidades}
+              selectedLocalidad={selectedLocalidad}
+              onLocalidadChange={setSelectedLocalidad}
+            />
           </div>
 
           {/* Encomiendas Table */}

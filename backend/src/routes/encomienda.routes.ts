@@ -2,34 +2,29 @@ import express from 'express';
 import encomiendaController from '../controllers/encomienda/encomienda.controller.ts';
 import { validarUpdateEncomienda, validarCamposEncomiendaPut } from '../middlewares/encomienda/validarUpdateEncomienda.ts';
 import { validarCrearEncomienda } from '../middlewares/encomienda/validateEncomienda.ts';
-
+import { verificarToken, verificarRol, /* verificarLocalidadChofer */ validarAccesoLocalidad } from '../middlewares/auth/authMiddleware.ts';
 
 const router = express.Router();
 
-//router.post('/',/* validarCrearEncomienda, */ encomiendaController.createEncomienda);
-//router.get('/:id', encomiendaController.getEncomiendaById);
-//router.get('/', encomiendaController.getAllEncomiendas);
-//router.get('/cliente', encomiendaController.FilteredEncomiendas);
-//router.get("/cliente/:id", encomiendaController.getEncomiendasByCliente);
-//router.get("/fecha",encomiendaController.getEncomiendasByFecha);
-//router.put('/:id',/* validarCamposEncomiendaPut , */encomiendaController.updateEncomienda);
-//router.put('/:id/estado', encomiendaController.updateEstado);
-//router.delete('/:id', encomiendaController.deleteEncomienda);
-// 1) Rutas específicas con palabra fija
+// Aplicar autenticación a todas las rutas
+router.use(verificarToken);
+/* router.use(verificarLocalidadChofer); */
+
+// Rutas específicas con palabra fija
 router.get("/fecha", encomiendaController.getEncomiendasByFecha);
 router.get("/cliente", encomiendaController.FilteredEncomiendas);
 
-// 2) Rutas con parámetros
+// Rutas con parámetros
 router.get("/cliente/:id", encomiendaController.getEncomiendasByCliente);
 router.get("/:id", encomiendaController.getEncomiendaById);
 
-// 3) Ruta general (siempre al final)
+// Ruta general (siempre al final)
 router.get("/", encomiendaController.getAllEncomiendas);
 
-// Otros métodos
-router.post("/", encomiendaController.createEncomienda);
-router.put("/:id", encomiendaController.updateEncomienda);
-router.put('/:id/estado', encomiendaController.updateEstado);
-router.delete("/:id", encomiendaController.deleteEncomienda);
+// Otros métodos - requieren permisos específicos
+router.post("/", verificarRol(['superUsuario', 'administrador', 'personal']), encomiendaController.createEncomienda);
+router.put("/:id", verificarRol(['superUsuario', 'administrador', 'personal']), validarAccesoLocalidad, encomiendaController.updateEncomienda);
+router.put('/:id/estado', verificarRol(['superUsuario', 'administrador', 'personal', 'chofer']), validarAccesoLocalidad, encomiendaController.updateEstado);
+router.delete("/:id", verificarRol(['superUsuario', 'administrador']), encomiendaController.deleteEncomienda);
 
 export default router;
