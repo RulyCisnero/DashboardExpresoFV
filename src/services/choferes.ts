@@ -1,21 +1,19 @@
 import { type ChoferFormData, type Chofer } from "../types/encomienda"
+import { apiFetch } from "./apiClient.ts"
 
 const API_URL = "http://localhost:5100/api/choferes"
 
 export const ChoferesService = {
-  
+
   async getAll(): Promise<Chofer[]> {
-    const res = await fetch(API_URL, { cache: "no-store" })
+    const res = await apiFetch(API_URL, { cache: "no-store" })
     if (!res.ok) throw new Error("Error al cargar choferes")
     return res.json()
   },
 
   async addNewChofer(data: ChoferFormData): Promise<Chofer> {
-    const res = await fetch(API_URL, {
+    const res = await apiFetch(API_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(data),
     })
 
@@ -28,11 +26,8 @@ export const ChoferesService = {
   },
 
   async updateChofer(id: number, data: ChoferFormData): Promise<Chofer> {
-    const res = await fetch(`${API_URL}/${id}`, {
+    const res = await apiFetch(`${API_URL}/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
       body: JSON.stringify(data),
     })
     if (!res.ok) throw new Error("Error al actualizar chofer")
@@ -40,7 +35,7 @@ export const ChoferesService = {
   },
 
   async deleteChofer(id: number): Promise<void> {
-    const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" })
+    const res = await apiFetch(`${API_URL}/${id}`, { method: "DELETE" })
     if (!res.ok) throw new Error("Error al eliminar chofer")
   },
 
