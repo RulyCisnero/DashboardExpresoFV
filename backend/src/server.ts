@@ -7,16 +7,27 @@ import routes from './routes/index.js';
 
 const server = express();
 const PORT = process.env.PORT || 3000;
-
+console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
+console.log("NODE_ENV:", process.env.NODE_ENV);
 // Configurar CORS para permitir credenciales
-server.use(cors({
+/* server.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:3000',
     'https://expresofv.netlify.app'
   ],
   credentials: true,
+})); */
+server.use(cors({
+  origin: true,
+  credentials: true,
 }));
+
+server.options('*', cors({
+  origin: true,
+  credentials: true,
+}));
+
 server.use(express.json());
 server.use(cookieParser());
 
