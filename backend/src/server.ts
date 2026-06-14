@@ -23,7 +23,7 @@ server.use(cors({
   credentials: true,
 }));
 
-server.options('*', cors({
+server.options("/*", cors({
   origin: true,
   credentials: true,
 }));
