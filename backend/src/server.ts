@@ -10,12 +10,13 @@ const PORT = process.env.PORT || 3000;
 
 // Configurar CORS para permitir credenciales
 server.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? process.env.FRONTEND_URL
-    : ['http://localhost:5173', 'http://localhost:3000'],
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://expresofv.netlify.app'
+  ],
   credentials: true,
 }));
-
 server.use(express.json());
 server.use(cookieParser());
 
