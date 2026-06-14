@@ -169,7 +169,7 @@ export function Sidebar({
           </div>
 
           <div className="mt-auto p-4 border-t">
-            <div className="text-xs text-gray-500 text-center">Sistema de Gestión de Encomiendas v1.0</div>
+            <div className="text-xs text-gray-500 text-center">Sistema de Gestión de Encomiendas v2.0 (con color)</div>
           </div>
         </div>
       </SheetContent>
