@@ -10,7 +10,7 @@ import { useAuth } from "../hooks/useAuth"
 
 // Components
 import { DashboardHeader } from "../components/dashboard/dashboard-header"
-import { DesktopSidebar } from "../components/layout/sidebar"
+import { Sidebar, DesktopSidebar } from "../components/layout/sidebar"
 import { StatsCards } from "../components/dashboard/stats-cards"
 import { EncomiendasTable } from "../components/dashboard/encomiendas-table"
 import { EncomiendaDetailModal } from "../components/modals/encomienda-detail-modal"
@@ -130,6 +130,22 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen">
+
+       {/* Sidebar Mobile */}
+    {usuario?.rol !== "superUsuario" && (
+      <Sidebar
+        onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
+        onAddCliente={() => setIsAddClienteOpen(true)}
+        onAddChofer={() => setIsAddChoferOpen(true)}
+        onAddDestino={() => setIsAddDestinoOpen(true)}
+        onShowHistorial={() => setIsHistoryOpen(true)}
+        onShowBuscador={() => setIsSearchOpen(true)}
+        onViewClientes={() => setIsViewClientesOpen(true)}
+        onViewChoferes={() => setIsViewChoferesOpen(true)}
+        onViewDestinos={() => setIsViewDestinosOpen(true)}
+      />
+    )}
+
       {/* Sidebar Desktop */}
       {usuario?.rol !== "chofer" && (
         <DesktopSidebar
