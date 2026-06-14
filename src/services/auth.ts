@@ -1,6 +1,7 @@
 import type { LoginRequest, AuthResponse, User } from "../types/auth.ts";
 
-const API_URL = "http://localhost:5100/api/auth";
+//const API_URL = "http://localhost:5100/api/auth";
+const API_URL = "http://https://expresofv.netlify.app/api/auth"
 
 export const AuthService = {
   async login(email: string, password: string): Promise<AuthResponse> {
