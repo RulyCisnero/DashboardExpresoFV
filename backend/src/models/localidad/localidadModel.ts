@@ -1,4 +1,4 @@
-import pool from '../../database/connectionPostgreSQL.ts';
+import pool from '../../database/connectionPostgreSQL.js';
 import type { Localidad } from '../../interfaces/localidad.ts';
 
 class LocalidadModel {

@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import choferModel from '../../models/chofer/choferModel.ts';
+import choferModel from '../../models/chofer/choferModel.js';
 
 export class ChoferController {
     async createChofer(req: Request, res: Response): Promise<void> {

@@ -1,4 +1,4 @@
-import pool from '../../database/connectionPostgreSQL.ts';
+import pool from '../../database/connectionPostgreSQL.js';
 import type { ICliente, IClienteVista } from '../../interfaces/Index.ts'
 
 class ClienteModel {

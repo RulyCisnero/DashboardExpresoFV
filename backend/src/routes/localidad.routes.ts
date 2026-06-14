@@ -1,9 +1,9 @@
 import { Router } from "express";
-import LocalidadController from "../controllers/localidad/localidad.controller.ts";
-import { validarLocalidad } from '../middlewares/localidad/validateLocalidad.ts';
-import { checkLocalidadExists, checkLocalidadNombreDuplicado } from '../middlewares/localidad/checkLocalidadExists.ts';
-import { validateLocalidadId } from '../middlewares/localidad/validateLocalidadId.ts';
-import { verificarToken, verificarRol } from '../middlewares/auth/authMiddleware.ts';
+import LocalidadController from "../controllers/localidad/localidad.controller.js";
+import { validarLocalidad } from '../middlewares/localidad/validateLocalidad.js';
+import { checkLocalidadExists, checkLocalidadNombreDuplicado } from '../middlewares/localidad/checkLocalidadExists.js';
+import { validateLocalidadId } from '../middlewares/localidad/validateLocalidadId.js';
+import { verificarToken, verificarRol } from '../middlewares/auth/authMiddleware.js';
 
 const router = Router();
 

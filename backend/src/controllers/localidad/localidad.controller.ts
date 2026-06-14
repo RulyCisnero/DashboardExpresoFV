@@ -1,5 +1,5 @@
 import type { Request, Response } from 'express';
-import localidadModel from '../../models/localidad/localidadModel.ts';
+import localidadModel from '../../models/localidad/localidadModel.js';
 
 export class LocalidadController {
     async getAllLocalidades(req: Request, res: Response): Promise<void> {

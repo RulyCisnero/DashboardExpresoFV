@@ -1,4 +1,4 @@
-import { Localidad } from "./localidad.ts";
+import { Localidad } from "./localidad.js";
 
 export interface ICliente{
     id: number

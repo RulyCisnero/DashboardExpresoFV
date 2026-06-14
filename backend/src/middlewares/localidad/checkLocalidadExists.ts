@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import  pool  from '../../database/connectionPostgreSQL.ts';
+import  pool  from '../../database/connectionPostgreSQL.js';
 
 /**
  * Verifica en la base de datos que la localidad con el ID proporcionado exista.

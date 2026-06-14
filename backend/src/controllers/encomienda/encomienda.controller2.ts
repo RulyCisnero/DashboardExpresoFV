@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
-import EncomiendaModel from "../../models/encomienda/encomiendaModel.ts";
-import { IEncomiendaVista } from '../../interfaces/encomienda.ts';
+import EncomiendaModel from "../../models/encomienda/encomiendaModel.js";
 
 const estadosValidos = ['Pendiente', 'Entregada'];
 export class EncomiendaController {

@@ -1,7 +1,5 @@
 import type{ Request, Response } from 'express';
-import clienteModel from '../../models/cliente/clienteModel.ts';
-import type { ICliente, IClienteVista } from '../../interfaces/Index.ts'
-
+import clienteModel from '../../models/cliente/clienteModel.js';
 
 export class ClienteController {
 

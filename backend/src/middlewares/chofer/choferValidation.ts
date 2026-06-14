@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import pool from '../../database/connectionPostgreSQL.ts';
+import pool from '../../database/connectionPostgreSQL.js';
 
 // Validar campos requeridos en el body
 export function validarCamposChofer(req: Request, res: Response, next: NextFunction): void {

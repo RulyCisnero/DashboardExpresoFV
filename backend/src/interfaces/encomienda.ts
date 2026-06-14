@@ -1,6 +1,3 @@
-import { ICliente } from "./cliente.ts";
-import { IChofer } from "./chofer.ts";
-import { Localidad } from "./localidad.ts";
 
 /* 
   export interface IEncomienda {

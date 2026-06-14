@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from 'express';
-import { jwtUtils } from '../../utils/jwt.ts';
+import { jwtUtils } from '../../utils/jwt.js';
 import type { Rol, ITokenPayload } from '../../interfaces/usuario.ts';
 
 // Extender Request para agregar propiedades de usuario

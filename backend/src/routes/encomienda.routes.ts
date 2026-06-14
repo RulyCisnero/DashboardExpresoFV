@@ -1,8 +1,8 @@
 import express from 'express';
-import encomiendaController from '../controllers/encomienda/encomienda.controller.ts';
-import { validarUpdateEncomienda, validarCamposEncomiendaPut } from '../middlewares/encomienda/validarUpdateEncomienda.ts';
-import { validarCrearEncomienda } from '../middlewares/encomienda/validateEncomienda.ts';
-import { verificarToken, verificarRol, /* verificarLocalidadChofer */ validarAccesoLocalidad } from '../middlewares/auth/authMiddleware.ts';
+import encomiendaController from '../controllers/encomienda/encomienda.controller.js';
+import { validarUpdateEncomienda, validarCamposEncomiendaPut } from '../middlewares/encomienda/validarUpdateEncomienda.js';
+import { validarCrearEncomienda } from '../middlewares/encomienda/validateEncomienda.js';
+import { verificarToken, verificarRol, /* verificarLocalidadChofer */ validarAccesoLocalidad } from '../middlewares/auth/authMiddleware.js';
 
 const router = express.Router();
 
