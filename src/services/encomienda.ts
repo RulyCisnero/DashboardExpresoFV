@@ -6,8 +6,8 @@ import type {
 } from "../types/encomienda"
 import { apiFetch } from "./apiClient.ts"
 
-const API_URL = "http://localhost:5100/api/encomiendas"
-
+//const API_URL = "http://localhost:5100/api/encomiendas"
+const API_URL = "https://dashboardexpresofv.onrender.com/api/encomiendas"
 export const EncomiendaService = {
 
   /** 🔹 Obtener TODAS las encomiendas (crudas) */

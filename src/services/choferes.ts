@@ -1,7 +1,8 @@
 import { type ChoferFormData, type Chofer } from "../types/encomienda"
 import { apiFetch } from "./apiClient.ts"
 
-const API_URL = "http://localhost:5100/api/choferes"
+//const API_URL = "http://localhost:5100/api/choferes"
+const API_URL = "https://dashboardexpresofv.onrender.com/api/choferes"
 
 export const ChoferesService = {
 
