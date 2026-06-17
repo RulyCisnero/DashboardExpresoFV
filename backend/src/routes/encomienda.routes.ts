@@ -13,6 +13,7 @@ router.use(verificarToken);
 // Rutas específicas con palabra fija
 router.get("/fecha", encomiendaController.getEncomiendasByFecha);
 router.get("/cliente", encomiendaController.FilteredEncomiendas);
+router.get("/chofer/:id", encomiendaController.getEncomiendasByChofer);
 
 // Rutas con parámetros
 router.get("/cliente/:id", encomiendaController.getEncomiendasByCliente);

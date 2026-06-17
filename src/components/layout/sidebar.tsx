@@ -16,6 +16,8 @@ interface SidebarProps {
   onViewClientes: () => void
   onViewChoferes: () => void
   onViewDestinos: () => void
+  open: boolean
+  onOpenChange: (value: boolean) => void
 }
 
 interface MenuItem {
@@ -46,8 +48,9 @@ export function Sidebar({
   onViewClientes,
   onViewChoferes,
   onViewDestinos,
+  open,
+  onOpenChange,
 }: SidebarProps) {
-  const [open, setOpen] = useState(false)
 
   const menuItems: MenuItemType[] = [
     {
@@ -55,7 +58,7 @@ export function Sidebar({
       label: "Buscador de Encomiendas",
       onClick: () => {
         onShowBuscador()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-blue-600",
     },
@@ -64,7 +67,7 @@ export function Sidebar({
       label: "Agregar Encomienda",
       onClick: () => {
         onAddEncomienda()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-indigo-600",
     },
@@ -73,7 +76,7 @@ export function Sidebar({
       label: "Agregar Cliente",
       onClick: () => {
         onAddCliente()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-green-600",
     },
@@ -82,7 +85,7 @@ export function Sidebar({
       label: "Agregar Chofer",
       onClick: () => {
         onAddChofer()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-purple-600",
     },
@@ -91,7 +94,7 @@ export function Sidebar({
       label: "Agregar Destino",
       onClick: () => {
         onAddDestino()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-orange-600",
     },
@@ -100,7 +103,7 @@ export function Sidebar({
       label: "Historial de Encomiendas",
       onClick: () => {
         onShowHistorial()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-gray-600",
     },
@@ -111,7 +114,7 @@ export function Sidebar({
       label: "Ver Todos los Clientes",
       onClick: () => {
         onViewClientes()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-teal-600",
     },
@@ -120,7 +123,7 @@ export function Sidebar({
       label: "Ver Todos los Choferes",
       onClick: () => {
         onViewChoferes()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-violet-600",
     },
@@ -129,19 +132,21 @@ export function Sidebar({
       label: "Ver Todos los Destinos",
       onClick: () => {
         onViewDestinos()
-        setOpen(false)
+        onOpenChange(false)
       },
       color: "text-amber-600",
     },
   ]
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="sm" className="md:hidden fixed top-4 left-4 z-[100]">
-          <Menu className="h-5 w-5" />
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      {/* <SheetTrigger asChild>
+        <Button variant="ghost" size="sm"
+          className="md:hidden text-white bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30rounded-lg"
+        >
+          <Menu className="h-6 w-6" />
         </Button>
-      </SheetTrigger>
+      </SheetTrigger> */}
       <SheetContent side="left" className="w-80">
         <div className="flex flex-col h-full">
           <div className="px-3 py-2">
@@ -169,7 +174,7 @@ export function Sidebar({
           </div>
 
           <div className="mt-auto p-4 border-t">
-            <div className="text-xs text-gray-500 text-center">Sistema de Gestión de Encomiendas v2.0 (con color)</div>
+            <div className="text-xs text-gray-500 text-center">Sistema de Gestión de Encomiendas v2.0 Mobile</div>
           </div>
         </div>
       </SheetContent>
@@ -278,7 +283,7 @@ export function DesktopSidebar({
         </div>
 
         <div className="flex-shrink-0 p-4 border-t border-gray-200">
-          <div className="text-xs text-gray-500 text-center">Sistema de Gestión v1.0</div>
+          <div className="text-xs text-gray-500 text-center">Sistema de Gestión v2.0 Desktop</div>
         </div>
       </div>
     </div>

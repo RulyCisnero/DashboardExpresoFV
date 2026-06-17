@@ -46,7 +46,7 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
                 </p> */}
                 <p className="flex items-center gap-2">
                   <Phone className="h-4 w-4" />
-                  {encomienda?.cliente.telefono}
+                  {encomienda?.cliente.telefono || "—"}
                 </p>
                 <p className="flex items-center gap-2">
                   <MapPin className="h-4 w-4" />

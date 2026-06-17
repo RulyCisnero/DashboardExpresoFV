@@ -75,6 +75,7 @@ export default function Dashboard() {
   const [isViewDestinosOpen, setIsViewDestinosOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const { usuario } = useAuth()
+  const [menuOpen, setMenuOpen] = useState(false)
 
 
   // Filtrar encomiendas por localidad
@@ -131,20 +132,22 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen">
 
-       {/* Sidebar Mobile */}
-    {usuario?.rol !== "superUsuario" && (
-      <Sidebar
-        onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
-        onAddCliente={() => setIsAddClienteOpen(true)}
-        onAddChofer={() => setIsAddChoferOpen(true)}
-        onAddDestino={() => setIsAddDestinoOpen(true)}
-        onShowHistorial={() => setIsHistoryOpen(true)}
-        onShowBuscador={() => setIsSearchOpen(true)}
-        onViewClientes={() => setIsViewClientesOpen(true)}
-        onViewChoferes={() => setIsViewChoferesOpen(true)}
-        onViewDestinos={() => setIsViewDestinosOpen(true)}
-      />
-    )}
+      {/* Sidebar Mobile */}
+      {usuario?.rol == "superUsuario" && (
+        <Sidebar
+          onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
+          onAddCliente={() => setIsAddClienteOpen(true)}
+          onAddChofer={() => setIsAddChoferOpen(true)}
+          onAddDestino={() => setIsAddDestinoOpen(true)}
+          onShowHistorial={() => setIsHistoryOpen(true)}
+          onShowBuscador={() => setIsSearchOpen(true)}
+          onViewClientes={() => setIsViewClientesOpen(true)}
+          onViewChoferes={() => setIsViewChoferesOpen(true)}
+          onViewDestinos={() => setIsViewDestinosOpen(true)}
+          open={menuOpen}
+          onOpenChange={setMenuOpen}
+        />
+      )}
 
       {/* Sidebar Desktop */}
       {usuario?.rol !== "chofer" && (
@@ -158,12 +161,16 @@ export default function Dashboard() {
           onViewClientes={() => setIsViewClientesOpen(true)}
           onViewChoferes={() => setIsViewChoferesOpen(true)}
           onViewDestinos={() => setIsViewDestinosOpen(true)}
+          open={menuOpen}
+          onOpenChange={setMenuOpen}
         />
       )}
       {/* Main Content */}
       <div className="md:pl-64">
         {/* Header */}
         <DashboardHeader
+          onOpenMenu={() => setMenuOpen(!menuOpen)}
+          //onOpenMenu={() => setMenuOpen(true)}
         />
 
         {/* Dashboard Content */}

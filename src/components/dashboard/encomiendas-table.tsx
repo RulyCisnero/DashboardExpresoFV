@@ -15,14 +15,17 @@ import type { EncomiendaRich } from "../../types/encomienda"
 interface EncomiendasTableProps {
   encomiendasData: EncomiendaRich[]
   onViewDetails: (encomienda: EncomiendaRich) => void
-  onEdit: (encomienda: EncomiendaRich) => void
-  onDelete: (id: number) => void
+  onEdit?: (encomienda: EncomiendaRich) => void
+  onDelete?: (id: number) => void
+  modo?: "admin" | "chofer"
+  onMarcarEntregada?: (id: number) => void
+
 }
 
 type SortField = keyof EncomiendaRich
 type SortDirection = "asc" | "desc"
 
-export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDelete }: EncomiendasTableProps) {
+export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDelete, modo = 'admin', onMarcarEntregada }: EncomiendasTableProps) {
   const [sortField, setSortField] = useState<SortField>("fecha_creacion")
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
 
@@ -142,38 +145,69 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                       <Button
                         variant="ghost"
                         size="icon"
-                        onClick={(e) =>{
+                        onClick={(e) => {
                           e.stopPropagation()
-                          onViewDetails(encomienda)}
-                        } 
+                          onViewDetails(encomienda)
+                        }
+                        }
                         title="Ver detalles"
                       >
                         <Eye className="h-4 w-4" />
+                        {modo === "chofer" && encomienda.estado !== "Entregada" && (
+
+                          <Button
+
+                            variant="ghost"
+
+                            size="icon"
+
+                            onClick={(e) => {
+
+                              e.stopPropagation()
+
+                              onMarcarEntregada?.(encomienda.id)
+
+                            }}
+
+                            title="Marcar entregada"
+
+                          >
+                            ✓
+                          </Button>
+
+                        )}
                       </Button>
-                      <Button 
-                      variant="ghost" 
-                      size="icon" 
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        onEdit(encomienda)}}
-                       title="Editar">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          onDelete(encomienda.id)}}
-                        title="Eliminar"
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      {modo === "admin" && (
+                        <>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onEdit?.(encomienda)
+                            }}
+                            title="Editar">
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onDelete?.(encomienda.id)
+                            }}
+                            title="Eliminar"
+                            className="text-destructive hover:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
               ))}
+
             </TableBody>
           </Table>
         </div>

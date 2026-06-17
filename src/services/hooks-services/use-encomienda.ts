@@ -104,6 +104,53 @@ export const useEncomienda = () => {
     }
   }
 
+  const getByChofer = async (id: number) => {
+    const data =
+      await EncomiendaService.getByChofer(id)
+    setEncomiendas(data)
+
+  }
+
+  const updateEstadoEncomienda = async (
+    id: number,
+    estado: "Pendiente" | "Entregada"
+  ) => {
+
+    try {
+
+      await EncomiendaService.updateEstado(id, estado)
+
+
+      setEncomiendas(prev =>
+        prev.map(e =>
+          e.id === id
+            ? { ...e, estado }
+            : e
+        )
+      )
+
+
+      toast({
+        title: "Estado actualizado",
+        description: "La encomienda fue marcada como entregada",
+        variant: "success"
+      })
+
+
+    } catch (error) {
+
+      console.error(error)
+
+      toast({
+        title: "Error",
+        description: "No se pudo actualizar el estado",
+        variant: "destructive"
+      })
+
+    }
+
+  }
+
   useEffect(() => {
     loadEncomiendas()
   }, [])
@@ -116,6 +163,8 @@ export const useEncomienda = () => {
     addNewEncomienda,
     getEncomiendaById,
     updateEncomienda,
-    deleteEncomienda
+    deleteEncomienda,
+    getByChofer,
+    updateEstadoEncomienda
   }
 }

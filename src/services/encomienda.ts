@@ -67,4 +67,32 @@ export const EncomiendaService = {
     const res = await apiFetch(`${API_URL}/${id}`, { method: "DELETE" })
     if (!res.ok) throw new Error("Error al eliminar la encomienda")
   },
+
+  async getByChofer(choferId: number): Promise<EncomiendaRich[]> {
+
+    const res = await apiFetch(`${API_URL}/chofer/${choferId}`)
+
+    if (!res.ok) {
+      throw new Error("Error al cargar encomiendas del chofer")
+    }
+
+    return res.json()
+  },
+
+  async updateEstado(id: number, estado: "Pendiente" | "Entregada") {
+
+    const res = await apiFetch(`${API_URL}/${id}/estado`, {
+      method: "PUT",
+      body: JSON.stringify({
+        estado
+      })
+    })
+
+    if (!res.ok) {
+      throw new Error("Error al actualizar estado")
+    }
+
+    return res.json()
+  },
+
 }

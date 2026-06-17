@@ -1,28 +1,48 @@
 "use client"
 import { UserMenu } from "../layout/user-menu"
+import { Menu } from "lucide-react"
+import { Button } from "../ui/button"
 
 interface DashboardHeaderProps {
   /*  localidades: Localidad[]
    selectedLocalidad: Localidad | "Todas"
    onLocalidadChange: (value: Localidad | "Todas") => void; */
+  onOpenMenu: () => void
 }
 
-export function DashboardHeader({ /* localidades, selectedLocalidad, onLocalidadChange */ }: DashboardHeaderProps) {
+export function DashboardHeader({ /* localidades, selectedLocalidad, onLocalidadChange */onOpenMenu }: DashboardHeaderProps) {
 
   return (
-    <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Sistema de Encomiendas</h1>
-        <p className="text-muted-foreground">Gestiona y rastrea todas las encomiendas de tu empresa</p>
-      </div>
-      <div className="flex flex-wrap gap-2">
-      </div>
-      {/* Separador visual */}
-      <div className="hidden md:block w-px h-6 bg-border mx-2" />
+    <header className=" flex  items-center justify-between p-4">
+      <div className="flex items-center gap-3">
 
-      {/* Menú de usuario */}
+        <Button
+          className="md:hidden text-white bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30rounded-lg"
+          variant="ghost"
+          onClick={onOpenMenu}
+        > 
+          <Menu />
+         </Button> 
+
+
+        <div>
+          <h1 className="text-xl font-bold">
+            Sistema de Encomiendas
+          </h1>
+
+          <p className="text-muted-foreground text-sm">
+            Gestiona y rastrea todas las encomiendas
+          </p>
+
+        </div>
+
+      </div>
+
+
       <UserMenu />
 
-    </div>
+
+    </header >
   )
+
 }
