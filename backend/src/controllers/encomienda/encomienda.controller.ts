@@ -200,5 +200,23 @@ export class EncomiendaController {
     }
   }
 
+  async getEncomiendasByChoferHoy(req: Request,res: Response) {
+    try {
+      const choferId = Number(req.params.id)
+      if (isNaN(choferId)) {
+        res.status(400).json({
+          message: "ID inválido"
+        })
+        return
+      }
+
+      const encomiendas = await EncomiendaModel.getEncomiendasByChoferHoy(choferId)
+      res.status(200).json(encomiendas)
+    } catch (error) {
+      console.error(error)
+      res.status(500).json({message:"Error al obtener encomiendas del chofer"})
+    }
+  }
+
 }
 export default new EncomiendaController();

@@ -95,4 +95,21 @@ export const EncomiendaService = {
     return res.json()
   },
 
+  async getByChoferHoy(
+    choferId: number
+  ): Promise<EncomiendaRich[]> {
+    const res =
+      await apiFetch(`${API_URL}/chofer/${choferId}/hoy`)
+
+    if (!res.ok) {
+
+      throw new Error(
+        "Error cargando encomiendas del chofer"
+      )
+
+    }
+
+    return res.json()
+  }
+
 }

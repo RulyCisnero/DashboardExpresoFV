@@ -1,4 +1,4 @@
-import { AuthService } from "./auth.ts";
+import { AuthService } from "./auth";
 
 interface FetchOptions extends RequestInit {
   skipAuth?: boolean;
@@ -14,11 +14,21 @@ export async function apiFetch(
 
   // Agregar token si no es skipAuth
   if (!skipAuth) {
+
+  const token = AuthService.getStoredToken();
+
+  console.log("TOKEN EN API FETCH:", token);
+
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+}
+  /* if (!skipAuth) {
     const token = AuthService.getStoredToken();
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }
-  }
+  } */
 
   // Asegurar que siempre hay Content-Type
   if (!headers.has("Content-Type") && fetchOptions.body) {

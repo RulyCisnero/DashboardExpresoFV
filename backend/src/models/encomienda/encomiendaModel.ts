@@ -792,7 +792,7 @@ class EncomiendaModel {
     }
 
     async getEncomiendasByChofer(choferId: number): Promise<IEncomiendaVista[]> {
-    const query = `
+        const query = `
         SELECT
         e.id AS encomienda_id,
         e.tipo,
@@ -870,72 +870,133 @@ class EncomiendaModel {
     `
 
 
-    const result = await pool.query(query,[choferId])
+        const result = await pool.query(query, [choferId])
 
 
-    return result.rows.map(row => ({
-        id: row.encomienda_id,
+        return result.rows.map(row => ({
+            id: row.encomienda_id,
 
-        tipo: row.tipo,
-        estado: row.estado,
-        direccion_destino: row.direccion_destino,
-        fecha_creacion: new Date(row.fecha_creacion),
-        descripcion: row.descripcion,
-        precio: Number(row.precio),
-
-
-        origen:{
-            id: row.origen_id,
-            nombre: row.origen_nombre
-        },
+            tipo: row.tipo,
+            estado: row.estado,
+            direccion_destino: row.direccion_destino,
+            fecha_creacion: new Date(row.fecha_creacion),
+            descripcion: row.descripcion,
+            precio: Number(row.precio),
 
 
-        destino:{
-            id: row.destino_id,
-            nombre: row.destino_nombre
-        },
+            origen: {
+                id: row.origen_id,
+                nombre: row.origen_nombre
+            },
 
 
-        cliente:{
-            id: row.cliente_id,
-            nombre: row.cliente_nombre,
-            apellido: row.cliente_apellido,
-            direccion_local: row.cliente_direccion,
-            telefono: row.cliente_telefono,
-            email: row.cliente_email,
+            destino: {
+                id: row.destino_id,
+                nombre: row.destino_nombre
+            },
 
-            localidad:{
-                id: row.cliente_localidad_id,
-                nombre: row.cliente_localidad_nombre
+
+            cliente: {
+                id: row.cliente_id,
+                nombre: row.cliente_nombre,
+                apellido: row.cliente_apellido,
+                direccion_local: row.cliente_direccion,
+                telefono: row.cliente_telefono,
+                email: row.cliente_email,
+
+                localidad: {
+                    id: row.cliente_localidad_id,
+                    nombre: row.cliente_localidad_nombre
+                }
+            },
+
+
+            destinatario: {
+                id: row.destinatario_id,
+                nombre: row.destinatario_nombre,
+                apellido: row.destinatario_apellido,
+                direccion_local: row.destinatario_direccion,
+                telefono: row.destinatario_telefono,
+                email: row.destinatario_email,
+
+                localidad: {
+                    id: row.destinatario_localidad_id,
+                    nombre: row.destinatario_localidad_nombre
+                }
+            },
+
+
+            chofer: {
+                id: row.chofer_id,
+                nombre: row.chofer_nombre,
+                apellido: row.chofer_apellido,
+                telefono: row.chofer_telefono,
+                email: row.chofer_email
             }
-        },
+
+        }))
+
+    }
+
+    async getEncomiendasByChoferHoy(choferId: number) {
+
+        const result = await pool.query(
+            `
+        SELECT
+
+        e.id AS encomienda_id,
+        e.tipo,
+        e.estado,
+        e.direccion_destino,
+        e.fecha_creacion,
+        e.descripcion,
+        e.precio,
 
 
-        destinatario:{
-            id: row.destinatario_id,
-            nombre: row.destinatario_nombre,
-            apellido: row.destinatario_apellido,
-            direccion_local: row.destinatario_direccion,
-            telefono: row.destinatario_telefono,
-            email: row.destinatario_email,
+        -- cliente
 
-            localidad:{
-                id: row.destinatario_localidad_id,
-                nombre: row.destinatario_localidad_nombre
-            }
-        },
+        c.id AS cliente_id,
+        c.nombre AS cliente_nombre,
+        c.apellido AS cliente_apellido,
 
 
-        chofer:{
-            id: row.chofer_id,
-            nombre: row.chofer_nombre,
-            apellido: row.chofer_apellido,
-            telefono: row.chofer_telefono,
-            email: row.chofer_email
-        }
+        -- chofer
 
-    }))
+        ch.id AS chofer_id,
+        ch.nombre AS chofer_nombre,
+        ch.apellido AS chofer_apellido,
+        ch.telefono AS chofer_telefono,
+        ch.email AS chofer_email
 
-  }
+
+        FROM encomienda e
+
+
+        LEFT JOIN cliente c
+        ON e.cliente_id = c.id
+
+
+        LEFT JOIN chofer ch
+        ON e.chofer_id = ch.id
+
+
+
+        WHERE e.chofer_id = $1
+
+        AND DATE(e.fecha_creacion) = CURRENT_DATE
+
+
+
+        ORDER BY e.fecha_creacion DESC
+
+
+        `,
+            [choferId]
+        )
+
+
+        return result.rows
+
+    }
 };
 export default new EncomiendaModel();

@@ -12,17 +12,17 @@ export default function ChoferDashboard() {
     const {
         encomiendas,
         getByChofer,
-        updateEstadoEncomienda
+        updateEstadoEncomienda,
+        getByChoferHoy,
     } = useEncomienda()
 
     useEffect(() => {
-
-        if (usuario?.id) {
-            getByChofer(usuario.id)
+        if (usuario) {
+            getByChoferHoy(usuario.id)
         }
-
     }, [usuario])
     console.log("USUARIO CHOFER:", usuario)
+    //console.log("CHOFER ID:", chofer.
     console.log("ENCOMIENDAS DEL CHOFER:", encomiendas)
 
     const marcarEntregada = (id: number) => {
