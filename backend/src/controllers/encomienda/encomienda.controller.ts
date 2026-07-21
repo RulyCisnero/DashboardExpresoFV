@@ -1,6 +1,5 @@
 import type { Request, Response } from "express";
 import EncomiendaModel from "../../models/encomienda/encomiendaModel.js";
-import encomiendaModel from "../../models/encomienda/encomiendaModel.js";
 
 const ESTADOS_VALIDOS = ["Pendiente", "Entregada"];
 
@@ -140,7 +139,7 @@ export class EncomiendaController {
         return res.status(400).json({ message: "ID inválido" });
       }
 
-      const encomiendas = await encomiendaModel.getEncomiendasByCliente(clienteId);
+      const encomiendas = await EncomiendaModel.getEncomiendasByCliente(clienteId);
 
       res.status(200).json(encomiendas);
 
@@ -152,12 +151,38 @@ export class EncomiendaController {
 
   async getEncomiendasByFecha(req: Request, res: Response) {
     try {
-      const fecha = req.query.fecha as string;
-      if (!fecha) {
+      const fechaParam = Array.isArray(req.query.fecha)
+        ? req.query.fecha[0]
+        : typeof req.query.fecha === "string"
+        ? req.query.fecha
+        : "";
+      const fecha = fechaParam.trim() || new Date().toISOString().split("T")[0];
+      const fechaObj = new Date(fecha);
+
+      if (isNaN(fechaObj.getTime())) {
         return res.status(400).json({ message: "Fecha inválida" });
       }
 
-      const encomiendas = await EncomiendaModel.getEncomiendasByFecha(fecha);
+      let choferId: number | undefined;
+
+      if (req.user?.rol === "chofer") {
+        choferId = req.user.id;
+      } else {
+        const choferIdParam = Array.isArray(req.query.chofer_id)
+          ? req.query.chofer_id[0]
+          : typeof req.query.chofer_id === "string"
+          ? req.query.chofer_id
+          : undefined;
+
+        if (choferIdParam) {
+          choferId = Number(choferIdParam);
+          if (isNaN(choferId)) {
+            return res.status(400).json({ message: "Chofer inválido" });
+          }
+        }
+      }
+
+      const encomiendas = await EncomiendaModel.getEncomiendasByFecha(fecha, choferId);
 
       res.status(200).json(encomiendas);
     } catch (error) {

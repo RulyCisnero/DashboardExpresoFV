@@ -780,15 +780,24 @@ class EncomiendaModel {
         }
     }
 
-    async getEncomiendasByFecha(fecha: string): Promise<IEncomiendaVista[]> {
-        const fechaNormalizada = new Date(fecha).toISOString().split("T")[0];
-        const result = await pool.query(
-            `SELECT * FROM encomienda
-            WHERE fecha_creacion::date = $1
-            ORDER BY id ASC`,
-            [fechaNormalizada]
-        )
-        return result.rows
+    async getEncomiendasByFecha(fecha: string, choferId?: number): Promise<IEncomienda[]> {
+        const fechaObj = new Date(fecha);
+        if (isNaN(fechaObj.getTime())) {
+            throw new Error("Fecha inválida");
+        }
+
+        const fechaNormalizada = fechaObj.toISOString().split("T")[0];
+        let query = `SELECT * FROM encomienda WHERE fecha_creacion::date = $1`;
+        const values: any[] = [fechaNormalizada];
+
+        if (choferId !== undefined) {
+            query += ` AND chofer_id = $2`;
+            values.push(choferId);
+        }
+
+        query += ` ORDER BY fecha_creacion DESC`;
+        const result = await pool.query(query, values);
+        return result.rows;
     }
 
     async getEncomiendasByChofer(choferId: number): Promise<IEncomiendaVista[]> {

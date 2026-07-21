@@ -1,30 +1,21 @@
 import express from 'express';
-import encomiendaController from '../controllers/encomienda/encomienda.controller.js';
-import { validarUpdateEncomienda, validarCamposEncomiendaPut } from '../middlewares/encomienda/validarUpdateEncomienda.js';
-import { validarCrearEncomienda } from '../middlewares/encomienda/validateEncomienda.js';
-import { verificarToken, verificarRol, /* verificarLocalidadChofer */ validarAccesoLocalidad } from '../middlewares/auth/authMiddleware.js';
+import encomiendaController from '../controllers/encomienda/encomienda.controller.ts';
+import { validarUpdateEncomienda, validarCamposEncomiendaPut } from '../middlewares/encomienda/validarUpdateEncomienda.ts';
+import { validarCrearEncomienda } from '../middlewares/encomienda/validateEncomienda.ts';
+import { verificarToken, verificarRol, verificarLocalidadChofer, validarAccesoLocalidad } from '../middlewares/auth/authMiddleware.ts';
 
 const router = express.Router();
 
 // Aplicar autenticación a todas las rutas
 router.use(verificarToken);
-/* router.use(verificarLocalidadChofer); */
+router.use(verificarLocalidadChofer);
 
 // Rutas específicas con palabra fija
+// GET /fecha?fecha=YYYY-MM-DD -> devuelve encomiendas del día solicitado.
+// Cuando el usuario autenticado es chofer, se devuelven solo sus encomiendas.
 router.get("/fecha", encomiendaController.getEncomiendasByFecha);
 router.get("/cliente", encomiendaController.FilteredEncomiendas);
-//router.get("/chofer/:id", encomiendaController.getEncomiendasByChofer);
-//router.get("/chofer/:id/hoy",verificarRol(['chofer']),encomiendaController.getEncomiendasByChoferHoy);
-router.get("/chofer/:id/hoy", (req, res) => {
 
-    console.log("ENTRO AL ENDPOINT HOY")
-    
-    res.json({
-        mensaje: "funciona",
-        id: req.params.id
-    })
-
-})
 // Rutas con parámetros
 router.get("/cliente/:id", encomiendaController.getEncomiendasByCliente);
 router.get("/:id", encomiendaController.getEncomiendaById);
