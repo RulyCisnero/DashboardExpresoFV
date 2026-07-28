@@ -1,5 +1,7 @@
 import type { Request, Response } from "express";
 import EncomiendaModel from "../../models/encomienda/encomiendaModel.js";
+import choferModel from "../../models/chofer/choferModel.js";
+import { UsuarioModel } from "../../models/usuario/usuarioModel.ts";
 
 const ESTADOS_VALIDOS = ["Pendiente", "Entregada"];
 
@@ -7,6 +9,11 @@ export class EncomiendaController {
   async createEncomienda(req: Request, res: Response): Promise<void> {
     try {
       const data = req.body;
+      // Si no se especificó fecha_entrega, por compatibilidad usar la fecha_creacion (solo fecha)
+      if (!data.fecha_entrega && data.fecha_creacion) {
+        const d = new Date(data.fecha_creacion);
+        data.fecha_entrega = isNaN(d.getTime()) ? undefined : d.toISOString().split('T')[0];
+      }
       const nueva = await EncomiendaModel.createEncomienda(data);
       res.status(201).json(nueva);
     } catch (error) {
@@ -151,12 +158,12 @@ export class EncomiendaController {
 
   async getEncomiendasByFecha(req: Request, res: Response) {
     try {
-      const fechaParam = Array.isArray(req.query.fecha)
-        ? req.query.fecha[0]
-        : typeof req.query.fecha === "string"
-        ? req.query.fecha
-        : "";
-      const fecha = fechaParam.trim() || new Date().toISOString().split("T")[0];
+      const fechaParam = req.query.fecha;
+      const fecha = typeof fechaParam === 'string'
+        ? fechaParam.trim() || new Date().toISOString().split('T')[0]
+        : Array.isArray(fechaParam)
+          ? (fechaParam[0] || '').trim() || new Date().toISOString().split('T')[0]
+          : new Date().toISOString().split('T')[0];
       const fechaObj = new Date(fecha);
 
       if (isNaN(fechaObj.getTime())) {
@@ -166,7 +173,27 @@ export class EncomiendaController {
       let choferId: number | undefined;
 
       if (req.user?.rol === "chofer") {
-        choferId = req.user.id;
+        const userEmail = req.user.email;
+        const userNombre = req.user.nombre;
+        const userApellido = req.user.apellido;
+
+        if (userEmail) {
+          const choferRec = await choferModel.getChoferByEmail(userEmail);
+          if (choferRec) {
+            choferId = choferRec.id;
+          }
+        }
+
+        if (!choferId && userNombre && userApellido) {
+          const choferRec = await choferModel.getChoferByNombreApellido(userNombre, userApellido);
+          if (choferRec) {
+            choferId = choferRec.id;
+          }
+        }
+
+        if (!choferId) {
+          return res.status(200).json([]);
+        }
       } else {
         const choferIdParam = Array.isArray(req.query.chofer_id)
           ? req.query.chofer_id[0]

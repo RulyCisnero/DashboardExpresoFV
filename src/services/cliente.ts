@@ -1,8 +1,7 @@
 import type { ClienteFormData, Cliente, ClienteFormInput } from "../types/encomienda"
 import { apiFetch } from "./apiClient.ts"
 
-//const API_URL = "http://localhost:5100/api/clientes"
-const API_URL = "https://dashboardexpresofv.onrender.com/api/clientes"
+const API_URL = "http://localhost:5100/api/clientes"
 
 export const ClienteService = {
   async getAllClientes(): Promise<Cliente[]> {

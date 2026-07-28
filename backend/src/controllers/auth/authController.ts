@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
-import { UsuarioModel } from '../../models/usuario/usuarioModel.js';
-import { bcryptUtils } from '../../utils/bcrypt.js';
-import { jwtUtils } from '../../utils/jwt.js';
+import { UsuarioModel } from '../../models/usuario/usuarioModel.ts';
+import { bcryptUtils } from '../../utils/bcrypt.ts';
+import { jwtUtils } from '../../utils/jwt.ts';
 import type { IAuthResponse, ITokenPayload, IRefreshTokenPayload } from '../../interfaces/usuario.ts';
 
 export class AuthController {
@@ -17,7 +17,7 @@ export class AuthController {
 
       // Buscar usuario con password
       const usuario = await UsuarioModel.getUsuarioWithPasswordByEmail(email);
-      console.log("Usuario encontrado:", usuario);
+
       if (!usuario) {
         res.status(401).json({ error: 'Credenciales inválidas' });
         return;
@@ -25,7 +25,7 @@ export class AuthController {
 
       // Comparar contraseña
       const passwordValida = await bcryptUtils.comparePassword(password, usuario.password_hash);
-      console.log("Password valida:", passwordValida);
+
       if (!passwordValida) {
         res.status(401).json({ error: 'Credenciales inválidas' });
         return;
@@ -36,8 +36,10 @@ export class AuthController {
         id: usuario.id,
         email: usuario.email,
         nombre_usuario: usuario.nombre_usuario,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
         rol: usuario.rol,
-        /* localidad_id: usuario.localidad_id, */
+        localidad_id: usuario.localidad_id,
       };
 
       const refreshTokenPayload: IRefreshTokenPayload = {
@@ -69,7 +71,7 @@ export class AuthController {
           nombre: usuario.nombre,
           apellido: usuario.apellido,
           rol: usuario.rol,
-          /* localidad_id: usuario.localidad_id, */
+          localidad_id: usuario.localidad_id,
         },
       };
 
@@ -165,7 +167,10 @@ export class AuthController {
         id: usuario.id,
         email: usuario.email,
         nombre_usuario: usuario.nombre_usuario,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
         rol: usuario.rol,
+        localidad_id: usuario.localidad_id,
       };
 
       const newAccessToken = jwtUtils.generateToken(newTokenPayload);

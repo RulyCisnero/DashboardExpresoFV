@@ -40,6 +40,26 @@ class ChoferModel {
         }
     }
 
+    async getChoferByEmail(email: string): Promise<IChofer | null> {
+        try {
+            const result = await pool.query("SELECT * FROM chofer WHERE email = $1", [email]);
+            return result.rows[0] || null;
+        } catch (error) {
+            console.error("Error en el modelo getChoferByEmail:", error);
+            throw error;
+        }
+    }
+
+    async getChoferByNombreApellido(nombre: string, apellido: string): Promise<IChofer | null> {
+        try {
+            const result = await pool.query("SELECT * FROM chofer WHERE nombre = $1 AND apellido = $2 LIMIT 1", [nombre, apellido]);
+            return result.rows[0] || null;
+        } catch (error) {
+            console.error("Error en el modelo getChoferByNombreApellido:", error);
+            throw error;
+        }
+    }
+
     async getAllChoferes(): Promise<IChoferVista[]> {
         try {
             const result = await pool.query("SELECT * FROM chofer ch ORDER BY ch.id ASC");

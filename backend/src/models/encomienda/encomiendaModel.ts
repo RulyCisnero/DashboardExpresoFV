@@ -11,14 +11,15 @@ class EncomiendaModel {
           estado, 
           direccion_destino,
           fecha_creacion,
+          fecha_entrega,
           descripcion, 
           precio,
           origen_id, 
           destino_id,
           cliente_id, 
           cliente_destinatario_id,
-          chofer_id 
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+          chofer_id
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
           RETURNING *;
          `;
 
@@ -27,6 +28,7 @@ class EncomiendaModel {
                 encomiendaData.estado,
                 encomiendaData.direccion_destino,
                 encomiendaData.fecha_creacion,
+                encomiendaData.fecha_entrega ?? null,
                 encomiendaData.descripcion,
                 encomiendaData.precio,
                 encomiendaData.origen_id,
@@ -55,6 +57,7 @@ class EncomiendaModel {
             e.estado,
             e.direccion_destino,
             e.fecha_creacion,
+            e.fecha_entrega,
             e.descripcion,
             e.precio,
 
@@ -112,6 +115,7 @@ class EncomiendaModel {
                 estado: row.estado,
                 direccion_destino: row.direccion_destino,
                 fecha_creacion: row.fecha_creacion,
+                fecha_entrega: row.fecha_entrega ? new Date(row.fecha_entrega) : null,
                 descripcion: row.descripcion,
                 precio: row.precio,
 
@@ -228,6 +232,7 @@ class EncomiendaModel {
                 estado: row.estado,
                 direccion_destino: row.direccion_destino,
                 fecha_creacion: new Date(row.fecha_creacion), // Convertir a Date
+                fecha_entrega: row.fecha_entrega ? new Date(row.fecha_entrega) : null,
                 descripcion: row.descripcion,
                 precio: parseFloat(row.precio), // Convertir a número
 
@@ -288,6 +293,7 @@ class EncomiendaModel {
         e.estado,
         e.direccion_destino,
         e.fecha_creacion,
+        e.fecha_entrega,
         e.descripcion,
         e.precio,
 
@@ -351,6 +357,7 @@ class EncomiendaModel {
                 estado: row.estado,
                 direccion_destino: row.direccion_destino,
                 fecha_creacion: new Date(row.fecha_creacion), // Convertir a Date
+                fecha_entrega: row.fecha_entrega ? new Date(row.fecha_entrega) : null,
                 descripcion: row.descripcion,
                 precio: parseFloat(row.precio), // Convertir a número
 
@@ -478,6 +485,7 @@ class EncomiendaModel {
                 estado: row.estado,
                 direccion_destino: row.direccion_destino,
                 fecha_creacion: new Date(row.fecha_creacion),
+                fecha_entrega: row.fecha_entrega ? new Date(row.fecha_entrega) : null,
                 descripcion: row.descripcion,
                 precio: parseFloat(row.precio),
 
@@ -787,7 +795,7 @@ class EncomiendaModel {
         }
 
         const fechaNormalizada = fechaObj.toISOString().split("T")[0];
-        let query = `SELECT * FROM encomienda WHERE fecha_creacion::date = $1`;
+        let query = `SELECT * FROM encomienda WHERE fecha_entrega::date = $1`;
         const values: any[] = [fechaNormalizada];
 
         if (choferId !== undefined) {
@@ -992,7 +1000,7 @@ class EncomiendaModel {
 
         WHERE e.chofer_id = $1
 
-        AND DATE(e.fecha_creacion) = CURRENT_DATE
+        AND DATE(e.fecha_entrega) = CURRENT_DATE
 
 
 

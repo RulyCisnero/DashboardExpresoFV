@@ -1,13 +1,15 @@
 import { Router } from 'express';
-import { AuthController } from '../controllers/auth/authController.js';
-import { validateLoginInput, validateRegisterInput } from '../middlewares/auth/validarAuthInput.js';
-import { verificarToken, verificarRol } from '../middlewares/auth/authMiddleware.js';
+import { AuthController } from '../controllers/auth/authController.ts';
+import { validateLoginInput, validateRegisterInput } from '../middlewares/auth/validarAuthInput.ts';
+import { verificarToken, verificarRol } from '../middlewares/auth/authMiddleware.ts';
 
 const router = Router();
 
 // POST /api/auth/login - Sin protección
 router.post('/login', validateLoginInput, async (req, res) => {
+  console.log('entre aca?');
   await AuthController.login(req, res);
+  console.log('Entre aca 2?');
 });
 
 // POST /api/auth/register - Solo superUsuario

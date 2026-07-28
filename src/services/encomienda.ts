@@ -6,8 +6,8 @@ import type {
 } from "../types/encomienda"
 import { apiFetch } from "./apiClient.ts"
 
-//const API_URL = "http://localhost:5100/api/encomiendas"
-const API_URL = "https://dashboardexpresofv.onrender.com/api/encomiendas"
+const API_URL = "http://localhost:5100/api/encomiendas"
+
 export const EncomiendaService = {
 
   /** 🔹 Obtener TODAS las encomiendas (crudas) */
@@ -62,54 +62,33 @@ export const EncomiendaService = {
     return res.json();
   },
 
+  async getByChofer(choferId: number): Promise<EncomiendaRich[]> {
+    const res = await apiFetch(`${API_URL}/chofer/${choferId}`);
+    if (!res.ok) throw new Error("Error al cargar encomiendas del chofer");
+    return res.json();
+  },
+
+  async getByChoferHoy(choferId: number): Promise<EncomiendaRich[]> {
+    const res = await apiFetch(`${API_URL}/chofer/${choferId}/hoy`);
+    if (!res.ok) throw new Error("Error al cargar encomiendas del chofer hoy");
+    return res.json();
+  },
+
+  async updateEstado(id: number, estado: "Pendiente" | "Entregada"): Promise<void> {
+    const res = await apiFetch(`${API_URL}/${id}/estado`, {
+      method: "PUT",
+      body: JSON.stringify({ estado }),
+    });
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => null);
+      throw new Error(errorData?.error || "Error al actualizar el estado de la encomienda");
+    }
+  },
+
   /** 🔹 Eliminar */
   async delete(id: number): Promise<void> {
     const res = await apiFetch(`${API_URL}/${id}`, { method: "DELETE" })
     if (!res.ok) throw new Error("Error al eliminar la encomienda")
   },
-
-  async getByChofer(choferId: number): Promise<EncomiendaRich[]> {
-
-    const res = await apiFetch(`${API_URL}/chofer/${choferId}`)
-
-    if (!res.ok) {
-      throw new Error("Error al cargar encomiendas del chofer")
-    }
-
-    return res.json()
-  },
-
-  async updateEstado(id: number, estado: "Pendiente" | "Entregada") {
-
-    const res = await apiFetch(`${API_URL}/${id}/estado`, {
-      method: "PUT",
-      body: JSON.stringify({
-        estado
-      })
-    })
-
-    if (!res.ok) {
-      throw new Error("Error al actualizar estado")
-    }
-
-    return res.json()
-  },
-
-  async getByChoferHoy(
-    choferId: number
-  ): Promise<EncomiendaRich[]> {
-    const res =
-      await apiFetch(`${API_URL}/chofer/${choferId}/hoy`)
-
-    if (!res.ok) {
-
-      throw new Error(
-        "Error cargando encomiendas del chofer"
-      )
-
-    }
-
-    return res.json()
-  }
-
 }

@@ -1,8 +1,7 @@
-//import Dashboard from "./pages/Dashboard"
+import DashboardContainer from "./pages/DashboardContainer"
 import LoginPage from "./pages/LoginPage"
 import { Toaster } from "./components/ui/toaster"
 import { useAuth } from "./hooks/useAuth"
-import DashboardContainer from "./pages/DashboardContainer"
 
 function LoadingScreen() {
   return (
@@ -24,7 +23,7 @@ function App() {
 
   return (
     <>
-          {isAuthenticated ? <DashboardContainer /> : <LoginPage />}
+      {isAuthenticated ? <DashboardContainer /> : <LoginPage />}
       <Toaster />
     </>
   )

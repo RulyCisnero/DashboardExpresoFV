@@ -2,18 +2,39 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Badge } from "../ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { getEstadoBadgeVariant } from "../../lib/utils-encomienda"
+import { ChoferEncomiendaStatusModal } from "./chofer-encomienda-status-modal"
 import { Package, User, MapPin, Calendar, DollarSign, Phone } from "lucide-react"
 import type { EncomiendaRich } from "../../types/encomienda"
 
 interface EncomiendaDetailModalProps {
   encomienda: EncomiendaRich | null
   open: boolean
+  modo?: "admin" | "chofer"
   onOpenChange: (open: boolean) => void
+  onMarcarEntregada?: (id: number) => void
 }
 
-export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: EncomiendaDetailModalProps) {
+export function EncomiendaDetailModal({ encomienda, open, onOpenChange, modo = "admin", onMarcarEntregada }: EncomiendaDetailModalProps) {
 
   if (!encomienda) return null
+
+  if (modo === "chofer") {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              Estado de Encomienda - ENC {encomienda.id}
+            </DialogTitle>
+          </DialogHeader>
+
+          <ChoferEncomiendaStatusModal encomienda={encomienda} onMarcarEntregada={onMarcarEntregada} />
+        </DialogContent>
+      </Dialog>
+    )
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
@@ -170,6 +191,18 @@ export function EncomiendaDetailModal({ encomienda, open, onOpenChange }: Encomi
                 <div>
                   <p className="text-sm text-white-600">Descripción</p>
                   <p className="font-medium  bg-gray-600 text-white p-3 rounded-md mt-1">{encomienda?.descripcion}</p>
+                </div>
+              )}
+
+              {modo === "chofer" && encomienda.estado !== "Entregada" && (
+                <div className="pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onMarcarEntregada?.(encomienda.id)}
+                  >
+                    Marcar como entregada
+                  </Button>
                 </div>
               )}
             </CardContent>

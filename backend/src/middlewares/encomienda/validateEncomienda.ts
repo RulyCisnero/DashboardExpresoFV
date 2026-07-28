@@ -11,6 +11,7 @@ export const validarCrearEncomienda = (req: Request, res: Response, next: NextFu
     destino_id,
     precio
   } = req.body;
+    const { fecha_entrega } = req.body;
 
   const errores = [];
 
@@ -35,6 +36,13 @@ export const validarCrearEncomienda = (req: Request, res: Response, next: NextFu
 
   if (!precio || isNaN(Number(precio))) {
     errores.push("El campo 'precio' es obligatorio y debe ser un número válido.");
+  }
+
+  if (fecha_entrega) {
+    const d = new Date(fecha_entrega);
+    if (isNaN(d.getTime())) {
+      errores.push("El campo 'fecha_entrega' debe ser una fecha válida (YYYY-MM-DD).")
+    }
   }
 
   if (errores.length > 0) {

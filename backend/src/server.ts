@@ -2,29 +2,17 @@ import 'dotenv/config';
 import express from 'express';
 import cors from "cors";
 import cookieParser from 'cookie-parser';
-import pool from './database/connectionPostgreSQL.js';
-import routes from './routes/index.js';
+import pool from './database/connectionPostgreSQL.ts';
+import routes from './routes/index.ts';
 
 const server = express();
 const PORT = process.env.PORT || 3000;
-console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
-console.log("NODE_ENV:", process.env.NODE_ENV);
-// Configurar CORS para permitir credenciales
-/* server.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://expresofv.netlify.app'
-  ],
-  credentials: true,
-})); */
-server.use(cors({
-  origin: true,
-  credentials: true,
-}));
 
-server.options("/{*splat}", cors({
-  origin: true,
+// Configurar CORS para permitir credenciales
+server.use(cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? process.env.FRONTEND_URL
+    : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
 }));
 

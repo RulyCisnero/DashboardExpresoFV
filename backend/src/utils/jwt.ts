@@ -1,13 +1,11 @@
-import jwt from 'jsonwebtoken';
+  import jwt from 'jsonwebtoken';
 import type { ITokenPayload, IRefreshTokenPayload } from '../interfaces/usuario.ts';
-import type { StringValue } from 'ms';
+import { decode } from 'punycode';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'tu_secret_super_seguro_aqui';
-const JWT_EXPIRE = (process.env.JWT_EXPIRE || '1h') as StringValue;
+const JWT_EXPIRE = process.env.JWT_EXPIRE || '1h';
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET || 'tu_refresh_secret_diferente';
-const REFRESH_TOKEN_EXPIRE = (process.env.REFRESH_TOKEN_EXPIRE || '7d') as StringValue ;
-console.log("JWT_SECRET:", JWT_SECRET);
-console.log("JWT_EXPIRE:", JWT_EXPIRE);
+const REFRESH_TOKEN_EXPIRE = process.env.REFRESH_TOKEN_EXPIRE || '7d';
 
 export const jwtUtils = {
   generateToken(payload: ITokenPayload): string {
@@ -21,6 +19,7 @@ export const jwtUtils = {
   verifyToken(token: string): ITokenPayload | null {
     try {
       const decoded = jwt.verify(token, JWT_SECRET) as ITokenPayload;
+      console.log('token?: ',decode)
       return decoded;
     } catch (error) {
       return null;

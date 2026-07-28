@@ -31,7 +31,7 @@ export const validarCamposEncomiendaPut = async (req: Request, res: Response, ne
   const { id } = req.params;
   const data = req.body;
 
-  const camposPermitidos: (keyof IEncomienda)[] = ['estado', 'descripcion', 'direccion_destino', 'chofer_id'];
+  const camposPermitidos: (keyof IEncomienda)[] = ['estado', 'descripcion', 'direccion_destino', 'chofer_id', 'fecha_entrega'];
 
   // Paso 1: Validar que solo haya campos permitidos
   const camposData = Object.keys(data);
@@ -58,6 +58,13 @@ export const validarCamposEncomiendaPut = async (req: Request, res: Response, ne
 
   if (data.descripcion && typeof data.descripcion !== 'string') {
     return res.status(400).json({ error: "El campo 'descripcion' debe ser un string." });
+  }
+
+  if (data.fecha_entrega) {
+    const d = new Date(data.fecha_entrega);
+    if (isNaN(d.getTime())) {
+      return res.status(400).json({ error: "El campo 'fecha_entrega' debe ser una fecha válida (YYYY-MM-DD)." });
+    }
   }
 
   // Paso 3: Consultar la encomienda para ver su estado actual

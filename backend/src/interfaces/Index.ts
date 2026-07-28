@@ -49,6 +49,7 @@ export interface IEncomienda {
     estado: Estado;
     direccion_destino: string;
     fecha_creacion: Date;
+    fecha_entrega?: Date | null;
     descripcion: string;
     precio?: number;
     cliente_id: number;  // Solo ID
@@ -64,6 +65,7 @@ export interface IEncomiendaVista {
     estado: Estado;
     direccion_destino: string;
     fecha_creacion: Date; 
+    fecha_entrega?: Date | null;
     descripcion: string;
     precio: number; // Ahora es número
     origen: Localidad;

@@ -2,8 +2,7 @@
 import { type Localidad, type LocalidadFormData } from "../types/encomienda"
 import { apiFetch } from "./apiClient.ts"
 
-//const API_URL = "http://localhost:5100/api/localidades"
-const API_URL = "https://dashboardexpresofv.onrender.com/api/localidades"
+const API_URL = "http://localhost:5100/api/localidades"
 
 export const LocalidadesService = {
 

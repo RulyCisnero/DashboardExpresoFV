@@ -28,19 +28,15 @@ export default function DashboardContainer() {
 
   switch(usuario.rol){
 
-
     case "chofer":
-
       return <ChoferDashboard />
 
-
     case "superUsuario":
-
+    case "administrador":
+    case "personal":
       return <Dashboard />
 
-
     default:
-
       return (
         <div className="flex items-center justify-center min-h-screen">
           Rol no autorizado

@@ -5,6 +5,7 @@ export interface IUsuario {
   nombre: string;
   apellido: string;
   rol_id: number;
+  localidad_id?: number;
   activo: boolean;
   fecha_creacion?: string;
   ultima_conexion?: string;
@@ -19,7 +20,10 @@ export interface ITokenPayload {
   id: number;
   email: string;
   nombre_usuario: string;
+  nombre?: string;
+  apellido?: string;
   rol: string;
+  localidad_id?: number;
   iat?: number;
   exp?: number;
 }

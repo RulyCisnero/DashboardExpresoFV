@@ -1,19 +1,20 @@
+import { useState, useEffect } from "react"
 import { useAuth } from "../hooks/useAuth"
-import { useEffect } from "react"
 import { useEncomienda } from "../services/hooks-services/use-encomienda"
 import { DashboardHeader } from "../components/dashboard/dashboard-header"
 import { EncomiendasTable } from "../components/dashboard/encomiendas-table"
-
-
+import { EncomiendaDetailModal } from "../components/modals/encomienda-detail-modal"
+import type { EncomiendaRich } from "../types/encomienda"
 
 export default function ChoferDashboard() {
     const { usuario } = useAuth()
+    const [selectedEncomienda, setSelectedEncomienda] = useState<EncomiendaRich | null>(null)
+    const [isDetailOpen, setIsDetailOpen] = useState(false)
     
     const {
         encomiendas,
-        getByChofer,
-        updateEstadoEncomienda,
         getByChoferHoy,
+        updateEstadoEncomienda,
     } = useEncomienda()
 
     useEffect(() => {
@@ -21,19 +22,17 @@ export default function ChoferDashboard() {
             getByChoferHoy(usuario.id)
         }
     }, [usuario])
-    console.log("USUARIO CHOFER:", usuario)
-    //console.log("CHOFER ID:", chofer.
-    console.log("ENCOMIENDAS DEL CHOFER:", encomiendas)
 
     const marcarEntregada = (id: number) => {
-        updateEstadoEncomienda(
-            id, "Entregada"
-        )
-        console.log('Click entregada');
+        updateEstadoEncomienda(id, "Entregada")
+    }
+
+    const handleViewDetails = (encomienda: EncomiendaRich) => {
+        setSelectedEncomienda(encomienda)
+        setIsDetailOpen(true)
     }
 
     return (
-
         <div>
             <DashboardHeader
                 onOpenMenu={() => { }}
@@ -41,8 +40,15 @@ export default function ChoferDashboard() {
             <EncomiendasTable
                 modo="chofer"
                 encomiendasData={encomiendas}
-                onViewDetails={() => {}}
-                onMarcarEntregada={encomiendaId => marcarEntregada(encomiendaId)}
+                onViewDetails={handleViewDetails}
+                onMarcarEntregada={(encomiendaId) => marcarEntregada(encomiendaId)}
+            />
+            <EncomiendaDetailModal
+                open={isDetailOpen}
+                onOpenChange={setIsDetailOpen}
+                encomienda={selectedEncomienda}
+                modo="chofer"
+                onMarcarEntregada={marcarEntregada}
             />
         </div>
     )

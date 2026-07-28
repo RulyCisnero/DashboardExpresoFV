@@ -140,7 +140,6 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                   <TableCell>{new Date(encomienda.fecha_creacion).toLocaleDateString()}</TableCell>
                   <TableCell className="font-medium">${encomienda.precio}</TableCell>
                   <TableCell>
-
                     <div className="flex gap-2">
                       <Button
                         variant="ghost"
@@ -148,35 +147,26 @@ export function EncomiendasTable({ encomiendasData, onViewDetails, onEdit, onDel
                         onClick={(e) => {
                           e.stopPropagation()
                           onViewDetails(encomienda)
-                        }
-                        }
+                        }}
                         title="Ver detalles"
                       >
                         <Eye className="h-4 w-4" />
-                        {modo === "chofer" && encomienda.estado !== "Entregada" && (
-
-                          <Button
-
-                            variant="ghost"
-
-                            size="icon"
-
-                            onClick={(e) => {
-
-                              e.stopPropagation()
-
-                              onMarcarEntregada?.(encomienda.id)
-
-                            }}
-
-                            title="Marcar entregada"
-
-                          >
-                            ✓
-                          </Button>
-
-                        )}
                       </Button>
+
+                      {modo === "chofer" && encomienda.estado !== "Entregada" && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onMarcarEntregada?.(encomienda.id)
+                          }}
+                          title="Marcar entregada"
+                        >
+                          ✓
+                        </Button>
+                      )}
+
                       {modo === "admin" && (
                         <>
                           <Button
