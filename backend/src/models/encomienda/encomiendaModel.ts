@@ -788,7 +788,7 @@ class EncomiendaModel {
         }
     }
 
-    async getEncomiendasByFecha(fecha: string, choferId?: number): Promise<IEncomienda[]> {
+    async getEncomiendasByFecha(fecha: string, choferId?: number, localidadId?: number): Promise<IEncomienda[]> {
         const fechaObj = new Date(fecha);
         if (isNaN(fechaObj.getTime())) {
             throw new Error("Fecha inválida");
@@ -799,8 +799,13 @@ class EncomiendaModel {
         const values: any[] = [fechaNormalizada];
 
         if (choferId !== undefined) {
-            query += ` AND chofer_id = $2`;
+            query += ` AND chofer_id = $${values.length + 1}`;
             values.push(choferId);
+        }
+
+        if (localidadId !== undefined) {
+            query += ` AND (origen_id = $${values.length + 1} OR destino_id = $${values.length + 1})`;
+            values.push(localidadId);
         }
 
         query += ` ORDER BY fecha_creacion DESC`;

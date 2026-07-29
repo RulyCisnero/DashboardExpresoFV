@@ -32,9 +32,9 @@ export const useEncomiendaByDate = (
   localidades: Localidad[]
 ) => {
 
-  const getByDate = async (fecha: string): Promise<EncomiendaRich[]> => {
+  const getByDate = async (fecha: string, localidadId?: number): Promise<EncomiendaRich[]> => {
     try {
-      const raw = await EncomiendaService.getByDate(fecha)
+      const raw = await EncomiendaService.getByDate(fecha, localidadId)
 
       return raw.map((e: any) =>
         mapToEncomiendaRich(e, clientes, choferes, localidades)

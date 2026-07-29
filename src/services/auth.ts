@@ -1,10 +1,12 @@
 import type { LoginRequest, AuthResponse, User } from "../types/auth.ts";
 
 const API_URL = "http://localhost:5100/api/auth";
-
+//const API_URL_RENDER= import.meta.env.VITE_API_URL;
+const API_RENDER = "https://dashboardexpresofv.onrender.com"
 export const AuthService = {
   async login(email: string, password: string): Promise<AuthResponse> {
-    const res = await fetch(`${API_URL}/login`, {
+    /* const res = await fetch(`${API_URL}/login`, { */
+      const res = await fetch(`${API_RENDER}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",

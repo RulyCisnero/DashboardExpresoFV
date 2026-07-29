@@ -171,6 +171,20 @@ export class EncomiendaController {
       }
 
       let choferId: number | undefined;
+      let localidadId: number | undefined;
+
+      const localidadParam = Array.isArray(req.query.localidad_id)
+        ? req.query.localidad_id[0]
+        : typeof req.query.localidad_id === "string"
+          ? req.query.localidad_id
+          : undefined;
+
+      if (localidadParam) {
+        localidadId = Number(localidadParam);
+        if (isNaN(localidadId)) {
+          return res.status(400).json({ message: "Localidad inválida" });
+        }
+      }
 
       if (req.user?.rol === "chofer") {
         const userEmail = req.user.email;
@@ -209,7 +223,7 @@ export class EncomiendaController {
         }
       }
 
-      const encomiendas = await EncomiendaModel.getEncomiendasByFecha(fecha, choferId);
+      const encomiendas = await EncomiendaModel.getEncomiendasByFecha(fecha, choferId, localidadId);
 
       res.status(200).json(encomiendas);
     } catch (error) {

@@ -56,8 +56,13 @@ export const EncomiendaService = {
     return res.json()
   },
 
-  async getByDate(fecha: string): Promise<EncomiendaRich[]> {
-    const res = await apiFetch(`${API_URL}/fecha?fecha=${fecha}`);
+  async getByDate(fecha: string, localidadId?: number): Promise<EncomiendaRich[]> {
+    const query = new URLSearchParams({ fecha });
+    if (localidadId !== undefined) {
+      query.set("localidad_id", String(localidadId));
+    }
+
+    const res = await apiFetch(`${API_URL}/fecha?${query.toString()}`);
     if (!res.ok) throw new Error("Error al filtrar encomiendas por fecha");
     return res.json();
   },

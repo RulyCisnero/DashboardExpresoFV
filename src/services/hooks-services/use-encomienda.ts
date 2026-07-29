@@ -153,8 +153,7 @@ export const useEncomienda = () => {
 
   const getByChoferHoy = async (id:number)=>{
   try {
-    const data =
-      await EncomiendaService.getByChoferHoy(id)
+    const data = await EncomiendaService.getByChoferHoy(id)
     setEncomiendas(data)
   } catch(error){
     console.error("Error cargando encomiendas del chofer:",error)

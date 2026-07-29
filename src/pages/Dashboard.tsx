@@ -115,18 +115,37 @@ export default function Dashboard() {
 
   // 🔵 Estado para encomiendas filtradas por fecha
   const [encomiendasByDate, setEncomiendasByDate] = useState<EncomiendaRich[]>([])
+  const [loadingEncomiendas, setLoadingEncomiendas] = useState(false)
 
   useEffect(() => {
     const f = async () => {
-      console.log("📅 selectedDate:", selectedDate)
-      const formatted = selectedDate.toISOString().split("T")[0];
-      const data = await getByDate(formatted);
-      console.log("🚀 Fetch encomiendas para fecha:", selectedDate)
-      setEncomiendasByDate(data);
+      if (localidades.length === 0 || clientes.length === 0 || choferes.length === 0) {
+        return
+      }
+
+      setLoadingEncomiendas(true)
+      try {
+        const formatted = selectedDate.toISOString().split("T")[0];
+        const localidadId = selectedLocalidad === "Todas" ? undefined : selectedLocalidad.id;
+        const data = await getByDate(formatted, localidadId);
+        setEncomiendasByDate(data);
+      } finally {
+        setLoadingEncomiendas(false)
+      }
     };
 
     f();
-  }, [selectedDate]);
+  }, [selectedDate, selectedLocalidad, localidades.length, clientes.length, choferes.length]);
+
+  const filteredEncomiendasByDate = useMemo(() => {
+    if (selectedLocalidad === "Todas") return encomiendasByDate
+
+    return encomiendasByDate.filter(
+      (enc) =>
+        enc.origen.nombre === selectedLocalidad.nombre ||
+        enc.destino.nombre === selectedLocalidad.nombre
+    )
+  }, [encomiendasByDate, selectedLocalidad])
 
 
   return (
@@ -177,7 +196,7 @@ export default function Dashboard() {
         <div className="container mx-auto p-4 space-y-8">
           {/* Stats Cards */}
           <StatsCards
-            encomiendas={filteredEncomiendas}
+            encomiendas={filteredEncomiendasByDate}
           />
 
           <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -200,12 +219,15 @@ export default function Dashboard() {
 
           {/* Encomiendas Table */}
           <EncomiendasTable
-            //encomiendas={filteredEncomiendas}
-            encomiendasData={/* encomiendas */encomiendasByDate}
+            encomiendasData={filteredEncomiendasByDate}
             onViewDetails={handleViewDetails}
             onEdit={handleEditEncomienda}
             onDelete={handleDeleteEncomienda}
           />
+
+          {loadingEncomiendas && (
+            <div className="text-sm text-muted-foreground">Cargando encomiendas...</div>
+          )}
         </div>
       </div>
 

@@ -27,16 +27,30 @@ export const mapToEncomiendaRich = (
   choferes: Chofer[],
   localidades: Localidad[]
 ): EncomiendaRich => {
+  const cliente = clientes.find(c => c.id === e.cliente_id) ?? {
+    id: e.cliente_id,
+    nombre: "Sin cliente",
+    apellido: "",
+    direccion_local: "",
+    telefono: "",
+    email: "",
+    localidad: { id: 0, nombre: "Sin localidad" }
+  }
 
-  const cliente = clientes.find(c => c.id === e.cliente_id)!
-  //const destinatario = clientes.find(c => c.id === e.cliente_destinatario_id)!
-const destinatario =
-  e.cliente_destinatario_id !== null && e.cliente_destinatario_id !== undefined
-    ? clientes.find(c => c.id === e.cliente_destinatario_id) || null
-    : null;     
-  const origen = localidades.find(l => l.id === e.origen_id)!
-  const destino = localidades.find(l => l.id === e.destino_id)!
-  const chofer = choferes.find(ch => ch.id === e.chofer_id)!
+  const destinatario =
+    e.cliente_destinatario_id !== null && e.cliente_destinatario_id !== undefined
+      ? clientes.find(c => c.id === e.cliente_destinatario_id) ?? null
+      : null
+
+  const origen = localidades.find(l => l.id === e.origen_id) ?? { id: e.origen_id, nombre: "Sin origen" }
+  const destino = localidades.find(l => l.id === e.destino_id) ?? { id: e.destino_id, nombre: "Sin destino" }
+  const chofer = choferes.find(ch => ch.id === e.chofer_id) ?? {
+    id: e.chofer_id,
+    nombre: "Sin chofer",
+    apellido: "",
+    telefono: "",
+    email: ""
+  }
 
   return {
     id: e.id,
@@ -44,8 +58,14 @@ const destinatario =
     direccion_destino: e.direccion_destino,
     estado: e.estado,
     fecha_creacion: e.fecha_creacion,
+    fecha_entrega: e.fecha_entrega,
     precio: Number(e.precio),
     descripcion: e.descripcion,
+    cliente_id: e.cliente_id,
+    chofer_id: e.chofer_id,
+    origen_id: e.origen_id,
+    destino_id: e.destino_id,
+    cliente_destinatario_id: e.cliente_destinatario_id,
     cliente,
     destinatario,
     origen,
@@ -53,3 +73,4 @@ const destinatario =
     chofer
   }
 }
+

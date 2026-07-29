@@ -7,6 +7,7 @@ export interface Encomienda {
   direccion_destino: string;
   estado: EstadoEncomienda; //o string?
   fecha_creacion: string//Date
+  fecha_entrega?: string
   precio: number;
   descripcion?: string;
   cliente_id: number;

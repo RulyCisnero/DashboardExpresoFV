@@ -18,6 +18,8 @@ router.get("/cliente", encomiendaController.FilteredEncomiendas);
 
 // Rutas con parámetros
 router.get("/cliente/:id", encomiendaController.getEncomiendasByCliente);
+router.get("/chofer/:id/hoy", encomiendaController.getEncomiendasByChoferHoy);
+router.get("/chofer/:id", encomiendaController.getEncomiendasByChofer);
 router.get("/:id", encomiendaController.getEncomiendaById);
 
 // Ruta general (siempre al final)
