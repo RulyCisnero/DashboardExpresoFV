@@ -10,28 +10,21 @@ export default function ChoferDashboard() {
     const { usuario } = useAuth()
     const [selectedEncomienda, setSelectedEncomienda] = useState<EncomiendaRich | null>(null)
     const [isDetailOpen, setIsDetailOpen] = useState(false)
-    const [todayKey, setTodayKey] = useState(() => new Date().toISOString().split("T")[0])
     
     const {
         encomiendas,
         getByChoferHoy,
         updateEstadoEncomienda,
-    } = useEncomienda()
+    } = useEncomienda({ autoLoad: false })
 
     useEffect(() => {
-        if (usuario) {
-            getByChoferHoy(usuario.id)
-        }
-    }, [usuario, todayKey])
+        if (!usuario) return
 
-    useEffect(() => {
-        const interval = window.setInterval(() => {
-            const currentDay = new Date().toISOString().split("T")[0]
-            setTodayKey((prev) => (prev !== currentDay ? currentDay : prev))
-        }, 60000)
-
-        return () => window.clearInterval(interval)
-    }, [])
+        const today = new Date().toISOString().slice(0, 10)
+        console.log("[ChoferDashboard] usuario:", usuario)
+        console.log("[ChoferDashboard] fecha actual:", today)
+        getByChoferHoy(usuario.id)
+    }, [usuario, getByChoferHoy])
 
     const marcarEntregada = (id: number) => {
         updateEstadoEncomienda(id, "Entregada")

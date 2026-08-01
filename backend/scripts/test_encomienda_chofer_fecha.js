@@ -142,15 +142,17 @@ async function runTest() {
   assert(chofer, `No se encontró el chofer con email ${expectedChoferEmail}`);
   assert(typeof chofer.id === 'number', 'chofer.id debe ser un número');
 
-  console.log('3) Crear encomienda asignada al chofer y con fecha_entrega');
-  const fechaEntrega = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-  const newEncomienda = {
+  console.log('3) Crear encomienda asignada al chofer para hoy y otra para mañana');
+  const fechaHoy = new Date().toISOString().split('T')[0];
+  const fechaManana = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+  const encomiendaHoy = {
     tipo: 'SALIENTE',
     estado: 'Pendiente',
     direccion_destino: 'Calle de prueba 123',
     fecha_creacion: new Date().toISOString(),
-    fecha_entrega: fechaEntrega,
-    descripcion: 'Encomienda de prueba automatizada',
+    fecha_entrega: fechaHoy,
+    descripcion: 'Encomienda de prueba automatizada - hoy',
     precio: 100,
     origen_id: localidadId,
     destino_id: localidadId,
@@ -159,27 +161,44 @@ async function runTest() {
     chofer_id: chofer.id,
   };
 
-  const { response: createResponse, body: createBody } = await fetchJson(`${baseUrl}/encomiendas`, {
+  const encomiendaManana = {
+    ...encomiendaHoy,
+    fecha_entrega: fechaManana,
+    descripcion: 'Encomienda de prueba automatizada - mañana',
+  };
+
+  const { response: createHoyResponse, body: createHoyBody } = await fetchJson(`${baseUrl}/encomiendas`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${admin.token}`,
     },
-    body: JSON.stringify(newEncomienda),
+    body: JSON.stringify(encomiendaHoy),
   });
 
-  console.log('create response status', createResponse.status);
-  console.log('create response body', createBody);
+  const { response: createMananaResponse, body: createMananaBody } = await fetchJson(`${baseUrl}/encomiendas`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${admin.token}`,
+    },
+    body: JSON.stringify(encomiendaManana),
+  });
 
-  assert(createResponse.ok, `Creación de encomienda falló: ${JSON.stringify(createBody)}`);
-  assert(createBody.id, 'La encomienda creada debe incluir id');
+  console.log('create hoy response status', createHoyResponse.status, createHoyBody);
+  console.log('create manana response status', createMananaResponse.status, createMananaBody);
+
+  assert(createHoyResponse.ok, `Creación de encomienda de hoy falló: ${JSON.stringify(createHoyBody)}`);
+  assert(createMananaResponse.ok, `Creación de encomienda de mañana falló: ${JSON.stringify(createMananaBody)}`);
+  assert(createHoyBody.id, 'La encomienda de hoy debe incluir id');
+  assert(createMananaBody.id, 'La encomienda de mañana debe incluir id');
 
   console.log('4) Login como chofer');
   const choferLogin = await loginUser(choferCreds);
 
-  console.log('5) Consultar /encomiendas/fecha para el chofer');
+  console.log('5) Consultar /encomiendas/fecha para hoy');
   const { response: fechaResponse, body: fechaBody } = await fetchJson(
-    `${baseUrl}/encomiendas/fecha?fecha=${fechaEntrega}`,
+    `${baseUrl}/encomiendas/fecha?fecha=${fechaHoy}`,
     {
       headers: { Authorization: `Bearer ${choferLogin.token}` },
     }
@@ -191,19 +210,45 @@ async function runTest() {
   assert(fechaResponse.ok, `Consulta por fecha falló: ${JSON.stringify(fechaBody)}`);
   assert(Array.isArray(fechaBody), 'La respuesta de /encomiendas/fecha debe ser un array');
   assert(
-    fechaBody.some((item) => item.id === createBody.id || item.encomienda_id === createBody.id),
-    `La encomienda creada no fue devuelta para la fecha ${fechaEntrega}`
+    fechaBody.some((item) => item.id === createHoyBody.id || item.encomienda_id === createHoyBody.id),
+    `La encomienda de hoy no fue devuelta para la fecha ${fechaHoy}`
+  );
+  assert(
+    !fechaBody.some((item) => item.id === createMananaBody.id || item.encomienda_id === createMananaBody.id),
+    `La encomienda de mañana apareció en la vista de hoy del chofer`
   );
 
-  const found = fechaBody.find((item) => item.id === createBody.id || item.encomienda_id === createBody.id);
-  assert(found, 'No se encontró la encomienda en la respuesta');
+  console.log('6) Consultar /encomiendas/chofer/:id/hoy');
+  const { response: hoyResponse, body: hoyBody } = await fetchJson(
+    `${baseUrl}/encomiendas/chofer/${chofer.id}/hoy`,
+    {
+      headers: { Authorization: `Bearer ${choferLogin.token}` },
+    }
+  );
+
+  console.log('hoy response status', hoyResponse.status);
+  console.log('hoy response body', hoyBody);
+
+  assert(hoyResponse.ok, `La ruta de hoy del chofer falló: ${JSON.stringify(hoyBody)}`);
+  assert(Array.isArray(hoyBody), 'La respuesta de /encomiendas/chofer/:id/hoy debe ser un array');
+  assert(
+    hoyBody.some((item) => item.id === createHoyBody.id || item.encomienda_id === createHoyBody.id),
+    'La ruta de hoy del chofer no incluye la encomienda del día actual'
+  );
+  assert(
+    !hoyBody.some((item) => item.id === createMananaBody.id || item.encomienda_id === createMananaBody.id),
+    'La ruta de hoy del chofer no debe incluir encomiendas de mañana'
+  );
+
+  const found = fechaBody.find((item) => item.id === createHoyBody.id || item.encomienda_id === createHoyBody.id);
+  assert(found, 'No se encontró la encomienda de hoy en la respuesta');
   assert(
     found.chofer_id === chofer.id || found.chofer?.id === chofer.id,
     'La encomienda devuelta no está asignada al chofer correcto'
   );
   assert(found.fecha_entrega || found.fechaEntrega, 'La encomienda debe incluir fecha_entrega');
 
-  console.log('✅ Test completado con éxito: el chofer ve la encomienda por fecha_entrega.');
+  console.log('✅ Test completado con éxito: el chofer ve solo las encomiendas del día actual y no las de mañana.');
 }
 
 runTest().catch((error) => {

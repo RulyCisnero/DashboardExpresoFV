@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "../ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet"
-import { Menu, User, Truck, MapPin, History, Search, Plus, Users, Eye } from "lucide-react"
+import { Menu, User, Truck, MapPin, History, Search, Plus, Users, Eye, FileText, BarChart3 } from "lucide-react"
 import { cn } from "../../lib/utils"
 
 interface SidebarProps {
@@ -16,6 +16,8 @@ interface SidebarProps {
   onViewClientes: () => void
   onViewChoferes: () => void
   onViewDestinos: () => void
+  onShowFacturacion: () => void
+  onShowAnalytics: () => void
   open: boolean
   onOpenChange: (value: boolean) => void
 }
@@ -48,6 +50,8 @@ export function Sidebar({
   onViewClientes,
   onViewChoferes,
   onViewDestinos,
+  onShowFacturacion,
+  onShowAnalytics,
   open,
   onOpenChange,
 }: SidebarProps) {
@@ -136,6 +140,24 @@ export function Sidebar({
       },
       color: "text-amber-600",
     },
+    {
+      icon: FileText,
+      label: "Facturación AFIP",
+      onClick: () => {
+        onShowFacturacion()
+        onOpenChange(false)
+      },
+      color: "text-emerald-600",
+    },
+    {
+      icon: BarChart3,
+      label: "Analíticas del mes",
+      onClick: () => {
+        onShowAnalytics()
+        onOpenChange(false)
+      },
+      color: "text-cyan-600",
+    },
   ]
 
   return (
@@ -193,6 +215,8 @@ export function DesktopSidebar({
   onViewClientes,
   onViewChoferes,
   onViewDestinos,
+  onShowFacturacion,
+  onShowAnalytics,
 }: SidebarProps) {
   const menuItems: MenuItemType[] = [
     {
@@ -250,6 +274,18 @@ export function DesktopSidebar({
       label: "Ver Destinos",
       onClick: onViewDestinos,
       color: "text-amber-600",
+    },
+    {
+      icon: FileText,
+      label: "Facturación AFIP",
+      onClick: onShowFacturacion,
+      color: "text-emerald-600",
+    },
+    {
+      icon: BarChart3,
+      label: "Analíticas del mes",
+      onClick: onShowAnalytics,
+      color: "text-cyan-600",
     },
   ]
 

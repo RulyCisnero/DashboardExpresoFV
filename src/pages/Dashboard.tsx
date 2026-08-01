@@ -27,6 +27,10 @@ import { Filterlocalidades } from "../components/dashboard/localidades-filter"
 import type { EncomiendaRich, Localidad } from "../types/encomienda"
 import { DateFilter } from "../components/dashboard/DateFilter"
 import { ExportarExcelButton } from "../components/dashboard/ExportarExcelButton"
+import {PadreFacturacion} from "../components/PadreFacturacion/PadreFacturacion"
+import { MonthlyAnalyticsView } from "../components/views/monthly-analytics-view"
+import { buildMonthlyDestinationAnalytics } from "../lib/monthly-analytics"
+import { Button } from "../components/ui/button"
 
 
 /**
@@ -73,6 +77,8 @@ export default function Dashboard() {
   const [isViewClientesOpen, setIsViewClientesOpen] = useState(false)
   const [isViewChoferesOpen, setIsViewChoferesOpen] = useState(false)
   const [isViewDestinosOpen, setIsViewDestinosOpen] = useState(false)
+  const [isFacturacionOpen, setIsFacturacionOpen] = useState(false)
+  const [isMonthlyAnalyticsOpen, setIsMonthlyAnalyticsOpen] = useState(false)
   const [selectedDate, setSelectedDate] = useState(new Date())
   const { usuario } = useAuth()
   const [menuOpen, setMenuOpen] = useState(false)
@@ -107,10 +113,15 @@ export default function Dashboard() {
     deleteEncomienda(id)
   }
 
-  const handleUpdateEncomienda = (data: any) => {
-    if (editingEncomienda) {
-      updateEncomienda(editingEncomienda.id, data)
-    }
+  const handleUpdateEncomienda = async (data: any) => {
+    if (!editingEncomienda) return
+
+    await updateEncomienda(editingEncomienda.id, data)
+
+    const formatted = selectedDate.toISOString().split("T")[0]
+    const localidadId = selectedLocalidad === "Todas" ? undefined : selectedLocalidad.id
+    const refreshed = await getByDate(formatted, localidadId)
+    setEncomiendasByDate(refreshed)
   }
 
   // 🔵 Estado para encomiendas filtradas por fecha
@@ -147,6 +158,11 @@ export default function Dashboard() {
     )
   }, [encomiendasByDate, selectedLocalidad])
 
+  const monthlyAnalytics = useMemo(
+    () => buildMonthlyDestinationAnalytics(encomiendas),
+    [encomiendas]
+  )
+
 
   return (
     <div className="min-h-screen">
@@ -163,6 +179,8 @@ export default function Dashboard() {
           onViewClientes={() => setIsViewClientesOpen(true)}
           onViewChoferes={() => setIsViewChoferesOpen(true)}
           onViewDestinos={() => setIsViewDestinosOpen(true)}
+          onShowFacturacion={() => setIsFacturacionOpen(true)}
+          onShowAnalytics={() => setIsMonthlyAnalyticsOpen(true)}
           open={menuOpen}
           onOpenChange={setMenuOpen}
         />
@@ -180,6 +198,8 @@ export default function Dashboard() {
           onViewClientes={() => setIsViewClientesOpen(true)}
           onViewChoferes={() => setIsViewChoferesOpen(true)}
           onViewDestinos={() => setIsViewDestinosOpen(true)}
+          onShowFacturacion={() => setIsFacturacionOpen(true)}
+          onShowAnalytics={() => setIsMonthlyAnalyticsOpen(true)}
           open={menuOpen}
           onOpenChange={setMenuOpen}
         />
@@ -194,39 +214,57 @@ export default function Dashboard() {
 
         {/* Dashboard Content */}
         <div className="container mx-auto p-4 space-y-8">
-          {/* Stats Cards */}
-          <StatsCards
-            encomiendas={filteredEncomiendasByDate}
-          />
+          {isMonthlyAnalyticsOpen ? (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <p className="text-sm text-slate-400 uppercase tracking-[0.2em]">Panel administrativo</p>
+                  <h1 className="text-2xl font-bold text-slate-900">Analíticas mensuales</h1>
+                </div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsMonthlyAnalyticsOpen(false)}
+                >
+                  Volver al dashboard
+                </Button>
+              </div>
 
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <DateFilter
-              selectedDate={selectedDate}
-              onDateChange={setSelectedDate}
-            />
+              <MonthlyAnalyticsView metrics={monthlyAnalytics} />
+            </div>
+          ) : (
+            <>
+              <StatsCards encomiendas={filteredEncomiendasByDate} />
 
-            <ExportarExcelButton
-              encomiendas={encomiendasByDate}
-              localidad={localidades}
-            />
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <DateFilter
+                  selectedDate={selectedDate}
+                  onDateChange={setSelectedDate}
+                />
 
-            <Filterlocalidades
-              localidades={localidades}
-              selectedLocalidad={selectedLocalidad}
-              onLocalidadChange={setSelectedLocalidad}
-            />
-          </div>
+                <ExportarExcelButton
+                  encomiendas={encomiendasByDate}
+                  localidad={localidades}
+                />
 
-          {/* Encomiendas Table */}
-          <EncomiendasTable
-            encomiendasData={filteredEncomiendasByDate}
-            onViewDetails={handleViewDetails}
-            onEdit={handleEditEncomienda}
-            onDelete={handleDeleteEncomienda}
-          />
+                <Filterlocalidades
+                  localidades={localidades}
+                  selectedLocalidad={selectedLocalidad}
+                  onLocalidadChange={setSelectedLocalidad}
+                />
+              </div>
 
-          {loadingEncomiendas && (
-            <div className="text-sm text-muted-foreground">Cargando encomiendas...</div>
+              <EncomiendasTable
+                encomiendasData={filteredEncomiendasByDate}
+                onViewDetails={handleViewDetails}
+                onEdit={handleEditEncomienda}
+                onDelete={handleDeleteEncomienda}
+              />
+
+              {loadingEncomiendas && (
+                <div className="text-sm text-muted-foreground">Cargando encomiendas...</div>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -293,6 +331,15 @@ export default function Dashboard() {
         isViewOpen={isViewDestinosOpen}
         onViewClose={() => setIsViewDestinosOpen(false)}
       />
+
+      <PadreFacturacion
+        isAddOpen={isFacturacionOpen}
+        onAddClose={() => setIsFacturacionOpen(false)}
+        isViewOpen={isFacturacionOpen}
+        onViewClose={() => setIsFacturacionOpen(false)}
+        onOpenAdd={() => setIsFacturacionOpen(true)}
+      />
+
     </div>
   )
 }

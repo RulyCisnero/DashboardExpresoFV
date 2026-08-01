@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "../ui/dialog"
 import { EncomiendaHistory } from "../history/encomienda-history"
 import type { EncomiendaRich} from "../../types/encomienda"
@@ -13,23 +13,27 @@ interface HistoryModalProps {
   encomiendas: EncomiendaRich[]
 }
 
-export function HistoryModal({ open, onOpenChange }: HistoryModalProps) {
-  //hook verdadero de encomiendas
-  const { encomiendas, loadingEncomiendas,reload } = useEncomienda();
+export function HistoryModal({ open, onOpenChange, encomiendas }: HistoryModalProps) {
+  const { reload } = useEncomienda({ autoLoad: false })
+  const hasLoadedRef = useRef(false)
 
-  // Solo hacer fetch cuando se abre
   useEffect(() => {
-    if (open) {
-      reload();
+    if (open && !hasLoadedRef.current) {
+      hasLoadedRef.current = true
+      reload()
     }
-  }, [open]);
-  
+
+    if (!open) {
+      hasLoadedRef.current = false
+    }
+  }, [open, reload])
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-6xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Historial de Encomiendas</DialogTitle>
-          <DialogDescription>Aca se ven todas las encomiendas pasadas</DialogDescription>
+          <DialogDescription>Registro completo de todas las encomiendas del sistema.</DialogDescription>
         </DialogHeader>
         <EncomiendaHistory encomiendas={encomiendas} />
       </DialogContent>

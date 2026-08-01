@@ -15,27 +15,18 @@ import { useBuscarCliente } from "../../services/hooks-services/use-buscarClient
 import { useEncomiendasPorCliente } from "../../services/hooks-services/use.-encomiendasPorCliente"
 
 interface EncomiendaSearchProps {
-  encomiendasData?: EncomiendaRich[] // opcional por compatibilidad, usamos el hook de cliente
+  encomiendasData?: EncomiendaRich[]
   onViewDetails: (encomienda: EncomiendaRich) => void
 }
 
-export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
-  // filtros y texto libre para filtrar resultados ya cargados
+export function EncomiendaSearch({ encomiendasData = [], onViewDetails }: EncomiendaSearchProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterEstado, setFilterEstado] = useState("all")
   const [filterFecha, setFilterFecha] = useState("")
-
-  // input visible donde el usuario escribe el nombre/dni/etc del cliente
   const [query, setQuery] = useState("")
-
-  // debounce state
   const [debouncedQuery, setDebouncedQuery] = useState("")
+  const [selectedCliente, setSelectedCliente] = useState<{ id: number; nombre: string; apellido: string } | null>(null)
 
-  // bandera local para saber si el usuario seleccionó un cliente concreto:
-  // cuando existe, evitamos re-disparar la búsqueda automática por debounce hasta que cambie el texto
-  const [selectedClienteName, setSelectedClienteName] = useState<string | null>(null)
-
-  // hooks que ya tenés
   const {
     cliente,
     clientesEncontrados,
@@ -45,76 +36,84 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
   } = useBuscarCliente()
 
   const {
-    encomiendas,
+    encomiendas: encomiendasPorCliente,
     loading: loadingEncs,
     error: errorEncs,
     loadByCliente
   } = useEncomiendasPorCliente()
 
-  // Debounce: cuando el usuario deja de tipear durante 400ms, actualiza debouncedQuery
+  const baseEncomiendas = useMemo(() => {
+    const source = encomiendasData.length > 0 ? encomiendasData : encomiendasPorCliente
+    return [...source].sort((a, b) => new Date(b.fecha_creacion).getTime() - new Date(a.fecha_creacion).getTime())
+  }, [encomiendasData, encomiendasPorCliente])
+
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQuery(query), 400)
     return () => clearTimeout(t)
   }, [query])
 
-  // Cuando cambia debouncedQuery buscamos clientes (solo si tiene >= 2 caracteres)
   useEffect(() => {
     const q = debouncedQuery.trim()
-    if (q.length < 2) return
 
-    // si ya hay un cliente seleccionado y el query coincide con su nombre completo,
-    // no hacemos la búsqueda (evita repetir la misma request al elegir cliente)
-    if (selectedClienteName && q === selectedClienteName) return
-
-    // llamamos al hook que realiza la petición
-    // no await aquí: searchCliente ya maneja loading y errores
-    searchCliente(q)
-      .catch(() => {
-        /* si hay error, el hook lo guarda en errorBuscar -> lo mostramos en UI */
-      })
-  }, [debouncedQuery, selectedClienteName, searchCliente])
-
-  // Si el usuario edita el campo después de haber seleccionado un cliente,
-  // reseteamos la selección para poder buscar otra vez.
-  useEffect(() => {
-    if (selectedClienteName && query !== selectedClienteName) {
-      setSelectedClienteName(null)
+    if (q.length < 2) {
+      setSelectedCliente(null)
+      return
     }
-  }, [query, selectedClienteName])
 
-  // Handler cuando el usuario elige un cliente del dropdown
+    if (selectedCliente && q === `${selectedCliente.nombre} ${selectedCliente.apellido}`) {
+      return
+    }
+
+    setSelectedCliente(null)
+    searchCliente(q).catch(() => {
+      // El error se maneja dentro del hook
+    })
+  }, [debouncedQuery, searchCliente, selectedCliente])
+
   const handleSelectCliente = async (c: { id: number; nombre: string; apellido: string }) => {
     const fullName = `${c.nombre} ${c.apellido}`
-    setQuery(fullName)                 // mostrar nombre en el input
-    setSelectedClienteName(fullName)   // bloquear el re-search por debounce mientras coincida
-    // cargar encomiendas del cliente
+    setSelectedCliente(c)
+    setQuery(fullName)
+
     try {
       await loadByCliente(c.id)
     } catch (e) {
-      // loadByCliente ya maneja error en su hook; aquí podemos loguear si querés
       console.error("Error cargando encomiendas por cliente:", e)
     }
   }
 
-  // Filtro local sobre las encomiendas cargadas
   const filteredEncomiendas = useMemo(() => {
-    return encomiendas.filter((encomienda) => {
-      const q = searchTerm.trim().toLowerCase()
-      const matchesSearch =
-        (!q) ||
-        (encomienda.cliente?.nombre?.toLowerCase().includes(q)) ||
-        (encomienda.cliente?.apellido?.toLowerCase().includes(q)) ||
-        (encomienda.destinatario?.nombre?.toLowerCase().includes(q)) ||
-        (encomienda.destinatario?.apellido?.toLowerCase().includes(q)) ||
-        (encomienda.origen?.nombre?.toLowerCase().includes(q)) ||
-        (encomienda.destino?.nombre?.toLowerCase().includes(q))
+    const results = selectedCliente ? baseEncomiendas : []
 
+    return results.filter((encomienda) => {
+      const q = searchTerm.trim().toLowerCase()
+      const searchableText = [
+        encomienda.cliente?.nombre,
+        encomienda.cliente?.apellido,
+        encomienda.destinatario?.nombre,
+        encomienda.destinatario?.apellido,
+        encomienda.origen?.nombre,
+        encomienda.destino?.nombre,
+        encomienda.direccion_destino,
+        encomienda.descripcion,
+        encomienda.estado,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+
+      const matchesSearch = !q || searchableText.includes(q)
       const matchesEstado = filterEstado === "all" || encomienda.estado === filterEstado
-      const matchesFecha = !filterFecha || (formatDate(encomienda.fecha_creacion) === filterFecha)
+      const matchesFecha = !filterFecha || formatDate(encomienda.fecha_creacion) === filterFecha
 
       return matchesSearch && matchesEstado && matchesFecha
     })
-  }, [encomiendas, searchTerm, filterEstado, filterFecha])
+  }, [baseEncomiendas, filterEstado, filterFecha, searchTerm, selectedCliente])
+
+  const clienteSeleccionadoNombre = selectedCliente ? `${selectedCliente.nombre} ${selectedCliente.apellido}` : ""
+  const clienteNoEncontrado = query.trim().length >= 2 && !loadingBuscar && !selectedCliente && !cliente && clientesEncontrados.length === 0 && !errorEncs
+  const clienteSinEncomiendas = !!selectedCliente && !loadingEncs && filteredEncomiendas.length === 0
+  const hayBusquedaActiva = query.trim().length >= 2
 
   return (
     <div className="space-y-6">
@@ -135,38 +134,33 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
               <Label htmlFor="search">Búsqueda general (cliente)</Label>
               <Input
                 id="search"
-                placeholder="Nombre, apellido o documento..."
+                placeholder="Buscar cliente por nombre o apellido..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 className="mt-1"
               />
 
-              {/* Dropdown: solo se muestra si escribiste algo y no hay cliente seleccionado */}
-              {query.length > 0 && !selectedClienteName && (
+              {query.length > 0 && !selectedCliente && (
                 <div className="absolute z-50 w-full bg-popover shadow-lg border rounded-md mt-1 max-h-60 overflow-auto">
-                  {/* Cargando */}
-                  {loadingBuscar && <p className="p-3 text-sm text-white">Buscando...</p>}
+                  {loadingBuscar && <p className="p-3 text-sm text-white">Buscando cliente...</p>}
 
-                  {/* Si NO hay resultados y hubo intento de búsqueda */}
-                  {!loadingBuscar && !cliente && clientesEncontrados.length === 0 && errorBuscar && (
-                    <div className="text-center py-4 text-white">
-                      <Search className="h-6 w-6 mx-auto mb-2 text-white" />
-                      <p>No se encontraron clientes que coincidan con la búsqueda.</p>
+                  {!loadingBuscar && !cliente && clientesEncontrados.length === 0 && (
+                    <div className="text-center py-4 px-3 text-sm text-white">
+                      <Search className="h-5 w-5 mx-auto mb-2 text-white" />
+                      <p>No se encontró ningún cliente con ese nombre.</p>
                     </div>
                   )}
 
-                  {/* Si hay coincidencias múltiples */}
                   {!loadingBuscar && clientesEncontrados.length > 0 && clientesEncontrados.map((c) => (
                     <div
                       key={c.id}
-                      onClick={() => handleSelectCliente(c)} ///ACA AGREGR TEXTO DE COLOR Y EL FONDO
-                      className="px-3 py-2 cursor-pointer hover:bg-gray-600 text-white"
+                      onClick={() => handleSelectCliente(c)}
+                      className="px-3 py-2 cursor-pointer hover:bg-gray-600 text-white border-b border-white/10 last:border-b-0"
                     >
                       {c.nombre} {c.apellido} {c.localidad ? `— ${c.localidad.nombre}` : ""}
                     </div>
                   ))}
 
-                  {/* Si hay un único cliente (el hook lo deja en cliente) */}
                   {!loadingBuscar && cliente && (
                     <div
                       onClick={() => handleSelectCliente(cliente)}
@@ -208,22 +202,49 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
               />
             </div>
           </div>
+
+          {(searchTerm || filterEstado !== "all" || filterFecha) && (
+            <div className="mt-4 flex justify-end">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSearchTerm("")
+                  setFilterEstado("all")
+                  setFilterFecha("")
+                }}
+              >
+                Limpiar filtros
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
-      {/* Resultados: si no hay encomiendas cargadas (array vacío) se muestra mensaje */}
       <Card>
-        {/* <CardHeader>
-          <CardTitle>Resultados de la búsqueda ({filteredEncomiendas.length} encontradas)</CardTitle>
-        </CardHeader> */}
-
-        <CardContent>
-          {filteredEncomiendas.length === 0 ? (
+        <CardContent className="pt-6">
+          {!hayBusquedaActiva && (
             <div className="text-center py-8 text-gray-100">
               <Search className="h-12 w-12 mx-auto mb-4 text-gray-100" />
-              <p>No se encontraron encomiendas que coincidan con los criterios de búsqueda.</p>
+              <p>Escribí el nombre del cliente para ver sus encomiendas.</p>
             </div>
-          ) : (
+          )}
+
+          {hayBusquedaActiva && clienteNoEncontrado && (
+            <div className="text-center py-8 text-gray-100">
+              <Search className="h-12 w-12 mx-auto mb-4 text-gray-100" />
+              <p>No se encontraron encomiendas para ese cliente.</p>
+            </div>
+          )}
+
+          {clienteSinEncomiendas && (
+            <div className="text-center py-8 text-gray-100">
+              <Search className="h-12 w-12 mx-auto mb-4 text-gray-100" />
+              <p>{clienteSeleccionadoNombre} no tiene encomiendas registradas.</p>
+            </div>
+          )}
+
+          {!clienteNoEncontrado && !clienteSinEncomiendas && filteredEncomiendas.length > 0 && (
             <Table>
               <TableHeader>
                 <TableRow>
@@ -256,7 +277,7 @@ export function EncomiendaSearch({ onViewDetails }: EncomiendaSearchProps) {
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1 text-sm">
-                        <Calendar className="h-3 w-3"  />
+                        <Calendar className="h-3 w-3" />
                         {formatDate(encomienda.fecha_creacion)}
                       </div>
                     </TableCell>

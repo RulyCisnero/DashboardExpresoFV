@@ -1,15 +1,15 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import type { EncomiendaInput, EncomiendaRich, EncomiendaUpdate } from "../../types/encomienda"
 import { EncomiendaService } from "../encomienda"
 import { toast } from "../../hooks/use-toast"
 
 
-export const useEncomienda = () => {
+export const useEncomienda = ({ autoLoad = true }: { autoLoad?: boolean } = {}) => {
   const [encomiendas, setEncomiendas] = useState<EncomiendaRich[]>([])
   const [loadingEncomiendas, setLoadingEncomiendas] = useState(true)
   const [errorEncomienda, setErrorEncomienda] = useState<string | null>(null)
 
-  const loadEncomiendas = async () => {
+  const loadEncomiendas = useCallback(async () => {
     setLoadingEncomiendas(true)
     try {
       const data = await EncomiendaService.getAll()
@@ -21,7 +21,7 @@ export const useEncomienda = () => {
     } finally {
       setLoadingEncomiendas(false)
     }
-  }
+  }, [])
 
   const addNewEncomienda = async (data: EncomiendaInput) => {
     try {
@@ -111,6 +111,23 @@ export const useEncomienda = () => {
 
   }
 
+  const getByChoferHoy = useCallback(async (id?: number) => {
+    try {
+      const today = new Date().toISOString().slice(0, 10)
+      const route = id ? "/api/encomiendas/chofer/:id/hoy" : "/api/encomiendas/fecha?fecha=" + today
+      console.log("[Chofer] consultando encomiendas hoy:", { today, id, route })
+
+      const data = id
+        ? await EncomiendaService.getByChoferHoy(id)
+        : await EncomiendaService.getByDate(today)
+
+      console.log("[Chofer] respuesta hoy:", data)
+      setEncomiendas(data)
+    } catch (error) {
+      console.error("Error cargando encomiendas del chofer:", error)
+    }
+  }, [])
+
   const updateEstadoEncomienda = async (
     id: number,
     estado: "Pendiente" | "Entregada"
@@ -151,19 +168,11 @@ export const useEncomienda = () => {
 
   }
 
-  const getByChoferHoy = async (id:number)=>{
-  try {
-    const data = await EncomiendaService.getByChoferHoy(id)
-    setEncomiendas(data)
-  } catch(error){
-    console.error("Error cargando encomiendas del chofer:",error)
-  }
-}
-
-
   useEffect(() => {
-    loadEncomiendas()
-  }, [])
+    if (autoLoad) {
+      loadEncomiendas()
+    }
+  }, [autoLoad, loadEncomiendas])
 
   return {
     encomiendas,

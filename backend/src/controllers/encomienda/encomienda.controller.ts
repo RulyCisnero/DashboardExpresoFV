@@ -268,7 +268,16 @@ export class EncomiendaController {
 
   async getEncomiendasByChoferHoy(req: Request,res: Response) {
     try {
-      const choferId = Number(req.params.id)
+      let choferId = Number(req.params.id)
+
+      if (req.user?.rol === "chofer") {
+        const userEmail = req.user.email
+        const choferRec = userEmail ? await choferModel.getChoferByEmail(userEmail) : null
+        if (choferRec) {
+          choferId = choferRec.id
+        }
+      }
+
       if (isNaN(choferId)) {
         res.status(400).json({
           message: "ID inválido"
