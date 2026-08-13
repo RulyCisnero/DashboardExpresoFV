@@ -8,14 +8,10 @@ import ChoferDashboard from "./ChoferDashboard"
 
 
 export default function DashboardContainer() {
-
-
   const { usuario } = useAuth()
-
 
   // mientras carga el usuario
   if (!usuario) {
-
     return (
       <div className="flex items-center justify-center min-h-screen">
         Cargando usuario...
@@ -24,10 +20,7 @@ export default function DashboardContainer() {
 
   }
 
-
-
   switch(usuario.rol){
-
     case "chofer":
       return <ChoferDashboard />
 
@@ -42,7 +35,6 @@ export default function DashboardContainer() {
           Rol no autorizado
         </div>
       )
-
   }
 
 }

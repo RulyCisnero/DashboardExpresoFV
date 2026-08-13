@@ -77,7 +77,6 @@ export class EncomiendaController {
         return;
       }
 
-      //  Traer la versión completa (con joins)
       const completa = await EncomiendaModel.getEncomiendaById(id);
       res.status(200).json(completa || actualizada);
     } catch (error: any) {
@@ -120,7 +119,6 @@ export class EncomiendaController {
     }
   }
 
-  // 🗑️ Eliminar una encomienda
   async deleteEncomienda(req: Request, res: Response): Promise<void> {
     try {
       const id = parseInt(req.params.id);
@@ -133,7 +131,7 @@ export class EncomiendaController {
 
       res.status(200).json(eliminada);
     } catch (error) {
-      console.error("❌ Error al eliminar encomienda:", error);
+      console.error(" Error al eliminar encomienda:", error);
       res.status(500).json({ message: "Error al eliminar la encomienda" });
     }
   }
@@ -156,7 +154,7 @@ export class EncomiendaController {
     }
   }
 
-  async getEncomiendasByFecha(req: Request, res: Response) {
+  /* async getEncomiendasByFecha(req: Request, res: Response) {
     try {
       const fechaParam = req.query.fecha;
       const fecha = typeof fechaParam === 'string'
@@ -212,10 +210,87 @@ export class EncomiendaController {
         const choferIdParam = Array.isArray(req.query.chofer_id)
           ? req.query.chofer_id[0]
           : typeof req.query.chofer_id === "string"
-          ? req.query.chofer_id
-          : undefined;
+            ? req.query.chofer_id
+            : undefined;
 
         if (choferIdParam) {
+          choferId = Number(choferIdParam);
+          if (isNaN(choferId)) {
+            return res.status(400).json({ message: "Chofer inválido" });
+          }
+        }
+      }
+
+      const encomiendas = await EncomiendaModel.getEncomiendasByFecha(fecha, choferId, localidadId);
+
+      res.status(200).json(encomiendas);
+    } catch (error) {
+      console.error("Error en getEncomiendasByFecha:", error);
+      res.status(500).json({ message: "Error al obtener encomiendas" });
+    }
+  } */
+
+  async getEncomiendasByFecha(req: Request, res: Response) {
+    try {
+      // 1. Extraer la fecha garantizando a TypeScript que es un string
+      let fechaStr = '';
+      if (typeof req.query.fecha === 'string') {
+        fechaStr = req.query.fecha;
+      } else if (Array.isArray(req.query.fecha) && typeof req.query.fecha[0] === 'string') {
+        fechaStr = req.query.fecha[0];
+      }
+
+      // Ahora TypeScript sabe que fechaStr es 100% string, .trim() no fallará
+      const fecha = fechaStr.trim() || new Date().toISOString().split('T')[0];
+      const fechaObj = new Date(fecha);
+
+      if (isNaN(fechaObj.getTime())) {
+        return res.status(400).json({ message: "Fecha inválida" });
+      }
+
+      let choferId: number | undefined;
+      let localidadId: number | undefined;
+
+      // 2. Extraer localidad_id de forma segura
+      const locQuery = req.query.localidad_id;
+      const localidadParam = Array.isArray(locQuery) ? locQuery[0] : locQuery;
+
+      if (typeof localidadParam === 'string') {
+        localidadId = Number(localidadParam);
+        if (isNaN(localidadId)) {
+          return res.status(400).json({ message: "Localidad inválida" });
+        }
+      }
+
+      // 3. Validaciones de rol
+      if (req.user?.rol === "chofer") {
+        const userEmail = req.user.email;
+        const userNombre = req.user.nombre;
+        const userApellido = req.user.apellido;
+
+        if (userEmail) {
+          const choferRec = await choferModel.getChoferByEmail(userEmail);
+          if (choferRec) {
+            choferId = choferRec.id;
+          }
+        }
+
+        if (!choferId && userNombre && userApellido) {
+          const choferRec = await choferModel.getChoferByNombreApellido(userNombre, userApellido);
+          if (choferRec) {
+            choferId = choferRec.id;
+          }
+        }
+
+        if (!choferId) {
+          return res.status(200).json([]);
+        }
+      } else {
+        // 4. Extraer chofer_id de forma segura
+        const choferQuery = req.query.chofer_id;
+        const choferIdParam = Array.isArray(choferQuery) ? choferQuery[0] : choferQuery;
+
+        if (typeof choferIdParam === 'string') {
           choferId = Number(choferIdParam);
           if (isNaN(choferId)) {
             return res.status(400).json({ message: "Chofer inválido" });
@@ -235,38 +310,23 @@ export class EncomiendaController {
 
   async getEncomiendasByChofer(req: Request, res: Response) {
     try {
-
       const choferId = Number(req.params.id)
 
       if (isNaN(choferId)) {
-        res.status(400).json({
-          message: "ID inválido"
-        })
+        res.status(400).json({ message: "ID inválido" })
         return
       }
 
-
-      const encomiendas =
-        await EncomiendaModel.getEncomiendasByChofer(choferId)
-
-
+      const encomiendas = await EncomiendaModel.getEncomiendasByChofer(choferId)
       res.status(200).json(encomiendas)
 
-
     } catch (error) {
-
-      console.error(
-        "Error al obtener encomiendas del chofer:",
-        error
-      )
-
-      res.status(500).json({
-        message: "Error interno"
-      })
+      console.error("Error al obtener encomiendas del chofer:", error)
+      res.status(500).json({ message: "Error interno" })
     }
   }
 
-  async getEncomiendasByChoferHoy(req: Request,res: Response) {
+  async getEncomiendasByChoferHoy(req: Request, res: Response) {
     try {
       let choferId = Number(req.params.id)
 
@@ -279,9 +339,7 @@ export class EncomiendaController {
       }
 
       if (isNaN(choferId)) {
-        res.status(400).json({
-          message: "ID inválido"
-        })
+        res.status(400).json({ message: "ID inválido" })
         return
       }
 
@@ -289,7 +347,7 @@ export class EncomiendaController {
       res.status(200).json(encomiendas)
     } catch (error) {
       console.error(error)
-      res.status(500).json({message:"Error al obtener encomiendas del chofer"})
+      res.status(500).json({ message: "Error al obtener encomiendas del chofer" })
     }
   }
 

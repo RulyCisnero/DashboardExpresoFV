@@ -54,19 +54,6 @@ export function verificarRol(rolesPermitidos: Rol[]) {
   };
 }
 
-/* export function verificarLocalidadChofer(req: Request, res: Response, next: NextFunction): void {
-  if (!req.user) {
-    res.status(401).json({ error: 'Usuario no autenticado' });
-    return;
-  }
-
-  // Si es chofer, agregar filtro de localidad
-  if (req.user.rol === 'chofer' && req.user.localidad_id) {
-    req.localidadFiltro = req.user.localidad_id;
-  }
-
-  next();
-} */
 export function verificarLocalidadChofer(req: Request, res: Response, next: NextFunction): void {
   if (!req.user) {
     res.status(401).json({ error: 'Usuario no autenticado' });
