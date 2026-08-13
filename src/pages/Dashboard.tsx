@@ -168,7 +168,7 @@ export default function Dashboard() {
     <div className="min-h-screen">
 
       {/* Sidebar Mobile */}
-      {(usuario?.rol === "superUsuario" || usuario?.rol === "admin") && (
+      {(usuario?.rol === "superUsuario" || usuario?.rol === "administrador") && (
         <Sidebar
           onAddEncomienda={() => setIsAddEncomiendaOpen(true)}
           onAddCliente={() => setIsAddClienteOpen(true)}
