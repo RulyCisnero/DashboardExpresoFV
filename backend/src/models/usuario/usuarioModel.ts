@@ -1,6 +1,6 @@
-import pool from '../../database/connectionPostgreSQL.ts';
+import pool from '../../database/connectionPostgreSQL.js';
 import type { IUsuario, Rol } from '../../interfaces/usuario.ts';
-import { bcryptUtils } from '../../utils/bcrypt.ts';
+import { bcryptUtils } from '../../utils/bcrypt.js';
 
 export class UsuarioModel {
   static async getUsuarioByEmail(email: string): Promise<IUsuario | null> {

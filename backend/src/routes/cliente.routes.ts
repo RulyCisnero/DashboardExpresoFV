@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import clienteController from '../controllers/cliente/clienteController.ts';
-import { validateCreateCliente, validateIdParam, validateSearchCliente } from '../middlewares/cliente/clienteValidations.ts';
-import { verificarToken, verificarRol } from '../middlewares/auth/authMiddleware.ts';
+import clienteController from '../controllers/cliente/clienteController.js';
+import { validateCreateCliente, validateIdParam, validateSearchCliente } from '../middlewares/cliente/clienteValidations.js';
+import { verificarToken, verificarRol } from '../middlewares/auth/authMiddleware.js';
 
 const router = Router();
 

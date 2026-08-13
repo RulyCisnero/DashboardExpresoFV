@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import localidadRoutes from './localidad.routes.ts';
-import encomiendaRoutes from './encomienda.routes.ts';
-import choferRoutes from './chofer.routes.ts';
-import clienteRoutes from './cliente.routes.ts';
-import authRoutes from './auth.routes.ts';
+import localidadRoutes from './localidad.routes.js';
+import encomiendaRoutes from './encomienda.routes.js';
+import choferRoutes from './chofer.routes.js';
+import clienteRoutes from './cliente.routes.js';
+import authRoutes from './auth.routes.js';
 
 const router = Router();
 router.get('/', (req, res) => {

@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import EncomiendaModel from "../../models/encomienda/encomiendaModel.js";
 import choferModel from "../../models/chofer/choferModel.js";
-import { UsuarioModel } from "../../models/usuario/usuarioModel.ts";
+import { UsuarioModel } from "../../models/usuario/usuarioModel.js";
 
 const ESTADOS_VALIDOS = ["Pendiente", "Entregada"];
 

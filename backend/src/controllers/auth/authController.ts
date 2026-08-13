@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
-import { UsuarioModel } from '../../models/usuario/usuarioModel.ts';
-import { bcryptUtils } from '../../utils/bcrypt.ts';
-import { jwtUtils } from '../../utils/jwt.ts';
+import { UsuarioModel } from '../../models/usuario/usuarioModel.js';
+import { bcryptUtils } from '../../utils/bcrypt.js';
+import { jwtUtils } from '../../utils/jwt.js';
 import type { IAuthResponse, ITokenPayload, IRefreshTokenPayload } from '../../interfaces/usuario.ts';
 
 export class AuthController {

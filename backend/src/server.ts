@@ -2,8 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from "cors";
 import cookieParser from 'cookie-parser';
-import pool from './database/connectionPostgreSQL.ts';
-import routes from './routes/index.ts';
+import pool from './database/connectionPostgreSQL.js';
+import routes from './routes/index.js';
 
 const server = express();
 const PORT = process.env.PORT || 3000;

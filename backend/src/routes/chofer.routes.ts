@@ -1,7 +1,7 @@
 import { Router } from "express";
-import choferController from "../controllers/chofer/choferController.ts";
-import { validarCamposChofer, validarIdParam, checkChoferExists } from "../middlewares/chofer/choferValidation.ts";
-import { verificarToken, verificarRol } from "../middlewares/auth/authMiddleware.ts";
+import choferController from "../controllers/chofer/choferController.js";
+import { validarCamposChofer, validarIdParam, checkChoferExists } from "../middlewares/chofer/choferValidation.js";
+import { verificarToken, verificarRol } from "../middlewares/auth/authMiddleware.js";
 
 const router = Router();
 
