@@ -2,17 +2,18 @@ import { type ChoferFormData, type Chofer } from "../types/encomienda"
 import { apiFetch } from "./apiClient.ts"
 
 const API_URL = "http://localhost:5100/api/choferes"
+const API_RENDER = "https://dashboardexpresofv.onrender.com/api/choferes"
 
 export const ChoferesService = {
 
   async getAll(): Promise<Chofer[]> {
-    const res = await apiFetch(API_URL, { cache: "no-store" })
+    const res = await apiFetch(API_RENDER, { cache: "no-store" })
     if (!res.ok) throw new Error("Error al cargar choferes")
     return res.json()
   },
 
   async addNewChofer(data: ChoferFormData): Promise<Chofer> {
-    const res = await apiFetch(API_URL, {
+    const res = await apiFetch(API_RENDER, {
       method: "POST",
       body: JSON.stringify(data),
     })
@@ -26,7 +27,7 @@ export const ChoferesService = {
   },
 
   async updateChofer(id: number, data: ChoferFormData): Promise<Chofer> {
-    const res = await apiFetch(`${API_URL}/${id}`, {
+    const res = await apiFetch(`${API_RENDER}/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
     })
@@ -35,7 +36,7 @@ export const ChoferesService = {
   },
 
   async deleteChofer(id: number): Promise<void> {
-    const res = await apiFetch(`${API_URL}/${id}`, { method: "DELETE" })
+    const res = await apiFetch(`${API_RENDER}/${id}`, { method: "DELETE" })
     if (!res.ok) throw new Error("Error al eliminar chofer")
   },
 

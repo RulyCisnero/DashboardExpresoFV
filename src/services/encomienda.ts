@@ -7,19 +7,20 @@ import type {
 import { apiFetch } from "./apiClient.ts"
 
 const API_URL = "http://localhost:5100/api/encomiendas"
+const API_RENDER = "https://dashboardexpresofv.onrender.com/api/encomiendas"
 
 export const EncomiendaService = {
 
   /** 🔹 Obtener TODAS las encomiendas (crudas) */
   async getAll(): Promise<EncomiendaRich[]> {
-    const res = await apiFetch(API_URL)
+    const res = await apiFetch(API_RENDER)
     if (!res.ok) throw new Error("Error al cargar las encomiendas")
     return res.json()
   },
 
   /** 🔹 Crear una nueva encomienda */
   async create(data: EncomiendaInput): Promise<Encomienda> {
-    const res = await apiFetch(API_URL, {
+    const res = await apiFetch(API_RENDER, {
       method: "POST",
       body: JSON.stringify(data),
     })
@@ -34,7 +35,7 @@ export const EncomiendaService = {
 
   /** 🔹 Actualizar una encomienda */
   async update(id: number, data: EncomiendaUpdate): Promise<Encomienda> {
-    const res = await apiFetch(`${API_URL}/${id}`, {
+    const res = await apiFetch(`${API_RENDER}/${id}`, {
       method: "PUT",
       body: JSON.stringify(data),
     })
@@ -45,13 +46,13 @@ export const EncomiendaService = {
 
   /** 🔹 Obtener encomienda por ID (enriquecida) */
   async getById(id: number): Promise<EncomiendaRich> {
-    const res = await apiFetch(`${API_URL}/${id}`)
+    const res = await apiFetch(`${API_RENDER}/${id}`)
     if (!res.ok) throw new Error("Error al obtener la encomienda")
     return res.json()
   },
 
   async getByCliente(clienteId: number): Promise<EncomiendaRich[]> {
-    const res = await apiFetch(`${API_URL}/cliente/${clienteId}`)
+    const res = await apiFetch(`${API_RENDER}/cliente/${clienteId}`)
     if (!res.ok) throw new Error("Error al cargar encomiendas del cliente")
     return res.json()
   },
@@ -62,25 +63,25 @@ export const EncomiendaService = {
       query.set("localidad_id", String(localidadId));
     }
 
-    const res = await apiFetch(`${API_URL}/fecha?${query.toString()}`);
+    const res = await apiFetch(`${API_RENDER}/fecha?${query.toString()}`);
     if (!res.ok) throw new Error("Error al filtrar encomiendas por fecha");
     return res.json();
   },
 
   async getByChofer(choferId: number): Promise<EncomiendaRich[]> {
-    const res = await apiFetch(`${API_URL}/chofer/${choferId}`);
+    const res = await apiFetch(`${API_RENDER}/chofer/${choferId}`);
     if (!res.ok) throw new Error("Error al cargar encomiendas del chofer");
     return res.json();
   },
 
   async getByChoferHoy(choferId: number): Promise<EncomiendaRich[]> {
-    const res = await apiFetch(`${API_URL}/chofer/${choferId}/hoy`);
+    const res = await apiFetch(`${API_RENDER}/chofer/${choferId}/hoy`);
     if (!res.ok) throw new Error("Error al cargar encomiendas del chofer hoy");
     return res.json();
   },
 
   async updateEstado(id: number, estado: "Pendiente" | "Entregada"): Promise<void> {
-    const res = await apiFetch(`${API_URL}/${id}/estado`, {
+    const res = await apiFetch(`${API_RENDER}/${id}/estado`, {
       method: "PUT",
       body: JSON.stringify({ estado }),
     });
@@ -93,7 +94,7 @@ export const EncomiendaService = {
 
   /** 🔹 Eliminar */
   async delete(id: number): Promise<void> {
-    const res = await apiFetch(`${API_URL}/${id}`, { method: "DELETE" })
+    const res = await apiFetch(`${API_RENDER}/${id}`, { method: "DELETE" })
     if (!res.ok) throw new Error("Error al eliminar la encomienda")
   },
 }
