@@ -71,7 +71,7 @@ export class AuthController {
           nombre: usuario.nombre,
           apellido: usuario.apellido,
           rol: usuario.rol,
-          localidad_id: usuario.localidad_id,
+          //localidad_id: usuario.localidad_id
         },
       };
 
