@@ -9,23 +9,29 @@ const server = express();
 const PORT = process.env.PORT || 3000;
 
 // Configurar CORS para permitir credenciales
-server.use(cors({
+/* server.use(cors({
   origin: process.env.NODE_ENV === 'production'
     ? process.env.FRONTEND_URL
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true,
-}));
+})); */
 
+server.use(cors({
+  origin: process.env.NODE_ENV === 'production'
+    ? 'https://expreso-fv.netlify.app' // Acá va tu URL de producción fija (SIN la barra / al final)
+    : ['http://localhost:5173', 'http://localhost:3000'], // Acá quedan tus URLs locales
+  credentials: true,
+}));
 server.use(express.json());
 server.use(cookieParser());
 
 server.use('/api', routes);
 
 server.get("/", async (req, res) => {
-    const result = await pool.query("SELECT current_database()");
-    res.send(`nombre de la base de datos: ${result.rows[0].current_database}`);
+  const result = await pool.query("SELECT current_database()");
+  res.send(`nombre de la base de datos: ${result.rows[0].current_database}`);
 });
 
 server.listen(PORT, () => {
-    console.log(`servidor corriendo en el puerto ${PORT} base de datos postgres`);
+  console.log(`servidor corriendo en el puerto ${PORT} base de datos postgres`);
 });
